@@ -3,6 +3,7 @@ import React from 'react';
 import { Menu } from 'lucide-react';
 import { RadialBlur, LinearBlur } from 'progressive-blur';
 import RotatingWord from './header/rotatingWord';
+import MenuButtonWithOverlay from './header/menu';
 
 const Header = () => {
   return (
@@ -42,11 +43,12 @@ const Header = () => {
         </div>
 
         {/* Right Section: Menu */}
-        <div className="group relative flex cursor-pointer items-center gap-1 pr-2 font-[family-name:var(--font-space-mono)] text-sm transition-all duration-300 hover:text-[#fac924] md:pr-0">
+        {/* <div className="group relative flex cursor-pointer items-center gap-1 pr-2 font-[family-name:var(--font-space-mono)] text-sm transition-all duration-300 hover:text-[#fac924] md:pr-0">
           <Menu className="h-4 w-4" />
           <p>MENU</p>
           <span className="absolute bottom-0 left-0 h-[1px] w-0 bg-[#fac924] transition-all duration-300 group-hover:w-full"></span>
-        </div>
+        </div> */}
+        <MenuButtonWithOverlay />
       </div>
     </nav>
   );
