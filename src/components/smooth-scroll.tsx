@@ -18,7 +18,7 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
   }, []);
 
   return (
-    <div data-scroll-wrapper ref={wrapperRef} className="">
+    <div data-scroll-wrapper ref={wrapperRef} className="overflow-hidden">
       <div data-scroll-content ref={contentRef}>
         {children}
       </div>

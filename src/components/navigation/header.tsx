@@ -2,10 +2,11 @@ import Image from 'next/image';
 import React from 'react';
 import { Menu } from 'lucide-react';
 import { RadialBlur, LinearBlur } from 'progressive-blur';
+import RotatingWord from './header/rotatingWord';
 
 const Header = () => {
   return (
-    <>
+    <nav className="z-50">
       <LinearBlur
         // The resolution of the blur. Higher values will result in a more detailed blur, but will be more computationally expensive. Default is 8.
         steps={8}
@@ -19,12 +20,12 @@ const Header = () => {
         style={{
           position: 'fixed',
           inset: 0,
-          zIndex: 10,
+          zIndex: 30,
         }}
         side="top"
         className="h-24"
       />
-      <nav className="fixed top-0 right-0 left-0 z-50 flex items-center justify-between px-4 py-4 md:px-6">
+      <div className="fixed top-0 right-0 left-0 z-50 flex items-center justify-between px-4 py-4 md:px-6">
         {/* Left Section: Logo + Text */}
         <div className="flex items-center">
           <Image src="/DPS_Logo.svg" alt="Logo" width={32} height={32} className="rounded-full" />
@@ -33,19 +34,21 @@ const Header = () => {
 
         {/* Center Section: Tagline */}
         <div className="flex items-center justify-center text-center">
-          <p className="font-[family-name:var(--font-instrument-serif)] text-xl">
-            A Award-Winning{' '}
-            <span className="font-xl font-[family-name:var(--font-vt)]">(Tech)</span> Club
+          <p className="z-50 font-[family-name:var(--font-instrument-serif)] text-xl">
+            {'An Award-Winning '}
+            <RotatingWord />
+            {' Club'}
           </p>
         </div>
 
         {/* Right Section: Menu */}
-        <div className="flex items-center gap-1 pr-2 font-[family-name:var(--font-space-mono)] text-sm md:pr-0">
+        <div className="group relative flex cursor-pointer items-center gap-1 pr-2 font-[family-name:var(--font-space-mono)] text-sm transition-all duration-300 hover:text-[#fac924] md:pr-0">
           <Menu className="h-4 w-4" />
           <p>MENU</p>
+          <span className="absolute bottom-0 left-0 h-[1px] w-0 bg-[#fac924] transition-all duration-300 group-hover:w-full"></span>
         </div>
-      </nav>
-    </>
+      </div>
+    </nav>
   );
 };
 
