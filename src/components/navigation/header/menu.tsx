@@ -6,19 +6,34 @@ import Link from 'next/link';
 
 const navItems = [
   {
-    title: 'Our Work',
-    href: '#work',
-    subtitle: 'Explore our award-winning projects',
+    title: 'Home',
+    href: '#home',
+    subtitle: '(Back to Base)',
   },
   {
-    title: 'About Us',
-    href: '#about',
-    subtitle: 'Designing systems that scale',
+    title: 'Core Team',
+    href: '#team',
+    subtitle: '(Brains behind the magic)',
   },
   {
-    title: 'Join Us',
-    href: '#join',
-    subtitle: 'Collaborate. Innovate. Elevate.',
+    title: 'Portfolio',
+    href: '#portfolio',
+    subtitle: '(Crafted with precision)',
+  },
+  {
+    title: 'Gallery',
+    href: '#gallery',
+    subtitle: '(Pixels with a purpose)',
+  },
+  {
+    title: 'Announcements',
+    href: '#announcements',
+    subtitle: '(Stay in the loop)',
+  },
+  {
+    title: 'Legacy',
+    href: '#legacy',
+    subtitle: '(Built to last)',
   },
 ];
 
@@ -46,7 +61,7 @@ export default function MenuButtonWithOverlay() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
-            className="fixed inset-0 z-50 flex flex-col justify-between bg-black text-white"
+            className="fixed inset-0 z-50 flex touch-pan-y flex-col justify-between overflow-y-auto bg-black text-white"
           >
             {/* Close Button */}
             <div className="flex justify-end p-6">
@@ -59,8 +74,8 @@ export default function MenuButtonWithOverlay() {
               </button>
             </div>
 
-            {/* Menu Items */}
-            <div className="flex flex-col items-start gap-12 px-10 font-[family-name:var(--font-instrument-serif)] text-5xl md:text-6xl">
+            {/* === Menu Grid === */}
+            <div className="grid grid-cols-1 gap-y-6 px-10 font-[family-name:var(--font-instrument-serif)] text-5xl md:grid-cols-2 md:gap-y-12 md:text-6xl">
               {navItems.map((item, i) => (
                 <motion.div
                   key={item.href}
@@ -68,16 +83,15 @@ export default function MenuButtonWithOverlay() {
                   animate={{ opacity: 1, filter: 'blur(0px)' }}
                   exit={{ opacity: 0, filter: 'blur(10px)' }}
                   transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className="transition"
                 >
                   <Link
                     href={item.href}
                     onClick={() => setIsOpen(false)}
-                    className="transition hover:text-[#fac924]"
+                    className="block transition hover:text-[#fac924]"
                   >
                     {item.title} →
                   </Link>
-                  <p className="mt-2 font-[family-name:var(--font-vt)] text-sm text-[#fac924]">
+                  <p className="mt-2 hidden font-[family-name:var(--font-vt)] text-sm text-[#fac924] md:block">
                     {item.subtitle}
                   </p>
                 </motion.div>
@@ -86,7 +100,7 @@ export default function MenuButtonWithOverlay() {
 
             {/* Footer */}
             <div className="py-4 text-center text-xs text-[#fac924]">
-              Delhi Public School Tech Club ©
+              ©Anshu, Designed for the Tech Club, 2025
             </div>
           </motion.div>
         )}
