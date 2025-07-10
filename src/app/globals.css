@@ -161,7 +161,14 @@
     @apply bg-background text-foreground;
   }
 }
-
+/* Show default cursor below md (mobile) */
 * {
-  cursor: none !important;
+  cursor: auto !important;
+}
+
+/* Hide cursor for md and up (≥768px) */
+@media (min-width: 768px) {
+  * {
+    cursor: none !important;
+  }
 }

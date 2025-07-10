@@ -45,11 +45,16 @@ const Clubs = () => {
       {/* === Main Grid === */}
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
         {/* === Left Text === */}
-        <div className="flex items-center justify-center text-lg text-black">
-          <p className="max-w-xl leading-relaxed">
+        <div className="text-md flex items-center justify-center text-black">
+          <p className="max-w-xl leading-5">
             The Tech Club isn't just about code. It's a canvas for innovation, design, and creation.
             Across hardware, AI, gaming, and more — we explore tech with a story, a purpose, and
-            precision. Every club is a lens into the future we're building.
+            precision. Every club is a lens into the future we're building. <br />
+            <br />
+            From wild prototypes to “totally intentional” bugs that became features, we turn
+            caffeine and chaos into actual innovation. Whether you're designing pixels, training
+            rogue AIs, or just pretending to debug while vibing to Lo-fi — this is where tech gets
+            personal, loud, and just a bit too ambitious (in the best way).
           </p>
         </div>
 

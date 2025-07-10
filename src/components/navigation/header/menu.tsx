@@ -66,7 +66,7 @@ export default function MenuButtonWithOverlay() {
             {/* Close Button */}
             <div className="flex justify-end p-6">
               <button onClick={() => setIsOpen(false)} className="">
-                <div className="group relative flex cursor-pointer items-center gap-1 pr-2 font-[family-name:var(--font-space-mono)] text-sm transition-all duration-300 hover:text-[#fac924] md:pr-0">
+                <div className="group relative mr-2 flex cursor-pointer items-center gap-1 font-[family-name:var(--font-space-mono)] text-sm transition-all duration-300 hover:text-[#fac924] md:mr-0">
                   <XIcon className="h-4 w-4" />
                   <p>CLOSE</p>
                   <span className="absolute bottom-0 left-0 h-[1px] w-0 bg-[#fac924] transition-all duration-300 group-hover:w-full"></span>

@@ -34,7 +34,7 @@ const Header = () => {
         </div>
 
         {/* Center Section: Tagline */}
-        <div className="flex items-center justify-center text-center">
+        <div className="hidden items-center justify-center text-center sm:block">
           <p className="z-50 font-[family-name:var(--font-instrument-serif)] text-xl">
             {'An Award-Winning '}
             <RotatingWord />
