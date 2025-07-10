@@ -13,6 +13,7 @@ import Header from '@/components/navigation/header';
 import Footer from '@/components/navigation/footer';
 import SmoothScroll from '@/components/smooth-scroll';
 import ContactForm from '@/components/home/contactForm';
+import { SmoothCursor } from '@/components/ui/smooth-cursor';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -66,6 +67,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${rethinkSans.variable} ${instrumentSerif.variable} ${vt.variable} ${spaceMono.variable} font-[family-name:var(--font-rethink-sans)] antialiased`}
       >
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+          <SmoothCursor />
           <SmoothScroll>
             <Header />
 

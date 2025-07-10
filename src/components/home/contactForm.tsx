@@ -5,7 +5,7 @@ const ContactForm = () => {
   return (
     <div className="h-128 w-screen">
       <div className="absolute z-10 flex h-128 w-full flex-col items-center justify-center">
-        <p className="mb-8 font-[family-name:var(--font-vt)] text-2xl md:text-3xl lg:text-5xl">
+        <p className="mb-8 text-center font-[family-name:var(--font-vt)] text-2xl md:text-3xl lg:text-5xl">
           &gt;_ Freshly Garnished News, Straight to your inbox
         </p>
         <p className="w-96 text-center text-sm text-zinc-400 md:w-128">
