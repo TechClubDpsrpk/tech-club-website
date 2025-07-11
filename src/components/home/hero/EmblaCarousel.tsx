@@ -5,6 +5,12 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { NextButton, PrevButton, usePrevNextButtons } from './EmblaCarouselArrowButtons';
 import { DotButton, useDotButton } from './EmblaCarouselDotButton';
 import Image from 'next/image';
+import Autoplay from 'embla-carousel-autoplay';
+
+const autoplay = Autoplay({
+  delay: 4000, // 4 seconds
+  stopOnMouseEnter: true, // (optional) pauses on hover
+});
 
 const TWEEN_FACTOR_BASE = 0.2;
 
@@ -21,7 +27,7 @@ type PropType = {
 
 const EmblaCarousel: React.FC<PropType> = (props) => {
   const { slides, options } = props;
-  const [emblaRef, emblaApi] = useEmblaCarousel(options);
+  const [emblaRef, emblaApi] = useEmblaCarousel(options, [autoplay]);
   const tweenFactor = useRef(0);
   const tweenNodes = useRef<HTMLElement[]>([]);
 
@@ -109,7 +115,9 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
                   />
                   <div className="absolute h-full w-full text-white">
                     <div className="absolute top-4 left-4">
-                      <p className="pt-5 text-base font-semibold">{slide.text}</p>
+                      <p className="pt-5 text-base font-semibold mix-blend-difference">
+                        {slide.text}
+                      </p>
                       <a
                         href="#"
                         className="mt-2 inline-block border border-black bg-white px-4 py-2 font-[family-name:var(--font-space-mono)] text-sm text-black hover:underline"
