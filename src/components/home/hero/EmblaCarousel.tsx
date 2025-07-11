@@ -4,6 +4,7 @@ import { EmblaCarouselType, EmblaEventType, EmblaOptionsType } from 'embla-carou
 import useEmblaCarousel from 'embla-carousel-react';
 import { NextButton, PrevButton, usePrevNextButtons } from './EmblaCarouselArrowButtons';
 import { DotButton, useDotButton } from './EmblaCarouselDotButton';
+import Image from 'next/image';
 
 const TWEEN_FACTOR_BASE = 0.2;
 
@@ -93,11 +94,24 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
             <div className="embla__slide" key={index}>
               <div className="embla__parallax">
                 <div className="embla__parallax__layer">
-                  <img
+                  <Image
+                    width={600}
+                    height={350}
                     className="embla__slide__img embla__parallax__img"
                     src={`https://picsum.photos/600/350?v=${index}`}
                     alt="Your alt text"
                   />
+                  <div className="absolute h-full w-full text-white">
+                    <div className="absolute top-4 left-4">
+                      <p className="pt-5 text-base font-semibold">Slide {index + 1}</p>
+                      <a
+                        href="#"
+                        className="mt-2 inline-block border border-black bg-white px-4 py-2 font-[family-name:var(--font-space-mono)] text-sm text-black hover:underline"
+                      >
+                        Learn More
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

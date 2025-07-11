@@ -44,7 +44,7 @@ const Hero = () => {
           chaotic brilliance at its finest.
         </p>
 
-        <button className="group relative flex w-full items-center justify-center overflow-hidden bg-yellow-500 px-6 py-3 font-[family-name:var(--font-space-mono)] text-sm text-black hover:border-[#fac924] hover:bg-black hover:text-[#fac924] md:w-96">
+        <button className="group relative flex w-full items-center justify-center overflow-hidden border border-transparent bg-yellow-500 px-6 py-3 font-[family-name:var(--font-space-mono)] text-sm text-black hover:border-[#fac924] hover:bg-black hover:text-[#fac924] hover:underline md:w-96">
           <span className="relative z-10 flex items-center gap-2">
             JOIN US <ArrowRight width={16} height={16} />
           </span>
