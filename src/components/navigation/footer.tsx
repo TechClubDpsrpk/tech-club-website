@@ -61,7 +61,7 @@ const Footer = () => {
           </div>
         ))}
       </div>
-      <p className="w-full text-left text-[20vw] leading-none font-bold tracking-tight">
+      <p className="-z-10 w-full text-left text-[20vw] leading-none font-bold tracking-tight">
         <AuroraText
           colors={['#fac924', '#e6b522', '#c09c2b', '#947d31', '#625a31', '#3c3b2d', '#1b1c22']}
         >
