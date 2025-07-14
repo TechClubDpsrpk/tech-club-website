@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import React from 'react';
-import { Menu } from 'lucide-react';
-import { RadialBlur, LinearBlur } from 'progressive-blur';
+import { LinearBlur } from 'progressive-blur';
 import RotatingWord from './header/rotatingWord';
 import MenuButtonWithOverlay from './header/menu';
 

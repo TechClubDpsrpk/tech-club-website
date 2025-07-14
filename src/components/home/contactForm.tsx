@@ -28,7 +28,7 @@ const ContactForm = () => {
               </button>
             </div>
             <p className="animate-pulse p-1 text-xs text-zinc-500 italic">
-              // Subscribing may or may not make your inbox 1337
+              &#47;&#47; Subscribing may or may not make your inbox 1337
             </p>
           </div>
         </div>

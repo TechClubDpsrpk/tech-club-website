@@ -1,9 +1,7 @@
 'use client';
 import React from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import Image from 'next/image';
 import { ParallaxImage } from './parallaxImage';
-import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 const BlogSection = () => {
   const blogs = [

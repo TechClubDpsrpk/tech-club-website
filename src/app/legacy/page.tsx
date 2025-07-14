@@ -1,7 +1,7 @@
 import React from 'react';
 import { Timeline } from '@/components/ui/timeline';
 
-export function LegacyTimeline() {
+function LegacyTimeline() {
   const data = [
     {
       title: '2015',
@@ -70,7 +70,7 @@ export function LegacyTimeline() {
             hero. School roasted. Reputation sealed.
           </p>
           <p className="text-xs text-neutral-500 italic dark:text-neutral-400">
-            "Built by students. Loved by all. Approved by parents. Blocked by one." 😭
+            &quot;Built by students. Loved by all. Approved by parents. Blocked by one.&quot; 😭
           </p>
         </div>
       ),

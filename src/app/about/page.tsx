@@ -28,19 +28,21 @@ export default function AboutTechClub() {
         {/* Description */}
         <p className="mt-6 font-[family-name:var(--font-space-mono)] text-sm leading-relaxed text-zinc-400">
           Welcome to Tech Club — where sleep schedules go to die, and bugs mysteriously disappear
-          just before demo day. We’re a group of caffeine-powered keyboard mashers who claim to
-          “innovate,” “build,” and “collaborate” — mostly by arguing over dark mode vs. light mode.
+          just before demo day. We&apos;re a group of caffeine-powered keyboard mashers who claim to
+          &quot;innovate,&quot; &quot;build,&quot; and &quot;collaborate&quot; — mostly by arguing
+          over dark mode vs. light mode.
         </p>
 
         <p className="mt-4 font-[family-name:var(--font-space-mono)] text-sm text-zinc-400">
           We specialize in turning perfectly good weekends into frantic hackathons and pretending to
           understand what half the buzzwords actually mean. AI? Blockchain? Quantum pizza delivery?
-          Sure, why not. If it's trendy and barely stable, we're into it.
+          Sure, why not. If it&apos;s trendy and barely stable, we&apos;re into it.
         </p>
 
         <p className="mt-4 font-[family-name:var(--font-space-mono)] text-sm text-zinc-400">
-          If you've ever broken production at 2AM and called it a “learning experience,” or declared
-          a figma wireframe “done” because you're out of coffee — congratulations, you're one of us.
+          If you&apos;ve ever broken production at 2AM and called it a &quot;learning
+          experience,&quot; or declared a figma wireframe &quot;done&quot; because you&apos;re out
+          of coffee — congratulations, you&apos;re one of us.
         </p>
       </div>
     </section>

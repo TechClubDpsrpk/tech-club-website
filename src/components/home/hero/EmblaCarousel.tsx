@@ -2,8 +2,8 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { EmblaCarouselType, EmblaEventType, EmblaOptionsType } from 'embla-carousel';
 import useEmblaCarousel from 'embla-carousel-react';
-import { NextButton, PrevButton, usePrevNextButtons } from './EmblaCarouselArrowButtons';
-import { DotButton, useDotButton } from './EmblaCarouselDotButton';
+import { usePrevNextButtons } from './EmblaCarouselArrowButtons';
+import { useDotButton } from './EmblaCarouselDotButton';
 import Image from 'next/image';
 import Autoplay from 'embla-carousel-autoplay';
 
@@ -31,7 +31,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
   const tweenFactor = useRef(0);
   const tweenNodes = useRef<HTMLElement[]>([]);
 
-  const { selectedIndex, scrollSnaps, onDotButtonClick } = useDotButton(emblaApi);
+  const { selectedIndex, scrollSnaps } = useDotButton(emblaApi);
 
   const { prevBtnDisabled, nextBtnDisabled, onPrevButtonClick, onNextButtonClick } =
     usePrevNextButtons(emblaApi);

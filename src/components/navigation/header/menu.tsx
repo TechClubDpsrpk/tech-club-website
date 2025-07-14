@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Cross, Menu, X, XIcon } from 'lucide-react';
+import { Menu, XIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 

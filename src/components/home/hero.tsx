@@ -7,7 +7,6 @@ import { EmblaOptionsType } from 'embla-carousel';
 import './hero/embla.css';
 
 const OPTIONS: EmblaOptionsType = { loop: true };
-const SLIDE_COUNT = 5;
 const SLIDES = [
   {
     image: 'https://picsum.photos/1920/1080?v=1',
@@ -56,8 +55,8 @@ const Hero = () => {
       {/* 📦 CTA section */}
       <div className="z-10 flex flex-shrink-0 flex-col items-center justify-between gap-4 bg-zinc-800 p-8 md:flex-row">
         <p className="font-semibold text-white md:max-w-md">
-          Welcome to our school tech club – where we pretend to fix things we broke ourselves. It's
-          chaotic brilliance at its finest.
+          Welcome to our school tech club – where we pretend to fix things we broke ourselves.
+          It&apos;s chaotic brilliance at its finest.
         </p>
 
         <button className="group relative flex w-full items-center justify-center overflow-hidden border border-transparent bg-yellow-500 px-6 py-3 font-[family-name:var(--font-space-mono)] text-sm text-black hover:border-[#fac924] hover:bg-black hover:text-[#fac924] hover:underline md:w-96">

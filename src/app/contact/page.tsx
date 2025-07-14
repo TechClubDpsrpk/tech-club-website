@@ -23,7 +23,7 @@ export default function ContactPage() {
         </div>
         <form onSubmit={handleSubmit}>
           <p className="mb-4">
-            &gt; Let's start with your email (because telepathy is still in beta):
+            &gt; Let&apos;s start with your email (because telepathy is still in beta):
           </p>
           <input
             type="email"
