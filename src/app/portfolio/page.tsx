@@ -1,4 +1,4 @@
-import { Beam } from '@/components/announcement/beam';
+import { Beam } from '@/components/portfolio/beam';
 import React from 'react';
 
 const AccPage = () => {

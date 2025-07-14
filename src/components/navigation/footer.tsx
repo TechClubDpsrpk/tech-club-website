@@ -10,6 +10,7 @@ const footerLinks = [
       { label: 'Home', href: '/' },
       { label: 'Core Team', href: '/core-team' },
       { label: 'Portfolio', href: '/portfolio' },
+      { label: 'About Us', href: '/about' },
     ],
   },
   {
@@ -18,6 +19,7 @@ const footerLinks = [
       { label: 'Gallery', href: '/gallery' },
       { label: 'Announcements', href: '/announcements' },
       { label: 'Legacy', href: '/legacy' },
+      { label: 'Contact Us', href: '/contact' },
     ],
   },
   {
@@ -68,6 +70,15 @@ const Footer = () => {
           Tech Club
         </AuroraText>
       </p>
+      <div className="flex w-full flex-row items-center justify-between border-t border-zinc-800 px-4 py-2 text-left text-xs text-zinc-400">
+        <p>©Tech Club, 2025</p>
+        <p>
+          Design by{' '}
+          <span className="font-[family-name:var(--font-instrument-serif)] text-lg text-white">
+            /Anshu
+          </span>
+        </p>
+      </div>
     </div>
   );
 };

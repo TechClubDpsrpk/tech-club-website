@@ -12,12 +12,12 @@ const navItems = [
   },
   {
     title: 'Core Team',
-    href: '#team',
+    href: '/core-team',
     subtitle: '(Brains behind the magic)',
   },
   {
     title: 'Portfolio',
-    href: '#portfolio',
+    href: '/portfolio',
     subtitle: '(Crafted with precision)',
   },
   {
@@ -32,8 +32,18 @@ const navItems = [
   },
   {
     title: 'Legacy',
-    href: '#legacy',
+    href: '/legacy',
     subtitle: '(Built to last)',
+  },
+  {
+    title: 'About Us',
+    href: '/about',
+    subtitle: '(Who we are & why we build)',
+  },
+  {
+    title: 'Contact Us',
+    href: '/contact',
+    subtitle: '(Let’s talk tech)',
   },
 ];
 
@@ -75,7 +85,7 @@ export default function MenuButtonWithOverlay() {
             </div>
 
             {/* === Menu Grid === */}
-            <div className="grid grid-cols-1 gap-y-6 px-10 font-[family-name:var(--font-instrument-serif)] text-5xl md:grid-cols-2 md:gap-y-12 md:text-6xl">
+            <div className="grid grid-cols-1 gap-y-4 px-10 font-[family-name:var(--font-instrument-serif)] text-4xl md:grid-cols-2 md:gap-y-9 md:text-5xl">
               {navItems.map((item, i) => (
                 <motion.div
                   key={item.href}
@@ -91,7 +101,7 @@ export default function MenuButtonWithOverlay() {
                   >
                     {item.title} →
                   </Link>
-                  <p className="mt-2 hidden font-[family-name:var(--font-vt)] text-sm text-[#fac924] md:block">
+                  <p className="mt-1 hidden font-[family-name:var(--font-vt)] text-sm text-[#fac924] md:block">
                     {item.subtitle}
                   </p>
                 </motion.div>
