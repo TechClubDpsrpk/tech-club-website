@@ -3,6 +3,7 @@ import React from 'react';
 import { LinearBlur } from 'progressive-blur';
 import RotatingWord from './header/rotatingWord';
 import MenuButtonWithOverlay from './header/menu';
+import Link from 'next/link';
 
 const Header = () => {
   return (
@@ -27,10 +28,10 @@ const Header = () => {
       />
       <div className="fixed top-0 right-0 left-0 z-50 flex items-center justify-between px-4 py-4 md:px-6">
         {/* Left Section: Logo + Text */}
-        <div className="flex items-center">
+        <Link href="/" className="flex items-center">
           <Image src="/DPS_Logo.svg" alt="Logo" width={32} height={32} className="rounded-full" />
           <p className="hidden pl-4 font-bold lg:block">Delhi Public School, Ruby Park</p>
-        </div>
+        </Link>
 
         {/* Center Section: Tagline */}
         <div className="hidden items-center justify-center text-center sm:block">
