@@ -27,7 +27,7 @@ const navItems = [
   },
   {
     title: 'Announcements',
-    href: '#announcements',
+    href: '/announcements',
     subtitle: '(Stay in the loop)',
   },
   {
