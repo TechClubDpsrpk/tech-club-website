@@ -14,6 +14,7 @@ import Footer from '@/components/navigation/footer';
 import SmoothScroll from '@/components/smooth-scroll';
 import ContactForm from '@/components/home/contactForm';
 import { SmoothCursor } from '@/components/ui/smooth-cursor';
+import { JetBrains_Mono } from 'next/font/google';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -31,10 +32,9 @@ const rethinkSans = Rethink_Sans({
   display: 'swap',
 });
 
-const instrumentSerif = Instrument_Serif({
+const instrumentSerif = JetBrains_Mono({
   variable: '--font-instrument-serif',
   subsets: ['latin'],
-  weight: ['400'],
   display: 'swap',
 });
 

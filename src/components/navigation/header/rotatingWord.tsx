@@ -38,7 +38,7 @@ const RotatingWord = () => {
   }, [displayedText, isDeleting, index, pause]);
 
   return (
-    <span className="font-xl font-[family-name:var(--font-vt)] text-[#fac924]">
+    <span className="font-2xl font-[family-name:var(--font-vt)] text-[#fac924]">
       ({displayedText}
       <span className="animate-pulse">|</span>)
     </span>

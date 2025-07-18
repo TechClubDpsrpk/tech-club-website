@@ -30,14 +30,16 @@ const Header = () => {
         {/* Left Section: Logo + Text */}
         <Link href="/" className="flex items-center">
           <Image src="/DPS_Logo.svg" alt="Logo" width={32} height={32} className="rounded-full" />
-          <p className="hidden pl-4 font-bold lg:block">Delhi Public School, Ruby Park</p>
+          <p className="hidden pl-4 font-bold lg:block">DPSRPK | Tech Club</p>
         </Link>
 
         {/* Center Section: Tagline */}
         <div className="hidden items-center justify-center text-center sm:block">
-          <p className="z-50 font-[family-name:var(--font-instrument-serif)] text-xl">
+          <p className="text-md z-50 font-[family-name:var(--font-instrument-serif)]">
             {'An Award-Winning '}
-            <RotatingWord />
+            <span className="text-xl">
+              <RotatingWord />
+            </span>
             {' Club'}
           </p>
         </div>
