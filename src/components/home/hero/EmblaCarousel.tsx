@@ -9,7 +9,7 @@ import Autoplay from 'embla-carousel-autoplay';
 
 const autoplay = Autoplay({
   delay: 4000, // 4 seconds
-  stopOnMouseEnter: true, // (optional) pauses on hover
+  stopOnMouseEnter: false, // (optional) pauses on hover
 });
 
 const TWEEN_FACTOR_BASE = 0.2;
