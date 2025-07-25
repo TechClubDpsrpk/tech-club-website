@@ -75,7 +75,7 @@ const Footer = () => {
         <p>
           Design by{' '}
           <span className="font-[family-name:var(--font-instrument-serif)] text-lg text-white">
-            /Anshu
+            Anshu, Agnihotra and Naitik
           </span>
         </p>
       </div>

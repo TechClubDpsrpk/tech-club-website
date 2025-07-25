@@ -1,0 +1,59 @@
+/* Base Styles (same as before) */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Space+Grotesk:wght@300..700&display=swap');
+
+
+
+
+.liquid-navbar {
+      font-family: 'Roboto Mono', sans-serif;
+  color: #fff;
+  position: sticky;
+  top: 0;
+  width: 95%;
+  margin: 1rem auto;
+  padding: 0.4rem 2rem;
+  transform: translateY(50%);
+  border-radius: 50px;
+  background: rgba(30, 30, 30, 0.25);
+  backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid rgba(243, 243, 243, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  overflow:hidden;
+  z-index: 1000;
+}
+
+.nav-left, .nav-right {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.nav-left a, .nav-right a {
+  text-decoration: none;
+  color: #e0e0e0;
+  font-size: 0.95rem;
+  padding: 8px 14px;
+  border-radius: 80px;
+  transition: all 0.3s ease;
+}
+
+.nav-left a:hover, .nav-right a:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+}
+
+.nav-left .active, .nav-right .active {
+  color: gold;
+  background: rgba(255, 215, 0, 0.1);
+  font-weight: 600;
+  /* box-shadow: 0 0 12px rgba(255, 215, 0, 0.4); */
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.logo {
+  height: 40px;
+  width:50px;
+}
