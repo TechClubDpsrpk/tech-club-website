@@ -72,12 +72,12 @@ const Footer = () => {
       </p>
       <div className="flex w-full flex-row items-center justify-between border-t border-zinc-800 px-4 py-2 text-left text-xs text-zinc-400">
         <p>©Tech Club, 2025</p>
-        <p>
+        {/* <p>
           Design by{' '}
           <span className="font-[family-name:var(--font-instrument-serif)] text-lg text-white">
             Anshu, Agnihotra and Naitik
           </span>
-        </p>
+        </p> */}
       </div>
     </div>
   );
