@@ -1,3 +1,24 @@
+<div align="center">
+  
+  <p>
+    <h1>
+      <a href="https://github.com/TechClubDpsrpk/tc-website-2025/">
+        <img src="/public/tc-logo.png" width=128 alt="Tech Club DPSRPK Logo" />
+      </a>
+      <br />
+      Tech Club DPSRPK Website
+    </h1>
+    <h4>This is gonna be the all new website for Tech Club DPSRPK starting 2025 </h4>
+  </p>
+
+  <p>
+    <a href="https://github.com/TechClubDpsrpk/tc-website-2025">
+      <img src="https://img.shields.io/github/stars/TechClubDpsrpk/tc-website-2025" alt="GitHub Stars" />
+    </a>
+  </p>
+
+</div>
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
