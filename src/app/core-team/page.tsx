@@ -4,28 +4,29 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const teamStructure = {
-  president: { name: 'Arghya Sarkar', role: 'President', image: '/team/arghya.jpg' },
-  vicePresident: { name: 'Ankush Roy', role: 'Vice President', image: '/team/ankush.jpg' },
+  president: { name: 'arghya Sarkar', role: 'President', image: '/team/arghya.jpeg' },
+  vicePresident: { name: 'ankush Roy', role: 'Vice President', image: '/team/ankush.jpg' },
   mentors: [
-    { name: 'Anshuman Tripathi', image: '/team/anshuman.jpg' },
-    { name: 'Parthiv Pal', image: '/team/parthiv.jpg' },
-    { name: 'Soham Sen', image: '/team/soham.jpg' },
-    { name: 'Soumili Dey', image: '/team/soumili.jpg' },
-    { name: 'Rishabh Das', image: '/team/rishabh.jpg' },
-    { name: 'Avanindra Chakraborty', image: '/team/avanindra.jpg' },
-    { name: 'Shameek Dalal', image: '/team/shameek.jpg' },
-    { name: 'Naitik Chattaraj', image: '/team/naitik.jpg' },
-    { name: 'Sampreet Roy', image: '/team/sampreet.jpg' },
+    { name: 'anshuman tripathi', image: '/team/anshuman.jpg' },
+    { name: 'avanindra chakraborty', image: '/team/avanindra.jpg' },
+    { name: 'naitik chattaraj', image: '/team/naitik.jpeg' },
+    { name: 'parthiv pal', image: '/team/parthiv.jpg' },
+    { name: 'rishabh das', image: '/team/rishabh.jpeg' },
+    { name: 'sampreet roy', image: '/team/sampreet.jpg' },
+    { name: 'shameek dalal', image: '/team/shameek.jpg' },
+    { name: 'soham sen', image: '/team/soham.jpg' },
+    { name: 'soumili dey', image: '/team/soumili.jpg' },
+
   ],
   offstageExecutives: [
-    { name: 'Swapnil Basu', image: '/team/swapnil.jpg' },
-    { name: 'Aryaka Sikdar', image: '/team/aryaka.jpg' },
+    { name: 'aryaka sikdar', image: '/team/aryaka.jpeg' },
+    { name: 'swapnil basu', image: '/team/swapnil.jpg' },
   ],
   creativeHeads: [
-    { name: 'Prithuraj Saha', role: 'Video', image: '/team/prithuraj.jpg' },
-    { name: 'Adiya Roy', role: 'Graphics', image: '/team/adiya.jpg' },
-    { name: 'Niharika Paul', role: 'Graphics', image: '/team/niharika.jpg' },
-    { name: 'Aritro Sen', role: 'PR Executive', image: '/team/aritro.jpg' },
+    { name: 'adiya roy', role: 'Graphics', image: '/team/adiya.jpeg' },
+    { name: 'aritro sen', role: 'PR Executive', image: '/team/aritro.jpg' },
+    { name: 'niharika paul', role: 'Graphics', image: '/team/niharika.jpg' },
+    { name: 'prithuraj saha', role: 'Video', image: '/team/prithuraj.jpg' },
   ],
 };
 
@@ -114,13 +115,13 @@ export default function TechClubTeamsPage() {
         <div className="mt-8 sm:mt-16 flex flex-col items-center space-y-0">
           {/* President */}
           <MemberCard member={teamStructure.president} role="President" />
-          <VerticalLine />
-          <VerticalLineMobile />
+          <VerticalLine height="h-4" />
+          <VerticalLineMobile height="h-1" />
 
           {/* Vice President */}
           <MemberCard member={teamStructure.vicePresident} role="Vice President" />
-          <VerticalLine height="h-16" />
-          <VerticalLineMobile height="h-8" />
+          <VerticalLine height="h-2" />
+          <VerticalLineMobile height="h-1" />
 
           {/* Split into two branches - Desktop */}
           <div className="relative w-full hidden lg:block">
