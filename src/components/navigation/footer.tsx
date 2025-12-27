@@ -8,8 +8,6 @@ const footerLinks = [
     title: '(Tech Club)',
     links: [
       { label: 'Home', href: '/' },
-      { label: 'Core Team', href: '/core-team' },
-      { label: 'Portfolio', href: '/portfolio' },
       { label: 'About Us', href: '/about' },
     ],
   },

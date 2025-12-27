@@ -43,7 +43,7 @@ export default function LoginPage() {
 
       router.push('/');
       router.refresh();
-    } catch (err) {
+    } catch {
       setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);

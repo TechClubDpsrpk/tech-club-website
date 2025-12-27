@@ -4,20 +4,19 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
-import { Megaphone, User, Users, Images, Mail, UserPlus, LogOut } from 'lucide-react';
+import { Megaphone, User, Users, Images, Landmark, Mail, UserPlus } from 'lucide-react';
 
 const Header = () => {
   const pathname = usePathname() ?? '';
   const [isLightMode, setIsLightMode] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [showLogoutMenu, setShowLogoutMenu] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   const navLinks = [
     { href: '/', isLogo: true },
-    { href: '/announcements', label: 'Announcements', icon: Megaphone },
     { href: '/about', label: 'About Us', icon: Users },
+    { href: '/legacy', label: 'Legacy', icon: Landmark },
     { href: '/gallery', label: 'Gallery', icon: Images },
     { href: '/contact', label: 'Contact Us', icon: Mail },
   ];
@@ -98,20 +97,6 @@ const Header = () => {
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
   }, [pathname]);
-
-  const handleLogout = async () => {
-    try {
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include',
-      });
-      setIsAuthenticated(false);
-      setShowLogoutMenu(false);
-      window.location.href = '/';
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
 
   return (
     <header className="fixed top-4 left-1/2 z-50 -translate-x-1/2">
@@ -195,6 +180,8 @@ const Header = () => {
             <>
               {isAuthenticated ? (
                 <div className="flex items-center gap-2">
+
+
                   <Link
                     href="/account"
                     className={`flex items-center gap-2 rounded-full px-2 py-2 text-sm font-medium transition-all duration-300 ${
@@ -207,17 +194,18 @@ const Header = () => {
                   >
                     <User size={18} />
                   </Link>
-
-                  <button
-                    onClick={handleLogout}
-                    className={`flex cursor-pointer items-center gap-2 rounded-full px-2 py-2 text-sm font-medium transition-all duration-300 hover:bg-red-500/20 ${
-                      isLightMode
-                        ? 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                        : 'text-gray-300 hover:bg-gray-800/50 hover:text-white'
+                                    <Link
+                    href="/announcements"
+                    className={`flex items-center gap-2 rounded-full px-2 py-2 text-sm font-medium transition-all duration-300 ${
+                      pathname === '/announcements'
+                        ? 'scale-105 bg-[#C9A227] text-black shadow-lg shadow-[#C9A227]/20'
+                        : isLightMode
+                          ? 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                          : 'text-gray-300 hover:bg-gray-800/50 hover:text-white'
                     }`}
                   >
-                    <LogOut size={18} />
-                  </button>
+                    <Megaphone size={18} />
+                  </Link>
                 </div>
               ) : (
                 <Link
