@@ -76,7 +76,7 @@ const Intro = ({ className, ...props }: IntroProps) => {
     <>
       {/* Floating header info (NOT observed) */}
       <div className="absolute flex w-full justify-between p-4 font-[family-name:var(--font-space-mono)] text-sm text-zinc-500">
-        <p>Est. 2015</p>
+        <p>Est. 2017</p>
         <span suppressHydrationWarning>{currentTime}</span>
       </div>
 

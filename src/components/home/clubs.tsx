@@ -24,8 +24,8 @@ const Clubs = ({ className, ...props }: ClubsProps) => {
     offset: ['start end', 'end start'],
   });
 
-  const xFast = useTransform(scrollYProgress, [0, 1], ['0%', '-50%']);
-  const ySlow = useTransform(scrollYProgress, [1, 0], ['30%', '-30%']);
+  const xFast = useTransform(scrollYProgress, [0, 1], ['0%', '-12.5%']);
+  const ySlow = useTransform(scrollYProgress, [1, 0], ['7.5%', '-7.5%']);
 
   return (
     <section

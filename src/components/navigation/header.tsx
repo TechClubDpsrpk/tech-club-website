@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
-import { Megaphone, User, Images, Mail, UserPlus, LogOut } from 'lucide-react';
+import { Megaphone, Users, Images, Mail, UserPlus, LogOut } from 'lucide-react';
 
 const Header = () => {
   const pathname = usePathname() ?? '';
@@ -17,7 +17,7 @@ const Header = () => {
   const navLinks = [
     { href: '/', isLogo: true },
     { href: '/announcements', label: 'Announcements', icon: Megaphone },
-    { href: '/about', label: 'About Us', icon: User },
+    { href: '/about', label: 'About Us', icon: Users },
     { href: '/gallery', label: 'Gallery', icon: Images },
     { href: '/contact', label: 'Contact Us', icon: Mail },
   ];
@@ -140,7 +140,7 @@ const Header = () => {
                     }`}
                   >
                     <Image
-                      src={isActive ? '/tc-logo_active.png' : '/tc-logo.png'}
+                      src={isActive ? '/tc-logo_active.svg' : '/tc-logo.svg'}
                       alt="Logo"
                       width={20}
                       height={20}
