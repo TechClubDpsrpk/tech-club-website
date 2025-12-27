@@ -114,7 +114,7 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-8 left-1/2 z-50 -translate-x-1/2">
+    <header className="fixed top-4 left-1/2 z-50 -translate-x-1/2">
       <nav
         className={`rounded-full border px-2 py-2 shadow-xl backdrop-blur-xl transition-all duration-500 ${
           isLightMode ? 'border-gray-200/50 bg-white/90' : 'border-gray-700/50 bg-gray-900/50'
