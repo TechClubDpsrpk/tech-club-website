@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
-import { Megaphone, Users, Images, Mail, UserPlus, LogOut } from 'lucide-react';
+import { Megaphone, User, Users, Images, Mail, UserPlus, LogOut } from 'lucide-react';
 
 const Header = () => {
   const pathname = usePathname() ?? '';
