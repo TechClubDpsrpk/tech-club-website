@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
-import { getUserById } from '@/lib/db';
+import { updateUserProfile } from '@/lib/db';
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,22 +12,21 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { name } = body;
 
-    if (!name || name.trim().length === 0) {
-      return NextResponse.json({ error: 'Name is required' }, { status: 400 });
+    if (!name || !name.trim()) {
+      return NextResponse.json(
+        { error: 'Name cannot be empty' },
+        { status: 400 }
+      );
     }
 
-    // Update user in database
-    const dbUser = await getUserById(user.id);
-    if (dbUser) {
-      dbUser.name = name.trim();
-    }
+    await updateUserProfile(user.id, name);
 
-    return NextResponse.json(
-      { message: 'Profile updated', user: { ...user, name } },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: 'Profile updated successfully' });
   } catch (error) {
     console.error('Update profile error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }

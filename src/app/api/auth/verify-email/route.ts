@@ -1,25 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyEmailToken, markEmailAsVerified, getUserById } from '@/lib/db';
+import { verifyEmailToken, markEmailAsVerified } from '@/lib/db';
 
 export async function GET(request: NextRequest) {
   try {
     const token = request.nextUrl.searchParams.get('token');
 
     if (!token) {
-      return NextResponse.redirect(new URL('/account?error=invalid-token', request.url));
+      return NextResponse.json(
+        { error: 'Token is required' },
+        { status: 400 }
+      );
     }
 
     const userId = await verifyEmailToken(token);
-
     if (!userId) {
-      return NextResponse.redirect(new URL('/account?error=token-expired', request.url));
+      return NextResponse.json(
+        { error: 'Invalid or expired token' },
+        { status: 400 }
+      );
     }
 
     await markEmailAsVerified(userId);
 
-    return NextResponse.redirect(new URL('/account?verified=true', request.url));
+    return NextResponse.json({ message: 'Email verified successfully' });
   } catch (error) {
-    console.error('Email verification error:', error);
-    return NextResponse.redirect(new URL('/account?error=verification-failed', request.url));
+    console.error('Verify email error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }

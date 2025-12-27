@@ -1,20 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createUser, findUserByEmail } from '@/lib/db';
 import { hashPassword } from '@/lib/password';
-import { createToken, setAuthCookie } from '@/lib/auth';
+import { createToken } from '@/lib/auth';
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { email, name, password, confirmPassword } = body;
 
-    // Validation
     if (!email || !name || !password || !confirmPassword) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+
+    if (!EMAIL_REGEX.test(email)) {
+      return NextResponse.json(
+        { error: 'Invalid email format' },
+        { status: 400 }
+      );
     }
 
     if (password !== confirmPassword) {
-      return NextResponse.json({ error: 'Passwords do not match' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Passwords do not match' },
+        { status: 400 }
+      );
     }
 
     if (password.length < 8) {
@@ -24,26 +38,45 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if user exists
-    const existingUser = await findUserByEmail(email);
+    const existingUser = await findUserByEmail(email.toLowerCase());
     if (existingUser) {
-      return NextResponse.json({ error: 'Email already registered' }, { status: 409 });
+      return NextResponse.json(
+        { error: 'Email already registered' },
+        { status: 409 }
+      );
     }
 
-    // Hash password and create user
     const hashedPassword = await hashPassword(password);
-    const user = await createUser(email, name, hashedPassword);
+    const user = await createUser(email.toLowerCase(), name, hashedPassword);
 
-    // Create token and set cookie
     const token = await createToken(user);
-    await setAuthCookie(token);
 
-    return NextResponse.json(
-      { message: 'Account created successfully', user: { id: user.id, email, name } },
+    const response = NextResponse.json(
+      {
+        message: 'Account created successfully',
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          emailVerified: user.email_verified,
+        },
+      },
       { status: 201 }
     );
+
+    response.cookies.set('auth', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
+    return response;
   } catch (error) {
     console.error('Signup error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }

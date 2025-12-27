@@ -6,12 +6,28 @@ export async function GET(_request: NextRequest) {
     const user = await getCurrentUser();
 
     if (!user) {
-      return NextResponse.json({ isAuthenticated: false }, { status: 200 });
+      return NextResponse.json(
+        { isAuthenticated: false },
+        { status: 401 }
+      );
     }
 
-    return NextResponse.json({ isAuthenticated: true, user }, { status: 200 });
+    return NextResponse.json({
+      isAuthenticated: true,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        emailVerified: user.email_verified,
+        avatarUrl: user.avatar_url,
+        createdAt: user.created_at,
+      },
+    });
   } catch (error) {
-    console.error('Auth check error:', error);
-    return NextResponse.json({ isAuthenticated: false }, { status: 200 });
+    console.error('Check error:', error);
+    return NextResponse.json(
+      { isAuthenticated: false },
+      { status: 401 }
+    );
   }
 }
