@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function SignupPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
   });
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,52 +25,50 @@ export default function SignupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setError('');
     setLoading(true);
 
     try {
-      const response = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
-        credentials: "include",
+        credentials: 'include',
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Signup failed");
+        setError(data.error || 'Signup failed');
         return;
       }
 
       // Redirect to home on success
-      router.push("/");
+      router.push('/');
       router.refresh();
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-black p-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-900 to-black p-4">
       <div className="w-full max-w-md">
-        <div className="bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 shadow-xl">
-          <h1 className="text-3xl font-bold text-white mb-2">Create Account</h1>
-          <p className="text-gray-400 mb-8">Join us today</p>
+        <div className="rounded-2xl border border-gray-700/50 bg-gray-800/50 p-8 shadow-xl backdrop-blur-xl">
+          <h1 className="mb-2 text-3xl font-bold text-white">Create Account</h1>
+          <p className="mb-8 text-gray-400">Join us today</p>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200 text-sm">
+            <div className="mb-6 rounded-lg border border-red-500/50 bg-red-500/20 p-4 text-sm text-red-200">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-2">
-                Full Name
-              </label>
+              <label className="mb-2 block text-sm font-medium text-gray-300">Full Name</label>
               <input
                 type="text"
                 name="name"
@@ -78,14 +76,12 @@ export default function SignupPage() {
                 onChange={handleChange}
                 placeholder="John Doe"
                 required
-                className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#C9A227] transition"
+                className="w-full rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-2">
-                Email
-              </label>
+              <label className="mb-2 block text-sm font-medium text-gray-300">Email</label>
               <input
                 type="email"
                 name="email"
@@ -93,14 +89,12 @@ export default function SignupPage() {
                 onChange={handleChange}
                 placeholder="you@example.com"
                 required
-                className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#C9A227] transition"
+                className="w-full rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-2">
-                Password
-              </label>
+              <label className="mb-2 block text-sm font-medium text-gray-300">Password</label>
               <input
                 type="password"
                 name="password"
@@ -109,13 +103,13 @@ export default function SignupPage() {
                 placeholder="••••••••"
                 required
                 minLength={8}
-                className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#C9A227] transition"
+                className="w-full rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:outline-none"
               />
-              <p className="text-gray-400 text-xs mt-1">Min 8 characters</p>
+              <p className="mt-1 text-xs text-gray-400">Min 8 characters</p>
             </div>
 
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-2">
+              <label className="mb-2 block text-sm font-medium text-gray-300">
                 Confirm Password
               </label>
               <input
@@ -125,21 +119,21 @@ export default function SignupPage() {
                 onChange={handleChange}
                 placeholder="••••••••"
                 required
-                className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#C9A227] transition"
+                className="w-full rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:outline-none"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-6 px-4 py-3 bg-[#C9A227] text-black font-semibold rounded-lg hover:bg-[#d4b436] transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="mt-6 w-full rounded-lg bg-[#C9A227] px-4 py-3 font-semibold text-black transition hover:bg-[#d4b436] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {loading ? "Creating Account..." : "Sign Up"}
+              {loading ? 'Creating Account...' : 'Sign Up'}
             </button>
           </form>
 
-          <p className="text-center text-gray-400 mt-6">
-            Already have an account?{" "}
+          <p className="mt-6 text-center text-gray-400">
+            Already have an account?{' '}
             <Link href="/login" className="text-[#C9A227] hover:underline">
               Login here
             </Link>

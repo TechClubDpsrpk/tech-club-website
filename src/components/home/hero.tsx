@@ -6,10 +6,7 @@ type HeroProps = React.HTMLAttributes<HTMLElement>;
 
 const Hero = ({ className, ...props }: HeroProps) => {
   return (
-    <section
-      {...props}
-      className={`home ${className ?? ''}`}
-    >
+    <section {...props} className={`home ${className ?? ''}`}>
       <div className="container">
         <div className="home-content">
           <p className="top">
@@ -18,16 +15,17 @@ const Hero = ({ className, ...props }: HeroProps) => {
 
           <h1>
             The Home <br />
-            of all <i><span className="bold">Tech</span></i> <i>Nerds</i>
+            of all{' '}
+            <i>
+              <span className="bold">Tech</span>
+            </i>{' '}
+            <i>Nerds</i>
           </h1>
 
           <p className="description">
-            We come together to innovate, collaborate, and pretend we know what
-            we’re <br />
-            doing. Whether you’re obsessed with AI, code, robots, or just making
-            things <br />
-            look cool, this is the perfect place to overcommit, under-caffeinate,
-            and <br />
+            We come together to innovate, collaborate, and pretend we know what we’re <br />
+            doing. Whether you’re obsessed with AI, code, robots, or just making things <br />
+            look cool, this is the perfect place to overcommit, under-caffeinate, and <br />
             accidentally invent the future.
           </p>
 

@@ -8,13 +8,16 @@ export async function findUserByEmail(email: string) {
   return null;
 }
 
-export async function createUser(
-  email: string,
-  name: string,
-  hashedPassword: string
-) {
+export async function createUser(email: string, name: string, hashedPassword: string) {
   const id = crypto.randomUUID();
-  const user = { id, email, name, password: hashedPassword, emailVerified: false, createdAt: new Date().toISOString() };
+  const user = {
+    id,
+    email,
+    name,
+    password: hashedPassword,
+    emailVerified: false,
+    createdAt: new Date().toISOString(),
+  };
   users.set(id, user);
   return user;
 }
@@ -35,7 +38,7 @@ export async function createVerificationToken(userId: string): Promise<string> {
 export async function verifyEmailToken(token: string): Promise<string | null> {
   const data = verificationTokens.get(token);
   if (!data) return null;
-  
+
   if (Date.now() > data.expiresAt) {
     verificationTokens.delete(token);
     return null;

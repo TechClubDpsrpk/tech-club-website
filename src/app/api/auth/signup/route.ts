@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
-import { createUser, findUserByEmail } from "@/lib/db";
-import { hashPassword } from "@/lib/password";
-import { createToken, setAuthCookie } from "@/lib/auth";
+import { NextRequest, NextResponse } from 'next/server';
+import { createUser, findUserByEmail } from '@/lib/db';
+import { hashPassword } from '@/lib/password';
+import { createToken, setAuthCookie } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,22 +10,16 @@ export async function POST(request: NextRequest) {
 
     // Validation
     if (!email || !name || !password || !confirmPassword) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     if (password !== confirmPassword) {
-      return NextResponse.json(
-        { error: "Passwords do not match" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Passwords do not match' }, { status: 400 });
     }
 
     if (password.length < 8) {
       return NextResponse.json(
-        { error: "Password must be at least 8 characters" },
+        { error: 'Password must be at least 8 characters' },
         { status: 400 }
       );
     }
@@ -33,10 +27,7 @@ export async function POST(request: NextRequest) {
     // Check if user exists
     const existingUser = await findUserByEmail(email);
     if (existingUser) {
-      return NextResponse.json(
-        { error: "Email already registered" },
-        { status: 409 }
-      );
+      return NextResponse.json({ error: 'Email already registered' }, { status: 409 });
     }
 
     // Hash password and create user
@@ -48,14 +39,11 @@ export async function POST(request: NextRequest) {
     await setAuthCookie(token);
 
     return NextResponse.json(
-      { message: "Account created successfully", user: { id: user.id, email, name } },
+      { message: 'Account created successfully', user: { id: user.id, email, name } },
       { status: 201 }
     );
   } catch (error) {
-    console.error("Signup error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error('Signup error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

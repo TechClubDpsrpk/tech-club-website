@@ -3,14 +3,7 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { HyperText } from '../magicui/hyper-text';
-import {
-  Palette,
-  Brain,
-  Code,
-  Cpu,
-  Gamepad2,
-  BookOpenText,
-} from 'lucide-react';
+import { Palette, Brain, Code, Cpu, Gamepad2, BookOpenText } from 'lucide-react';
 
 type ClubsProps = React.HTMLAttributes<HTMLElement>;
 
@@ -45,7 +38,7 @@ const Clubs = ({ className, ...props }: ClubsProps) => {
         {/* === Strip 1 - Parallax Left === */}
         <motion.div
           style={{ x: xFast }}
-          className="whitespace-nowrap text-[10vw] font-bold uppercase italic text-black"
+          className="text-[10vw] font-bold whitespace-nowrap text-black uppercase italic"
         >
           <span className="inline-block pr-16">TECH FOR EVERYONE →</span>
           <span className="inline-block pr-16">TECH FOR EVERYONE →</span>
@@ -59,8 +52,8 @@ const Clubs = ({ className, ...props }: ClubsProps) => {
           {/* Left text */}
           <div className="flex items-center justify-center text-zinc-700">
             <p className="max-w-xl leading-5">
-              The Tech Club isn&apos;t just about code. It&apos;s a canvas for innovation, design, and
-              creation. Across hardware, AI, gaming, and more — we explore tech with a story, a
+              The Tech Club isn&apos;t just about code. It&apos;s a canvas for innovation, design,
+              and creation. Across hardware, AI, gaming, and more — we explore tech with a story, a
               purpose, and precision.
               <br />
               <br />
@@ -80,9 +73,7 @@ const Clubs = ({ className, ...props }: ClubsProps) => {
                   </span>
                 </div>
 
-                {index < clubList.length - 1 && (
-                  <div className="h-px w-full bg-black/20" />
-                )}
+                {index < clubList.length - 1 && <div className="h-px w-full bg-black/20" />}
               </React.Fragment>
             ))}
           </div>

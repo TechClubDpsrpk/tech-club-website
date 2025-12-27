@@ -62,12 +62,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${rethinkSans.variable} ${instrumentSerif.variable} ${vt.variable} ${spaceMono.variable} bg-black font-[family-name:var(--font-rethink-sans)] antialiased`}
       >
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-        <Header /> {/* Now outside SmoothScroll */}
-        <SmoothScroll>
-          {children}
-          <ContactForm />
-          <Footer />
-</SmoothScroll>
+          <Header /> {/* Now outside SmoothScroll */}
+          <SmoothScroll>
+            {children}
+            <ContactForm />
+            <Footer />
+          </SmoothScroll>
         </ThemeProvider>
       </body>
     </html>

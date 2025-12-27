@@ -1,8 +1,8 @@
-import { jwtVerify, SignJWT } from "jose";
-import { cookies } from "next/headers";
+import { jwtVerify, SignJWT } from 'jose';
+import { cookies } from 'next/headers';
 
 const SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || "your-secret-key-change-in-production"
+  process.env.JWT_SECRET || 'your-secret-key-change-in-production'
 );
 
 export interface User {
@@ -25,8 +25,8 @@ export async function createToken(user: User): Promise<string> {
     email: user.email,
     name: user.name,
   })
-    .setProtectedHeader({ alg: "HS256" })
-    .setExpirationTime("7d")
+    .setProtectedHeader({ alg: 'HS256' })
+    .setExpirationTime('7d')
     .sign(SECRET);
 }
 
@@ -38,30 +38,30 @@ export async function verifyToken(token: string): Promise<JWTPayload | null> {
       email: verified.payload.email as string,
       name: verified.payload.name as string,
     };
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 }
 
 export async function setAuthCookie(token: string): Promise<void> {
   const cookieStore = await cookies();
-  cookieStore.set("auth-token", token, {
+  cookieStore.set('auth-token', token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
     maxAge: 60 * 60 * 24 * 7, // 7 days
-    path: "/",
+    path: '/',
   });
 }
 
 export async function getAuthCookie(): Promise<string | null> {
   const cookieStore = await cookies();
-  return cookieStore.get("auth-token")?.value || null;
+  return cookieStore.get('auth-token')?.value || null;
 }
 
 export async function clearAuthCookie(): Promise<void> {
   const cookieStore = await cookies();
-  cookieStore.delete("auth-token");
+  cookieStore.delete('auth-token');
 }
 
 export async function getCurrentUser(): Promise<User | null> {

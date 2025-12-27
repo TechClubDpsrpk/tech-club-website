@@ -6,10 +6,10 @@ import Intro from '@/components/home/intro';
 export default function Home() {
   return (
     <>
-      <Hero data-navbar-theme="dark"  />
+      <Hero data-navbar-theme="dark" />
       <Intro data-navbar-theme="dark" />
       <BlogSection data-navbar-theme="dark" />
-      <Clubs  data-navbar-theme="light" />
+      <Clubs data-navbar-theme="light" />
     </>
   );
 }

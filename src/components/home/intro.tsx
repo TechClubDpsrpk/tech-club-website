@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Rocket, Handshake, Book, ChevronsUp } from 'lucide-react';
+import { Rocket, Handshake, ChevronsUp } from 'lucide-react';
 import { MagicCard } from '../magicui/magic-card';
 
 type IntroProps = React.HTMLAttributes<HTMLElement>;
