@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 'use client';
 
 import { usePathname } from 'next/navigation';
@@ -15,10 +16,11 @@ const Header = () => {
 
   const navLinks = [
     { href: '/', isLogo: true },
-    { href: '/about', label: 'About Us', icon: Users },
-    { href: '/legacy', label: 'Legacy', icon: Landmark },
-    { href: '/gallery', label: 'Gallery', icon: Images },
-    { href: '/contact', label: 'Contact Us', icon: Mail },
+    { href: '/about', label: 'About Us', icon: Users, isOpt: false },
+    { href: '/legacy', label: 'Legacy', icon: Landmark, isOpt: false },
+    { href: '/gallery', label: 'Gallery', icon: Images, isOpt: false },
+    { href: '/contact', label: 'Contact Us', icon: Mail, isOpt: false },
+    { href: '/announcements', label: 'Announcements', icon: Megaphone, isOpt: true },
   ];
 
   useEffect(() => {
@@ -132,7 +134,7 @@ const Header = () => {
                       priority
                     />
                   </Link>
-                ) : (
+                ) : link.isOpt === false ? (
                   <Link
                     href={link.href}
                     className={`group flex items-center overflow-hidden rounded-full text-sm font-medium whitespace-nowrap transition-all duration-500 ease-in-out ${isScrolled ? 'gap-0 px-2 py-2' : 'gap-2 px-5 py-2'} ${
@@ -147,7 +149,7 @@ const Header = () => {
                     <span
                       className={`hidden whitespace-nowrap transition-all duration-500 ease-in-out sm:inline ${
                         isScrolled
-                          ? 'ml-0 max-w-0 opacity-0 group-hover:ml-0 group-hover:max-w-xs group-hover:opacity-100'
+                          ? 'ml-0 max-w-0 opacity-0 group-hover:ml-1 group-hover:max-w-xs group-hover:opacity-100'
                           : 'ml-0 max-w-xs opacity-100'
                       }`}
                       style={{
@@ -157,6 +159,33 @@ const Header = () => {
                       {link.label}
                     </span>
                   </Link>
+                ) : isAuthenticated ? (
+                  <Link
+                    href={link.href}
+                    className={`group flex items-center overflow-hidden rounded-full text-sm font-medium whitespace-nowrap transition-all duration-500 ease-in-out ${isScrolled ? 'gap-0 px-2 py-2' : 'gap-2 px-5 py-2'} ${
+                      isActive
+                        ? 'scale-105 bg-[#C9A227] text-black shadow-lg shadow-[#C9A227]/20'
+                        : isLightMode
+                          ? 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                          : 'text-gray-300 hover:bg-gray-800/50 hover:text-white'
+                    }`}
+                  >
+                    {link.icon && <link.icon size={18} className="flex-shrink-0" />}
+                    <span
+                      className={`hidden whitespace-nowrap transition-all duration-500 ease-in-out sm:inline ${
+                        isScrolled
+                          ? 'ml-0 max-w-0 opacity-0 group-hover:ml-1 group-hover:max-w-xs group-hover:opacity-100'
+                          : 'ml-0 max-w-xs opacity-100'
+                      }`}
+                      style={{
+                        transitionProperty: 'max-width, opacity, margin-left',
+                      }}
+                    >
+                      {link.label}
+                    </span>
+                  </Link>
+                ) : (
+                  ''
                 )}
 
                 {isHome && (
@@ -180,8 +209,6 @@ const Header = () => {
             <>
               {isAuthenticated ? (
                 <div className="flex items-center gap-2">
-
-
                   <Link
                     href="/account"
                     className={`flex items-center gap-2 rounded-full px-2 py-2 text-sm font-medium transition-all duration-300 ${
@@ -193,18 +220,6 @@ const Header = () => {
                     }`}
                   >
                     <User size={18} />
-                  </Link>
-                                    <Link
-                    href="/announcements"
-                    className={`flex items-center gap-2 rounded-full px-2 py-2 text-sm font-medium transition-all duration-300 ${
-                      pathname === '/announcements'
-                        ? 'scale-105 bg-[#C9A227] text-black shadow-lg shadow-[#C9A227]/20'
-                        : isLightMode
-                          ? 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                          : 'text-gray-300 hover:bg-gray-800/50 hover:text-white'
-                    }`}
-                  >
-                    <Megaphone size={18} />
                   </Link>
                 </div>
               ) : (
