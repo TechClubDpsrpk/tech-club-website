@@ -58,13 +58,19 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${rethinkSans.variable} ${instrumentSerif.variable} ${vt.variable} ${spaceMono.variable} bg-black font-[family-name:var(--font-rethink-sans)] antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${rethinkSans.variable} ${instrumentSerif.variable} ${vt.variable} ${spaceMono.variable} overflow-hidden bg-black font-[family-name:var(--font-rethink-sans)] antialiased`}
       >
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          <Header /> 
-            {children}
-            <ContactForm />
-            <Footer />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+          a
+        >
+          <Header />
+          {children}
+          <ContactForm />
+          <Footer />
         </ThemeProvider>
       </body>
     </html>
