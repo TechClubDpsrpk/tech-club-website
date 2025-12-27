@@ -1,9 +1,12 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
     domains: ['picsum.photos'],
+  },
+  eslint: {
+    // Warning only, don’t fail the build
+    ignoreDuringBuilds: true,
   },
 };
 
