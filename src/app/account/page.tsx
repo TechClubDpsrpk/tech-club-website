@@ -45,23 +45,24 @@ export default function AccountPage() {
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [resendingEmail, setResendingEmail] = useState(false);
 
+  const fetchUser = async () => {
+    try {
+      const response = await fetch('/api/auth/check', {
+        credentials: 'include',
+      });
+      if (!response.ok) return router.push('/login');
+      const data = await response.json();
+      if (!data?.isAuthenticated || !data?.user) return router.push('/login');
+      setUser(data.user);
+      setFormData({ name: data.user.name });
+    } catch {
+      router.push('/login');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await fetch('/api/auth/check', {
-          credentials: 'include',
-        });
-        if (!response.ok) return router.push('/login');
-        const data = await response.json();
-        if (!data?.isAuthenticated || !data?.user) return router.push('/login');
-        setUser(data.user);
-        setFormData({ name: data.user.name });
-      } catch {
-        router.push('/login');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchUser();
   }, [router]);
 
@@ -87,8 +88,8 @@ export default function AccountPage() {
       });
 
       if (response.ok) {
-        setUser((prev) => (prev ? { ...prev, name: formData.name } : null));
         showMsg('success', 'Profile updated successfully');
+        await fetchUser();
       } else {
         showMsg('error', 'Failed to update profile');
       }
@@ -129,6 +130,7 @@ export default function AccountPage() {
       if (response.ok) {
         setPasswordData({ current: '', new: '', confirm: '' });
         showMsg('success', 'Password updated successfully');
+        await fetchUser();
       } else {
         showMsg('error', data.error || 'Failed to update password');
       }
@@ -199,11 +201,8 @@ export default function AccountPage() {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        setUser((prev) =>
-          prev ? { ...prev, avatarUrl: data.avatarUrl } : null
-        );
         showMsg('success', 'Profile picture updated');
+        await fetchUser();
       } else {
         showMsg('error', 'Failed to upload image');
       }
@@ -224,6 +223,7 @@ export default function AccountPage() {
 
       if (response.ok) {
         showMsg('success', 'Verification email sent. Check your inbox!');
+        await fetchUser();
       } else {
         showMsg('error', 'Failed to send verification email');
       }

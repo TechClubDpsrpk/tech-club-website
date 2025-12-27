@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createUser, findUserByEmail } from '@/lib/db';
 import { hashPassword } from '@/lib/password';
 import { createToken } from '@/lib/auth';
+import { sendWelcomeEmail } from '@/lib/email';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -48,6 +49,10 @@ export async function POST(request: NextRequest) {
 
     const hashedPassword = await hashPassword(password);
     const user = await createUser(email.toLowerCase(), name, hashedPassword);
+
+    // 🔥 SEND EMAIL HERE (non-blocking optional)
+    await sendWelcomeEmail(user.email, user.name).catch(console.error);
+
 
     const token = await createToken(user);
 
