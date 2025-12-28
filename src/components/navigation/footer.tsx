@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { AuroraText } from '../magicui/aurora-text';
+import { FlickeringGrid } from '../magicui/flickering-grid';
 
 const footerLinks = [
   {
@@ -32,8 +33,8 @@ const footerLinks = [
 
 const Footer = () => {
   return (
-    <div className="flex w-screen flex-col justify-center">
-      <div className="flex flex-col gap-2 px-4 md:flex-row md:px-24">
+    <div className="-pb-1 bottom-0 -z-10 flex w-screen flex-col justify-center overflow-hidden">
+      <div className="flex flex-col gap-2 px-4 pt-10 md:flex-row md:px-24">
         {footerLinks.map((section) => (
           <div key={section.title} className="flex flex-col p-2 md:p-6">
             <p className="scale-z-105 font-[family-name:var(--font-vt)] text-xl font-medium text-zinc-100">
@@ -76,6 +77,18 @@ const Footer = () => {
             Anshu, Agnihotra and Naitik
           </span>
         </p> */}
+      </div>
+      <div className="-z-10">
+        <FlickeringGrid
+          className="relative inset-0 -top-14 z-0 -mt-[785px] overflow-hidden [mask-image:radial-gradient(700px_circle_at_center,white,transparent)]"
+          squareSize={4}
+          gridGap={6}
+          color="#FAC924"
+          maxOpacity={0.5}
+          flickerChance={0.1}
+          height={800}
+          width={1920}
+        />
       </div>
     </div>
   );

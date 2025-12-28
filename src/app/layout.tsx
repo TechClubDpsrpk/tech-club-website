@@ -69,7 +69,7 @@ export default function RootLayout({
         >
           <Header />
           {children}
-          <ContactForm />
+
           <Footer />
         </ThemeProvider>
       </body>

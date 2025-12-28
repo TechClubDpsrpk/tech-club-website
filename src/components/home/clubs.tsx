@@ -4,6 +4,7 @@ import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { HyperText } from '../magicui/hyper-text';
 import { Palette, BrainCircuit, CodeXml, Cpu, Gamepad2, BookOpenText } from 'lucide-react';
+import { RetroGrid } from '../magicui/retro-grid';
 
 type ClubsProps = React.HTMLAttributes<HTMLElement>;
 
