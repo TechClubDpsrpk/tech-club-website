@@ -16,12 +16,12 @@ const Hero = ({ className, ...props }: HeroProps) => {
           </p>
 
           <h1>
-            The Home <br />
-            of all{' '}
+            Welcome to
+            <br />
+            the{' '}
             <i>
-              <span className="bold">Tech</span>
+              <span className="bold">Tech Club</span>
             </i>{' '}
-            <i>Nerds</i>
           </h1>
 
           <p className="description">
