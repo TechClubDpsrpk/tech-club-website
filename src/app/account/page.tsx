@@ -1,4 +1,3 @@
-// app/account/page.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -36,7 +35,7 @@ type User = {
   github_id?: string | null;
   interested_niches?: string[];
   avatarUrl?: string | null;
-  emailVerified?: boolean;
+  email_verified?: boolean;
   createdAt?: string;
   is_admin?: boolean;
 };
@@ -304,7 +303,6 @@ export default function AccountPage() {
 
       if (response.ok) {
         showMsg('success', 'Verification email sent. Check your inbox!');
-        await fetchUser();
       } else {
         showMsg('error', 'Failed to send verification email');
       }
@@ -421,12 +419,12 @@ export default function AccountPage() {
                 <div className="mt-6 w-full space-y-3 border-t border-gray-700/50 pt-6">
                   <div
                     className={`inline-flex w-full items-center justify-center gap-2 rounded-full px-3 py-2 text-sm ${
-                      user.emailVerified
+                      user.email_verified
                         ? 'border border-green-500/30 bg-green-500/15 text-green-300'
                         : 'border border-yellow-500/30 bg-yellow-500/15 text-yellow-300'
                     }`}
                   >
-                    {user.emailVerified ? (
+                    {user.email_verified ? (
                       <>
                         <CheckCircle size={16} />
                         Email verified
@@ -439,7 +437,7 @@ export default function AccountPage() {
                     )}
                   </div>
 
-                  {!user.emailVerified && (
+                  {!user.email_verified && (
                     <button
                       onClick={handleResendVerification}
                       disabled={resendingEmail}
@@ -486,7 +484,7 @@ export default function AccountPage() {
                 <h2 className="text-lg font-semibold text-white">Profile Settings</h2>
               </div>
 
-              <div onSubmit={handleSaveProfile} className="space-y-4">
+              <form onSubmit={handleSaveProfile} className="space-y-4">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <label className="block">
                     <span className="mb-2 block text-sm font-medium text-gray-400">
@@ -586,13 +584,13 @@ export default function AccountPage() {
                 </div>
 
                 <button
-                  onClick={handleSaveProfile}
+                  type="submit"
                   disabled={saving}
-                  className="rounded-xl bg-[#C9A227] px-6 py-3 font-semibold text-black transition hover:scale-105 disabled:opacity-50"
+                  className="rounded-xl bg-[#C9A227] px-6 py-3 font-semibold text-black transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {saving ? 'Saving...' : 'Save Changes'}
                 </button>
-              </div>
+              </form>
             </div>
 
             {/* Security */}
@@ -602,7 +600,7 @@ export default function AccountPage() {
                 <h2 className="text-lg font-semibold text-white">Security</h2>
               </div>
 
-              <div onSubmit={handleUpdatePassword} className="space-y-4">
+              <form onSubmit={handleUpdatePassword} className="space-y-4">
                 <label className="block">
                   <span className="mb-2 block text-sm font-medium text-gray-400">
                     Current Password
@@ -696,12 +694,13 @@ export default function AccountPage() {
                 </label>
 
                 <button
-                  onClick={handleUpdatePassword}
-                  className="rounded-xl bg-[#C9A227] px-6 py-3 font-semibold text-black transition hover:scale-105 disabled:opacity-50"
+                  type="submit"
+                  disabled={saving}
+                  className="rounded-xl bg-[#C9A227] px-6 py-3 font-semibold text-black transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Update Password
+                  {saving ? 'Updating...' : 'Update Password'}
                 </button>
-              </div>
+              </form>
             </div>
 
             {/* Sessions */}
@@ -734,7 +733,7 @@ export default function AccountPage() {
                 <button
                   onClick={handleDeleteAccount}
                   disabled={saving}
-                  className="flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/15 px-6 py-3 text-red-300 hover:bg-red-500/25 transition disabled:opacity-50"
+                  className="flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/15 px-6 py-3 text-red-300 hover:bg-red-500/25 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Trash2 size={16} />
                   Delete Account

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
 import { createVerificationToken } from '@/lib/db';
+import { sendVerificationEmail } from '@/lib/email';
 
 export async function POST(_request: NextRequest) {
   try {
@@ -18,17 +19,19 @@ export async function POST(_request: NextRequest) {
 
     const token = await createVerificationToken(user.id);
     
-    // TODO: Send email with token
-    // For now, just return the token
-    console.log('Verification token:', token);
+    // Send verification email
+    await sendVerificationEmail(user.email, user.name, token).catch((err) => {
+      console.error('Failed to send verification email:', err);
+      throw new Error('Failed to send verification email');
+    });
 
     return NextResponse.json({
-      message: 'Verification email sent',
+      message: 'Verification email sent successfully',
     });
   } catch (error) {
     console.error('Send verification error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to send verification email' },
       { status: 500 }
     );
   }

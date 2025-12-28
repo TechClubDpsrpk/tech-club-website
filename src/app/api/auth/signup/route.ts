@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createUser, findUserByEmail } from '@/lib/db';
+import { createUser, findUserByEmail, createVerificationToken } from '@/lib/db';
 import { hashPassword } from '@/lib/password';
 import { createToken } from '@/lib/auth';
-import { sendWelcomeEmail } from '@/lib/email';
+import { sendWelcomeEmail, sendVerificationEmail } from '@/lib/email';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -85,8 +85,16 @@ export async function POST(request: NextRequest) {
       interestedNiches,
     });
 
-    // 🔥 SEND EMAIL HERE (non-blocking optional)
+    // 🔥 SEND WELCOME EMAIL (non-blocking optional)
     await sendWelcomeEmail(user.email, user.name).catch(console.error);
+
+    // 🔥 CREATE VERIFICATION TOKEN AND SEND VERIFICATION EMAIL (non-blocking optional)
+    const verificationToken = await createVerificationToken(user.id);
+    await sendVerificationEmail(user.email, user.name, verificationToken).catch(
+      (err) => {
+        console.error('Failed to send verification email:', err);
+      }
+    );
 
     const token = await createToken(user);
 
