@@ -1,12 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAuthCookie, verifyToken } from '@/lib/auth';
+import { verifyToken } from '@/lib/auth';
 
 const protectedRoutes = ['/account'];
+const adminRoutes = ['/admin'];
 
 export async function middleware(request: NextRequest) {
-  const token = request.cookies.get('auth-token')?.value;
+  const token = request.cookies.get('auth')?.value;
+  const pathname = request.nextUrl.pathname;
+
+  // Check if route is admin route (but not login page)
+  const isAdminRoute =
+    adminRoutes.some((route) => pathname.startsWith(route)) &&
+    pathname !== '/admin/login';
+
+  if (isAdminRoute) {
+    // Always redirect to admin login, everyone goes there first
+    return NextResponse.redirect(new URL('/admin/login', request.url));
+  }
+
+  // Check if route is protected route
   const isProtectedRoute = protectedRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route)
+    pathname.startsWith(route)
   );
 
   if (isProtectedRoute) {
@@ -24,5 +38,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/account/:path*'],
+  matcher: ['/account/:path*', '/admin/:path*'],
 };
