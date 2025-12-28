@@ -22,6 +22,7 @@ export default function UsersTable() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [updatingAdmin, setUpdatingAdmin] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -43,6 +44,31 @@ export default function UsersTable() {
 
     fetchUsers();
   }, []);
+
+  const handleSetAdmin = async (userId: string, newAdminStatus: boolean) => {
+    setUpdatingAdmin(userId);
+    try {
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({ is_admin: newAdminStatus })
+        .eq('id', userId);
+
+      if (updateError) {
+        setError(`Failed to ${newAdminStatus ? 'grant' : 'revoke'} admin privileges`);
+        return;
+      }
+
+      setUsers(
+        users.map((u) =>
+          u.id === userId ? { ...u, is_admin: newAdminStatus } : u
+        )
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred while updating admin status");
+    } finally {
+      setUpdatingAdmin(null);
+    }
+  };
 
   if (loading) return <div className="p-4">Loading users...</div>;
   if (error) return <div className="p-4 text-red-500">Error: {error}</div>;
@@ -110,7 +136,21 @@ export default function UsersTable() {
                   </div>
                 </td>
                 <td className="border border-gray-300 p-3 text-center">
-                  {user.is_admin ? "✅" : "❌"}
+                  <button
+                    onClick={() => handleSetAdmin(user.id, !user.is_admin)}
+                    disabled={updatingAdmin === user.id}
+                    className={`px-3 py-1 rounded text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed ${
+                      user.is_admin
+                        ? 'bg-green-200 text-green-800 hover:bg-green-300'
+                        : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                    }`}
+                  >
+                    {updatingAdmin === user.id
+                      ? 'Updating...'
+                      : user.is_admin
+                        ? '✅ Admin'
+                        : '❌ User'}
+                  </button>
                 </td>
                 <td className="border border-gray-300 p-3 text-center">
                   {user.email_verified ? "✅" : "❌"}

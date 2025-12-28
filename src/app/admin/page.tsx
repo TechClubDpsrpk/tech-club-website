@@ -36,6 +36,7 @@ export default function AdminPage() {
   const [error, setError] = useState('');
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [updatingAdmin, setUpdatingAdmin] = useState<string | null>(null);
   const [expandedUser, setExpandedUser] = useState<string | null>(null);
 
   useEffect(() => {
@@ -125,6 +126,31 @@ export default function AdminPage() {
       setError('An error occurred while deleting user');
     } finally {
       setDeleting(null);
+    }
+  };
+
+  const handleSetAdmin = async (userId: string, newAdminStatus: boolean) => {
+    setUpdatingAdmin(userId);
+    try {
+      const { error } = await supabase
+        .from('users')
+        .update({ is_admin: newAdminStatus })
+        .eq('id', userId);
+
+      if (error) {
+        setError(`Failed to ${newAdminStatus ? 'grant' : 'revoke'} admin privileges`);
+        return;
+      }
+
+      setUsers(
+        users.map((u) =>
+          u.id === userId ? { ...u, is_admin: newAdminStatus } : u
+        )
+      );
+    } catch {
+      setError('An error occurred while updating admin status');
+    } finally {
+      setUpdatingAdmin(null);
     }
   };
 
@@ -366,14 +392,32 @@ export default function AdminPage() {
                               ? new Date(user.created_at).toLocaleDateString()
                               : '—'}
                           </p>
-                          <button
-                            onClick={() => handleDeleteUser(user.id)}
-                            disabled={deleting === user.id}
-                            className="flex items-center gap-2 text-red-400 hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
-                          >
-                            <Trash2 size={16} />
-                            {deleting === user.id ? 'Deleting...' : 'Delete'}
-                          </button>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => handleSetAdmin(user.id, !user.is_admin)}
+                              disabled={updatingAdmin === user.id}
+                              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed ${
+                                user.is_admin
+                                  ? 'bg-green-500/20 text-green-300 hover:bg-green-500/30'
+                                  : 'bg-gray-700/50 text-gray-300 hover:bg-gray-700/70'
+                              }`}
+                            >
+                              <Shield size={14} />
+                              {updatingAdmin === user.id
+                                ? 'Updating...'
+                                : user.is_admin
+                                  ? 'Remove Admin'
+                                  : 'Make Admin'}
+                            </button>
+                            <button
+                              onClick={() => handleDeleteUser(user.id)}
+                              disabled={deleting === user.id}
+                              className="flex items-center gap-2 text-red-400 hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                            >
+                              <Trash2 size={16} />
+                              {deleting === user.id ? 'Deleting...' : 'Delete'}
+                            </button>
+                          </div>
                         </div>
                       </div>
                     )}
