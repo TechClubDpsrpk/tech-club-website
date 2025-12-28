@@ -9,6 +9,7 @@ import {
   AlertCircle,
   CheckCircle,
   Trash2,
+  ChevronDown,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import AddAnnouncement from '@/components/admin/AddAnnouncement';
@@ -17,7 +18,13 @@ type User = {
   id: string;
   email: string;
   name: string;
+  phone_number: string;
+  class: string;
+  section: string;
+  github_id: string | null;
+  interested_niches: string[];
   is_admin: boolean;
+  email_verified: boolean;
   created_at?: string;
 };
 
@@ -29,6 +36,7 @@ export default function AdminPage() {
   const [error, setError] = useState('');
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [expandedUser, setExpandedUser] = useState<string | null>(null);
 
   useEffect(() => {
     const checkAdminAccess = async () => {
@@ -72,10 +80,10 @@ export default function AdminPage() {
         setIsAdmin(true);
         setCurrentUser(userData);
 
-        // Fetch all users from Supabase
+        // Fetch all users from Supabase with new fields
         const { data: allUsers, error: usersError } = await supabase
           .from('users')
-          .select('id, email, name, is_admin, created_at')
+          .select('*')
           .order('created_at', { ascending: false });
 
         if (!usersError && allUsers) {
@@ -240,64 +248,137 @@ export default function AdminPage() {
                 <p className="text-gray-400">No users found</p>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-gray-700/50 text-gray-400">
-                      <th className="px-4 py-4 text-left font-semibold">
-                        Email
-                      </th>
-                      <th className="px-4 py-4 text-left font-semibold">Name</th>
-                      <th className="px-4 py-4 text-left font-semibold">Admin</th>
-                      <th className="px-4 py-4 text-left font-semibold">
-                        Joined
-                      </th>
-                      <th className="px-4 py-4 text-right font-semibold">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {users.map((user) => (
-                      <tr
-                        key={user.id}
-                        className="border-b border-gray-700/30 transition hover:bg-gray-800/30"
-                      >
-                        <td className="px-4 py-4 text-gray-200">{user.email}</td>
-                        <td className="px-4 py-4 text-gray-300">
-                          {user.name || '—'}
-                        </td>
-                        <td className="px-4 py-4">
-                          {user.is_admin ? (
-                            <div className="inline-flex items-center gap-2 rounded-full bg-green-500/20 px-3 py-1 text-xs font-medium text-green-300">
-                              <CheckCircle size={14} />
+              <div className="space-y-3">
+                {users.map((user) => (
+                  <div
+                    key={user.id}
+                    className="border border-gray-700/30 rounded-lg overflow-hidden"
+                  >
+                    <button
+                      onClick={() =>
+                        setExpandedUser(
+                          expandedUser === user.id ? null : user.id
+                        )
+                      }
+                      className="w-full px-4 py-4 hover:bg-gray-800/30 transition flex items-center justify-between text-left"
+                    >
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="font-semibold text-white">
+                            {user.name}
+                          </h3>
+                          {user.is_admin && (
+                            <div className="inline-flex items-center gap-1 rounded-full bg-green-500/20 px-2 py-0.5 text-xs font-medium text-green-300">
+                              <CheckCircle size={12} />
                               Admin
                             </div>
-                          ) : (
-                            <div className="inline-flex items-center gap-2 rounded-full bg-gray-700/50 px-3 py-1 text-xs font-medium text-gray-300">
-                              User
+                          )}
+                          {user.email_verified && (
+                            <div className="inline-flex items-center gap-1 rounded-full bg-blue-500/20 px-2 py-0.5 text-xs font-medium text-blue-300">
+                              <CheckCircle size={12} />
+                              Verified
                             </div>
                           )}
-                        </td>
-                        <td className="px-4 py-4 text-xs text-gray-400">
-                          {user.created_at
-                            ? new Date(user.created_at).toLocaleDateString()
-                            : '—'}
-                        </td>
-                        <td className="px-4 py-4 text-right">
+                        </div>
+                        <p className="text-sm text-gray-400">{user.email}</p>
+                      </div>
+                      <ChevronDown
+                        size={20}
+                        className={`text-gray-400 transition ${
+                          expandedUser === user.id ? 'rotate-180' : ''
+                        }`}
+                      />
+                    </button>
+
+                    {expandedUser === user.id && (
+                      <div className="border-t border-gray-700/30 bg-gray-800/20 px-4 py-4 space-y-3">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-xs text-gray-500 uppercase">
+                              Phone
+                            </p>
+                            <p className="text-sm text-gray-300">
+                              {user.phone_number || '—'}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500 uppercase">
+                              Class
+                            </p>
+                            <p className="text-sm text-gray-300">
+                              {user.class || '—'}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500 uppercase">
+                              Section
+                            </p>
+                            <p className="text-sm text-gray-300">
+                              {user.section || '—'}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500 uppercase">
+                              GitHub ID
+                            </p>
+                            <p className="text-sm text-gray-300">
+                              {user.github_id ? (
+                                <a
+                                  href={`https://github.com/${user.github_id}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-blue-400 hover:underline"
+                                >
+                                  {user.github_id}
+                                </a>
+                              ) : (
+                                '—'
+                              )}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div>
+                          <p className="text-xs text-gray-500 uppercase mb-2">
+                            Interested Niches
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {user.interested_niches &&
+                            user.interested_niches.length > 0 ? (
+                              user.interested_niches.map((niche) => (
+                                <span
+                                  key={niche}
+                                  className="bg-blue-500/20 text-blue-300 text-xs px-2 py-1 rounded-full"
+                                >
+                                  {niche}
+                                </span>
+                              ))
+                            ) : (
+                              <span className="text-gray-500 text-sm">—</span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-2 border-t border-gray-700/30">
+                          <p className="text-xs text-gray-500">
+                            Joined{' '}
+                            {user.created_at
+                              ? new Date(user.created_at).toLocaleDateString()
+                              : '—'}
+                          </p>
                           <button
                             onClick={() => handleDeleteUser(user.id)}
                             disabled={deleting === user.id}
-                            className="flex items-center gap-2 text-red-400 transition hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium ml-auto"
+                            className="flex items-center gap-2 text-red-400 hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
                           >
                             <Trash2 size={16} />
                             {deleting === user.id ? 'Deleting...' : 'Delete'}
                           </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             )}
           </div>

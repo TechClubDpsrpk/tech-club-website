@@ -4,6 +4,15 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+const NICHES = [
+  'Robotics',
+  'Development',
+  'Competitive Programming',
+  'AI',
+  'Videography',
+  'Graphics Designing',
+];
+
 export default function SignupPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -11,6 +20,11 @@ export default function SignupPage() {
     email: '',
     password: '',
     confirmPassword: '',
+    class: '',
+    section: '',
+    phoneNumber: '',
+    githubId: '',
+    interestedNiches: [] as string[],
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -23,10 +37,31 @@ export default function SignupPage() {
     }));
   };
 
+  const handleNicheToggle = (niche: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      interestedNiches: prev.interestedNiches.includes(niche)
+        ? prev.interestedNiches.filter((n) => n !== niche)
+        : [...prev.interestedNiches, niche],
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      setLoading(false);
+      return;
+    }
+
+    if (formData.interestedNiches.length === 0) {
+      setError('Please select at least one niche');
+      setLoading(false);
+      return;
+    }
 
     try {
       const response = await fetch('/api/auth/signup', {
@@ -43,7 +78,6 @@ export default function SignupPage() {
         return;
       }
 
-      // Redirect to home on success
       router.push('/');
       router.refresh();
     } catch (err) {
@@ -55,7 +89,7 @@ export default function SignupPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-900 to-black p-4">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-2xl">
         <div className="rounded-2xl border border-gray-700/50 bg-gray-800/50 p-8 shadow-xl backdrop-blur-xl">
           <h1 className="mb-2 text-3xl font-bold text-white">Create Account</h1>
           <p className="mb-8 text-gray-400">Join us today</p>
@@ -66,7 +100,7 @@ export default function SignupPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <div onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="mb-2 block text-sm font-medium text-gray-300">Full Name</label>
               <input
@@ -89,6 +123,61 @@ export default function SignupPage() {
                 onChange={handleChange}
                 placeholder="you@example.com"
                 required
+                className="w-full rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-300">Phone Number</label>
+              <input
+                type="tel"
+                name="phoneNumber"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+                placeholder="+91 98765 43210"
+                required
+                className="w-full rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:outline-none"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="mb-2 block text-sm font-medium text-gray-300">Class</label>
+                <input
+                  type="text"
+                  name="class"
+                  value={formData.class}
+                  onChange={handleChange}
+                  placeholder="e.g., 10th, 11th"
+                  required
+                  className="w-full rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-gray-300">Section</label>
+                <input
+                  type="text"
+                  name="section"
+                  value={formData.section}
+                  onChange={handleChange}
+                  placeholder="e.g., A, B"
+                  required
+                  className="w-full rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-300">
+                GitHub ID (Optional)
+              </label>
+              <input
+                type="text"
+                name="githubId"
+                value={formData.githubId}
+                onChange={handleChange}
+                placeholder="your-github-username"
                 className="w-full rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:outline-none"
               />
             </div>
@@ -123,14 +212,33 @@ export default function SignupPage() {
               />
             </div>
 
+            <div>
+              <label className="mb-3 block text-sm font-medium text-gray-300">
+                Interested Niches (Select at least one)
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                {NICHES.map((niche) => (
+                  <label key={niche} className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.interestedNiches.includes(niche)}
+                      onChange={() => handleNicheToggle(niche)}
+                      className="h-4 w-4 rounded border-gray-600 bg-gray-700 accent-[#C9A227]"
+                    />
+                    <span className="text-sm text-gray-300">{niche}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
             <button
-              type="submit"
+              onClick={handleSubmit}
               disabled={loading}
               className="mt-6 w-full rounded-lg bg-[#C9A227] px-4 py-3 cursor-pointer font-semibold text-black transition hover:bg-[#d4b436] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? 'Creating Account...' : 'Sign Up'}
             </button>
-          </form>
+          </div>
 
           <p className="mt-6 text-center text-gray-400">
             Already have an account?{' '}

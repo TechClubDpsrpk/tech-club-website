@@ -5,6 +5,26 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+interface CreateUserInput {
+  email: string;
+  name: string;
+  passwordHash: string;
+  phoneNumber: string;
+  class: string;
+  section: string;
+  githubId: string | null;
+  interestedNiches: string[];
+}
+
+interface UpdateProfileInput {
+  name: string;
+  phoneNumber: string;
+  class: string;
+  section: string;
+  githubId: string | null;
+  interestedNiches: string[];
+}
+
 export async function findUserByEmail(email: string) {
   const { data, error } = await supabase
     .from('users')
@@ -16,11 +36,18 @@ export async function findUserByEmail(email: string) {
   return data || null;
 }
 
-export async function createUser(
-  email: string,
-  name: string,
-  hashedPassword: string
-) {
+export async function createUser(userData: CreateUserInput) {
+  const {
+    email,
+    name,
+    passwordHash,
+    phoneNumber,
+    class: userClass,
+    section,
+    githubId,
+    interestedNiches,
+  } = userData;
+
   const id = crypto.randomUUID();
   const { data, error } = await supabase
     .from('users')
@@ -29,7 +56,12 @@ export async function createUser(
         id,
         email: email.toLowerCase(),
         name,
-        password: hashedPassword,
+        password: passwordHash,
+        phone_number: phoneNumber,
+        class: userClass,
+        section,
+        github_id: githubId,
+        interested_niches: interestedNiches,
         email_verified: false,
         created_at: new Date().toISOString(),
       },
@@ -57,16 +89,32 @@ export async function deleteUserById(id: string) {
   if (error) throw error;
 }
 
-export async function updateUserProfile(userId: string, name: string) {
-  const { data, error } = await supabase
+export async function updateUserProfile(userId: string, data: UpdateProfileInput) {
+  const {
+    name,
+    phoneNumber,
+    class: userClass,
+    section,
+    githubId,
+    interestedNiches,
+  } = data;
+
+  const { data: updatedUser, error } = await supabase
     .from('users')
-    .update({ name })
+    .update({
+      name,
+      phone_number: phoneNumber,
+      class: userClass,
+      section,
+      github_id: githubId,
+      interested_niches: interestedNiches,
+    })
     .eq('id', userId)
     .select()
     .single();
 
   if (error) throw error;
-  return data;
+  return updatedUser;
 }
 
 export async function updateUserPassword(userId: string, hashedPassword: string) {
@@ -82,6 +130,18 @@ export async function updateUserAvatar(userId: string, avatarUrl: string) {
   const { data, error } = await supabase
     .from('users')
     .update({ avatar_url: avatarUrl })
+    .eq('id', userId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updateUserNiches(userId: string, interestedNiches: string[]) {
+  const { data, error } = await supabase
+    .from('users')
+    .update({ interested_niches: interestedNiches })
     .eq('id', userId)
     .select()
     .single();

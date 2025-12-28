@@ -17,10 +17,24 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 
+const NICHES = [
+  'Robotics',
+  'Development',
+  'Competitive Programming',
+  'AI',
+  'Videography',
+  'Graphics Designing',
+];
+
 type User = {
   id: string;
   name: string;
   email: string;
+  phone_number?: string;
+  class?: string;
+  section?: string;
+  github_id?: string | null;
+  interested_niches?: string[];
   avatarUrl?: string | null;
   emailVerified?: boolean;
   createdAt?: string;
@@ -34,7 +48,15 @@ export default function AccountPage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  const [formData, setFormData] = useState({ name: '' });
+  const [formData, setFormData] = useState({
+    name: '',
+    phoneNumber: '',
+    class: '',
+    section: '',
+    githubId: '',
+    interestedNiches: [] as string[],
+  });
+
   const [passwordData, setPasswordData] = useState({
     current: '',
     new: '',
@@ -57,25 +79,31 @@ export default function AccountPage() {
       const data = await response.json();
       if (!data?.isAuthenticated || !data?.user) return router.push('/login');
       
-      // Fetch is_admin from Supabase
       const { data: userData, error } = await supabase
         .from('users')
-        .select('is_admin')
+        .select('*')
         .eq('id', data.user.id)
         .single();
 
       if (error) {
-        console.error('Error fetching admin status:', error);
+        console.error('Error fetching user data:', error);
       }
 
-      // Merge Supabase is_admin with existing user data
       const mergedUser = {
         ...data.user,
+        ...userData,
         is_admin: userData?.is_admin || false,
       };
 
       setUser(mergedUser);
-      setFormData({ name: data.user.name });
+      setFormData({
+        name: mergedUser.name || '',
+        phoneNumber: mergedUser.phone_number || '',
+        class: mergedUser.class || '',
+        section: mergedUser.section || '',
+        githubId: mergedUser.github_id || '',
+        interestedNiches: mergedUser.interested_niches || [],
+      });
     } catch {
       router.push('/login');
     } finally {
@@ -92,10 +120,34 @@ export default function AccountPage() {
     setTimeout(() => setMessage(null), 3000);
   };
 
+  const handleNicheToggle = (niche: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      interestedNiches: prev.interestedNiches.includes(niche)
+        ? prev.interestedNiches.filter((n) => n !== niche)
+        : [...prev.interestedNiches, niche],
+    }));
+  };
+
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim()) {
       showMsg('error', 'Name cannot be empty');
+      return;
+    }
+
+    if (!formData.phoneNumber.trim()) {
+      showMsg('error', 'Phone number cannot be empty');
+      return;
+    }
+
+    if (!formData.class.trim() || !formData.section.trim()) {
+      showMsg('error', 'Class and section are required');
+      return;
+    }
+
+    if (formData.interestedNiches.length === 0) {
+      showMsg('error', 'Please select at least one niche');
       return;
     }
 
@@ -104,7 +156,14 @@ export default function AccountPage() {
       const response = await fetch('/api/auth/update-profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: formData.name }),
+        body: JSON.stringify({
+          name: formData.name,
+          phoneNumber: formData.phoneNumber,
+          class: formData.class,
+          section: formData.section,
+          githubId: formData.githubId,
+          interestedNiches: formData.interestedNiches,
+        }),
         credentials: 'include',
       });
 
@@ -112,7 +171,8 @@ export default function AccountPage() {
         showMsg('success', 'Profile updated successfully');
         await fetchUser();
       } else {
-        showMsg('error', 'Failed to update profile');
+        const data = await response.json();
+        showMsg('error', data.error || 'Failed to update profile');
       }
     } catch {
       showMsg('error', 'An error occurred');
@@ -212,12 +272,12 @@ export default function AccountPage() {
 
     setUploadingAvatar(true);
     try {
-      const formData = new FormData();
-      formData.append('avatar', file);
+      const formDataUpload = new FormData();
+      formDataUpload.append('avatar', file);
 
       const response = await fetch('/api/auth/upload-avatar', {
         method: 'POST',
-        body: formData,
+        body: formDataUpload,
         credentials: 'include',
       });
 
@@ -292,7 +352,8 @@ export default function AccountPage() {
               }`}
             >
               {user.is_admin && (
-                <div className="absolute inset-0 rounded-2xl opacity-30 pointer-events-none"
+                <div
+                  className="absolute inset-0 rounded-2xl opacity-30 pointer-events-none"
                   style={{
                     boxShadow: 'inset 0 0 30px rgba(201, 162, 39, 0.3), 0 0 40px rgba(201, 162, 39, 0.2)',
                   }}
@@ -327,10 +388,10 @@ export default function AccountPage() {
                     )}
                   </div>
                   {user.is_admin && (
-                    <div className="absolute -top-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-[#C9A227] border-2 border-gray-900 shadow-lg"
+                    <div
+                      className="absolute -top-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-[#C9A227] border-2 border-gray-900 shadow-lg"
                       style={{
-                        boxShadow:
-                          '0 0 15px rgba(201, 162, 39, 0.8)',
+                        boxShadow: '0 0 15px rgba(201, 162, 39, 0.8)',
                       }}
                     >
                       <Crown size={16} className="text-gray-900" />
@@ -358,13 +419,6 @@ export default function AccountPage() {
                 <p className="mt-1 break-all text-sm text-gray-400">{user.email}</p>
 
                 <div className="mt-6 w-full space-y-3 border-t border-gray-700/50 pt-6">
-                  {/* {user.is_admin && (
-                    <div className="inline-flex w-full items-center justify-center gap-2 rounded-full px-3 py-2 text-sm border-[#C9A227]/50 bg-[#C9A227]/20 text-[#C9A227]">
-                      <Crown size={16} />
-                      Administrator
-                    </div>
-                  )} */}
-
                   <div
                     className={`inline-flex w-full items-center justify-center gap-2 rounded-full px-3 py-2 text-sm ${
                       user.emailVerified
@@ -432,7 +486,7 @@ export default function AccountPage() {
                 <h2 className="text-lg font-semibold text-white">Profile Settings</h2>
               </div>
 
-              <form onSubmit={handleSaveProfile} className="space-y-4">
+              <div onSubmit={handleSaveProfile} className="space-y-4">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <label className="block">
                     <span className="mb-2 block text-sm font-medium text-gray-400">
@@ -441,7 +495,7 @@ export default function AccountPage() {
                     <input
                       type="text"
                       value={formData.name}
-                      onChange={(e) => setFormData({ name: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       className="w-full rounded-xl border border-gray-700/50 bg-gray-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
                     />
                   </label>
@@ -458,14 +512,87 @@ export default function AccountPage() {
                   </label>
                 </div>
 
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <label className="block">
+                    <span className="mb-2 block text-sm font-medium text-gray-400">
+                      Phone Number
+                    </span>
+                    <input
+                      type="tel"
+                      value={formData.phoneNumber}
+                      onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                      placeholder="+91 98765 43210"
+                      className="w-full rounded-xl border border-gray-700/50 bg-gray-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="mb-2 block text-sm font-medium text-gray-400">
+                      GitHub ID (Optional)
+                    </span>
+                    <input
+                      type="text"
+                      value={formData.githubId}
+                      onChange={(e) => setFormData({ ...formData, githubId: e.target.value })}
+                      placeholder="your-github-username"
+                      className="w-full rounded-xl border border-gray-700/50 bg-gray-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+                    />
+                  </label>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <label className="block">
+                    <span className="mb-2 block text-sm font-medium text-gray-400">
+                      Class
+                    </span>
+                    <input
+                      type="text"
+                      value={formData.class}
+                      onChange={(e) => setFormData({ ...formData, class: e.target.value })}
+                      placeholder="e.g., 10th, 11th"
+                      className="w-full rounded-xl border border-gray-700/50 bg-gray-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="mb-2 block text-sm font-medium text-gray-400">
+                      Section
+                    </span>
+                    <input
+                      type="text"
+                      value={formData.section}
+                      onChange={(e) => setFormData({ ...formData, section: e.target.value })}
+                      placeholder="e.g., A, B"
+                      className="w-full rounded-xl border border-gray-700/50 bg-gray-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+                    />
+                  </label>
+                </div>
+
+                <div>
+                  <label className="mb-3 block text-sm font-medium text-gray-400">
+                    Interested Niches (Select at least one)
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {NICHES.map((niche) => (
+                      <label key={niche} className="flex items-center space-x-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={formData.interestedNiches.includes(niche)}
+                          onChange={() => handleNicheToggle(niche)}
+                          className="h-4 w-4 rounded border-gray-600 bg-gray-700 accent-[#C9A227]"
+                        />
+                        <span className="text-sm text-gray-300">{niche}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
                 <button
-                  type="submit"
+                  onClick={handleSaveProfile}
                   disabled={saving}
                   className="rounded-xl bg-[#C9A227] px-6 py-3 font-semibold text-black transition hover:scale-105 disabled:opacity-50"
                 >
                   {saving ? 'Saving...' : 'Save Changes'}
                 </button>
-              </form>
+              </div>
             </div>
 
             {/* Security */}
@@ -475,7 +602,7 @@ export default function AccountPage() {
                 <h2 className="text-lg font-semibold text-white">Security</h2>
               </div>
 
-              <form onSubmit={handleUpdatePassword} className="space-y-4">
+              <div onSubmit={handleUpdatePassword} className="space-y-4">
                 <label className="block">
                   <span className="mb-2 block text-sm font-medium text-gray-400">
                     Current Password
@@ -569,13 +696,12 @@ export default function AccountPage() {
                 </label>
 
                 <button
-                  type="submit"
-                  disabled={saving}
+                  onClick={handleUpdatePassword}
                   className="rounded-xl bg-[#C9A227] px-6 py-3 font-semibold text-black transition hover:scale-105 disabled:opacity-50"
                 >
-                  {saving ? 'Updating...' : 'Update Password'}
+                  Update Password
                 </button>
-              </form>
+              </div>
             </div>
 
             {/* Sessions */}

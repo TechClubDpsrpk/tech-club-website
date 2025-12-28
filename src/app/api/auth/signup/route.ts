@@ -9,9 +9,28 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, name, password, confirmPassword } = body;
+    const {
+      email,
+      name,
+      password,
+      confirmPassword,
+      phoneNumber,
+      class: userClass,
+      section,
+      githubId,
+      interestedNiches,
+    } = body;
 
-    if (!email || !name || !password || !confirmPassword) {
+    // Check all required fields
+    if (
+      !email ||
+      !name ||
+      !password ||
+      !confirmPassword ||
+      !phoneNumber ||
+      !userClass ||
+      !section
+    ) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -39,6 +58,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (!Array.isArray(interestedNiches) || interestedNiches.length === 0) {
+      return NextResponse.json(
+        { error: 'Select at least one niche' },
+        { status: 400 }
+      );
+    }
+
     const existingUser = await findUserByEmail(email.toLowerCase());
     if (existingUser) {
       return NextResponse.json(
@@ -48,11 +74,19 @@ export async function POST(request: NextRequest) {
     }
 
     const hashedPassword = await hashPassword(password);
-    const user = await createUser(email.toLowerCase(), name, hashedPassword);
+    const user = await createUser({
+      email: email.toLowerCase(),
+      name,
+      passwordHash: hashedPassword,
+      phoneNumber,
+      class: userClass,
+      section,
+      githubId: githubId || null,
+      interestedNiches,
+    });
 
     // 🔥 SEND EMAIL HERE (non-blocking optional)
     await sendWelcomeEmail(user.email, user.name).catch(console.error);
-
 
     const token = await createToken(user);
 
@@ -63,6 +97,11 @@ export async function POST(request: NextRequest) {
           id: user.id,
           email: user.email,
           name: user.name,
+          phoneNumber: user.phone_number,
+          class: user.class,
+          section: user.section,
+          githubId: user.github_id,
+          interestedNiches: user.interested_niches,
           emailVerified: user.email_verified,
         },
       },
