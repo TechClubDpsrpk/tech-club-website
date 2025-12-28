@@ -13,7 +13,9 @@ import {
   Laptop,
   LogOut,
   Trash2,
+  Crown,
 } from 'lucide-react';
+import { supabase } from '@/lib/supabaseClient';
 
 type User = {
   id: string;
@@ -22,6 +24,7 @@ type User = {
   avatarUrl?: string | null;
   emailVerified?: boolean;
   createdAt?: string;
+  is_admin?: boolean;
 };
 
 export default function AccountPage() {
@@ -53,7 +56,25 @@ export default function AccountPage() {
       if (!response.ok) return router.push('/login');
       const data = await response.json();
       if (!data?.isAuthenticated || !data?.user) return router.push('/login');
-      setUser(data.user);
+      
+      // Fetch is_admin from Supabase
+      const { data: userData, error } = await supabase
+        .from('users')
+        .select('is_admin')
+        .eq('id', data.user.id)
+        .single();
+
+      if (error) {
+        console.error('Error fetching admin status:', error);
+      }
+
+      // Merge Supabase is_admin with existing user data
+      const mergedUser = {
+        ...data.user,
+        is_admin: userData?.is_admin || false,
+      };
+
+      setUser(mergedUser);
       setFormData({ name: data.user.name });
     } catch {
       router.push('/login');
@@ -263,10 +284,38 @@ export default function AccountPage() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
           {/* LEFT: Profile Card */}
           <section className="lg:col-span-1">
-            <div className="rounded-2xl border border-gray-700/50 bg-gradient-to-br from-gray-800/60 to-gray-900/60 p-6 shadow-xl backdrop-blur-xl">
-              <div className="flex flex-col items-center text-center">
+            <div
+              className={`rounded-2xl border bg-gradient-to-br p-6 shadow-xl backdrop-blur-xl ${
+                user.is_admin
+                  ? 'border-[#C9A227]/60 from-yellow-900/30 to-gray-900/60 relative'
+                  : 'border-gray-700/50 from-gray-800/60 to-gray-900/60'
+              }`}
+            >
+              {user.is_admin && (
+                <div className="absolute inset-0 rounded-2xl opacity-30 pointer-events-none"
+                  style={{
+                    boxShadow: 'inset 0 0 30px rgba(201, 162, 39, 0.3), 0 0 40px rgba(201, 162, 39, 0.2)',
+                  }}
+                />
+              )}
+
+              <div className="relative z-10 flex flex-col items-center text-center">
                 <div className="relative mb-4">
-                  <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-[#C9A227] to-gray-700 shadow-lg">
+                  <div
+                    className={`flex h-24 w-24 items-center justify-center rounded-full shadow-lg ${
+                      user.is_admin
+                        ? 'bg-gradient-to-br from-[#C9A227] via-yellow-500 to-yellow-600'
+                        : 'bg-gradient-to-br from-[#C9A227] to-gray-700'
+                    }`}
+                    style={
+                      user.is_admin
+                        ? {
+                            boxShadow:
+                              '0 0 30px rgba(201, 162, 39, 0.6), 0 0 60px rgba(201, 162, 39, 0.3)',
+                          }
+                        : undefined
+                    }
+                  >
                     {user.avatarUrl ? (
                       <img
                         src={user.avatarUrl}
@@ -277,6 +326,16 @@ export default function AccountPage() {
                       <User className="h-12 w-12 text-gray-900" />
                     )}
                   </div>
+                  {user.is_admin && (
+                    <div className="absolute -top-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-[#C9A227] border-2 border-gray-900 shadow-lg"
+                      style={{
+                        boxShadow:
+                          '0 0 15px rgba(201, 162, 39, 0.8)',
+                      }}
+                    >
+                      <Crown size={16} className="text-gray-900" />
+                    </div>
+                  )}
                   <label className="absolute -right-1 -bottom-1 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-gray-600 bg-[#C9A227] shadow-lg hover:scale-110 transition">
                     <svg
                       className="w-4 h-4 text-black"
@@ -299,6 +358,13 @@ export default function AccountPage() {
                 <p className="mt-1 break-all text-sm text-gray-400">{user.email}</p>
 
                 <div className="mt-6 w-full space-y-3 border-t border-gray-700/50 pt-6">
+                  {/* {user.is_admin && (
+                    <div className="inline-flex w-full items-center justify-center gap-2 rounded-full px-3 py-2 text-sm border-[#C9A227]/50 bg-[#C9A227]/20 text-[#C9A227]">
+                      <Crown size={16} />
+                      Administrator
+                    </div>
+                  )} */}
+
                   <div
                     className={`inline-flex w-full items-center justify-center gap-2 rounded-full px-3 py-2 text-sm ${
                       user.emailVerified
@@ -326,6 +392,16 @@ export default function AccountPage() {
                       className="w-full rounded-lg border border-yellow-500/30 bg-yellow-500/20 px-3 py-2 text-xs text-yellow-300 hover:bg-yellow-500/30 transition disabled:opacity-50"
                     >
                       {resendingEmail ? 'Sending...' : 'Resend verification email'}
+                    </button>
+                  )}
+
+                  {user.is_admin && (
+                    <button
+                      onClick={() => router.push('/admin/login')}
+                      className="w-full rounded-full cursor-pointer border border-[#C9A227]/50 bg-[#C9A227]/20 px-3 py-2 text-sm text-[#C9A227] hover:bg-[#C9A227]/30 transition flex items-center justify-center gap-2"
+                    >
+                      <Crown size={16} />
+                      Admin Panel
                     </button>
                   )}
 
