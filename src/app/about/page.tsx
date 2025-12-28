@@ -109,7 +109,7 @@ const FourWaySplit = () => (
 export default function AboutTechClub() {
   return (
     <>
-      <section className="flex min-h-screen flex-col items-center rounded-xl bg-black px-6 py-24 text-white md:px-18 lg:px-42">
+      <section className="flex min-h-screen flex-col items-center rounded-xl px-6 py-24 text-white md:px-18 lg:px-42">
         <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
           {/* Glare Card with Logo */}
           <GlareCard className="flex items-center justify-center bg-[#202225]">

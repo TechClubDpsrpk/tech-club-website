@@ -4,7 +4,7 @@ import { Timeline } from '@/components/ui/timeline';
 function LegacyTimeline() {
   const data = [
     {
-      title: '2015',
+      title: '2017',
       content: (
         <div>
           <p className="mb-8 text-xs font-normal text-neutral-800 md:text-sm dark:text-neutral-200">

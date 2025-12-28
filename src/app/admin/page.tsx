@@ -175,10 +175,10 @@ export default function AdminPage() {
 
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 rounded-xl border border-gray-700 px-4 py-2 text-gray-300 transition hover:bg-gray-800 hover:text-white"
+            className="flex items-center gap-2 rounded-xl border border-gray-700 px-4 py-2 text-gray-300 transition hover:text-white hover:bg-amber-700 cursor-pointer"
           >
             <LogOut size={18} />
-            <span className="hidden sm:inline">Logout</span>
+            <span className="hidden sm:inline ">Logout</span>
           </button>
         </div>
 

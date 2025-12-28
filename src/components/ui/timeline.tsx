@@ -28,12 +28,12 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
   const opacityTransform = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
 
   return (
-    <div className="w-full bg-white font-sans md:px-10 dark:bg-black" ref={containerRef}>
-      <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 lg:px-10">
-        <h2 className="mb-4 max-w-4xl text-2xl font-bold text-black md:text-6xl dark:text-white">
+    <div className="w-full font-sans md:px-10 " ref={containerRef}>
+      <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 align-center lg:px-10">
+        <h2 className="mb-4 max-w-4xl text-2xl text-center font-bold text-black md:text-6xl dark:text-white">
           Our Legacy
         </h2>
-        <p className="max-w-sm text-sm text-neutral-700 md:text-base dark:text-neutral-500">
+        <p className="max-w-sm text-sm text-center text-neutral-700 md:text-base dark:text-neutral-500">
           I&apos;ve been working on Aceternity for the past 2 years. Here&apos;s a timeline of my
           journey.
         </p>

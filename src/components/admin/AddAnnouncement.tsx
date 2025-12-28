@@ -36,7 +36,7 @@ if (imageUrl && !imageUrl.startsWith('http')) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4 border rounded shadow-md">
+    <form onSubmit={handleSubmit} className="space-y-4 p-4 rounded-xl shadow-md">
       <input
         type="text"
         placeholder="Heading"
@@ -65,7 +65,7 @@ if (imageUrl && !imageUrl.startsWith('http')) {
       <button
         type="submit"
         disabled={loading}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
+        className="bg-[#C9A227] cursor-pointer text-white px-4 py-2 rounded-xl hover:bg-[#B8901E] focus:outline-none focus:ring-2 focus:ring-[#C9A227] focus:ring-offset-2 disabled:opacity-50 transition-[2s]"
       >
         {loading ? 'Adding...' : 'Add Announcement'}
       </button>
