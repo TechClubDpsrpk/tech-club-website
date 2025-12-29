@@ -2,18 +2,18 @@
   
   <p>
     <h1>
-      <a href="https://github.com/TechClubDpsrpk/tc-website-2025/">
+      <a href="https://techclubdpsrpk.vercel.app/">
         <img src="/public/tc-logo.png" width=128 alt="Tech Club DPSRPK Logo" />
       </a>
       <br />
       Tech Club DPSRPK Website
     </h1>
-    <h4>This is gonna be the all new website for Tech Club DPSRPK starting 2025 </h4>
+    <h4>Source Tree of Official Website of Tech Club DPSRPK 2025-26 </h4>
   </p>
 
   <p>
-    <a href="https://github.com/TechClubDpsrpk/tc-website-2025">
-      <img src="https://img.shields.io/github/stars/TechClubDpsrpk/tc-website-2025" alt="GitHub Stars" />
+    <a href="https://github.com/TechClubDpsrpk/tech-club-website">
+      <img src="https://img.shields.io/github/stars/TechClubDpsrpk/tech-club-website" alt="GitHub Stars" />
     </a>
   </p>
 
