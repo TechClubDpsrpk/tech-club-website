@@ -8,7 +8,7 @@
       <br />
       Tech Club DPSRPK Website
     </h1>
-    <h4>Source Tree of Official Website of Tech Club DPSRPK 2025-26 </h4>
+    <h4>Source Tree of Official Website of Tech Club DPSRPK </h4>
   </p>
 
   <p>
