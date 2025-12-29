@@ -85,16 +85,26 @@ export async function POST(request: NextRequest) {
       interestedNiches,
     });
 
-    // 🔥 SEND WELCOME EMAIL (non-blocking optional)
-    await sendWelcomeEmail(user.email, user.name).catch(console.error);
+    console.log('✅ User created:', user.id, user.email);
 
-    // 🔥 CREATE VERIFICATION TOKEN AND SEND VERIFICATION EMAIL (non-blocking optional)
-    const verificationToken = await createVerificationToken(user.id);
-    await sendVerificationEmail(user.email, user.name, verificationToken).catch(
-      (err) => {
-        console.error('Failed to send verification email:', err);
-      }
-    );
+    // 🔥 SEND WELCOME EMAIL (optional, don't block signup)
+    try {
+      await sendWelcomeEmail(user.email, user.name);
+      console.log('✅ Welcome email sent to:', user.email);
+    } catch (err) {
+      console.error('❌ Failed to send welcome email to', user.email, ':', err);
+    }
+
+    // 🔥 CREATE VERIFICATION TOKEN AND SEND VERIFICATION EMAIL
+    try {
+      const verificationToken = await createVerificationToken(user.id);
+      console.log('✅ Verification token created:', verificationToken);
+
+      await sendVerificationEmail(user.email, user.name, verificationToken);
+      console.log('✅ Verification email sent to:', user.email);
+    } catch (err) {
+      console.error('❌ Verification token/email error for', user.email, ':', err);
+    }
 
     const token = await createToken(user);
 
@@ -125,7 +135,7 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error('Signup error:', error);
+    console.error('❌ Signup error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
