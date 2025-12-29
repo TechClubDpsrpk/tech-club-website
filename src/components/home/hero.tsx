@@ -1,6 +1,8 @@
+/* eslint-disable prettier/prettier */
 'use client';
 import React from 'react';
 import './hero/home.css';
+import Link from 'next/link';
 
 type HeroProps = React.HTMLAttributes<HTMLElement>;
 
@@ -30,8 +32,12 @@ const Hero = ({ className, ...props }: HeroProps) => {
           </p>
 
           <div className="button-group">
-            <a className="btn">Join The Discord</a>
-            <a className="btn pr">Sign Up</a>
+            <Link href="/signup" className="btn">
+              Join The Discord
+            </Link>
+            <Link href="/signup" className="btn pr">
+              Sign Up
+            </Link>
           </div>
         </div>
 
