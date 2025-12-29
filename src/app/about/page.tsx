@@ -9,7 +9,7 @@ const teamStructure = {
   president: { name: 'arghya sarkar', role: 'President', image: '/team/arghya.jpeg' },
   vicePresident: { name: 'ankush roy', role: 'Vice President', image: '/team/ankush.png' },
   mentors: [
-    { name: 'anshuman tripathi', image: '/team/anshuman.jpg' },
+    { name: 'anshuman tripathi', image: '/team/anshuman.jpeg' },
     { name: 'avanindra chakraborty', image: '/team/avanindra.jpg' },
     { name: 'naitik chattaraj', image: '/team/naitik.jpeg' },
     { name: 'parthiv pal', image: '/team/parthiv.jpg' },
@@ -25,7 +25,7 @@ const teamStructure = {
   ],
   creativeHeads: [
     { name: 'adiya roy', role: 'Graphics', image: '/team/adiya.jpeg' },
-    { name: 'aritro sen', role: 'PR Executive', image: '/team/aritro.jpg' },
+    { name: 'aritro sen', role: 'PR Executive', image: '/team/aritro.jpeg' },
     { name: 'niharika paul', role: 'Graphics', image: '/team/niharika.jpg' },
     { name: 'prithuraj saha', role: 'Video', image: '/team/prithuraj.jpg' },
   ],
