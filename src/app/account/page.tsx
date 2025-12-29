@@ -449,7 +449,7 @@ export default function AccountPage() {
 
                   {user.is_admin && (
                     <button
-                      onClick={() => router.push('/admin/login')}
+                      onClick={() => router.push('/admin')}
                       className="w-full rounded-full cursor-pointer border border-[#C9A227]/50 bg-[#C9A227]/20 px-3 py-2 text-sm text-[#C9A227] hover:bg-[#C9A227]/30 transition flex items-center justify-center gap-2"
                     >
                       <Crown size={16} />
