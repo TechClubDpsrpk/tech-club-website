@@ -2,13 +2,7 @@ import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 import { getUserById } from './db';
 
-const JWT_SECRET = process.env.JWT_SECRET;
-
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET environment variable is not set');
-}
-
-const JWT_SECRET_VALUE = JWT_SECRET as string;
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 export async function createToken(user: any): Promise<string> {
   const token = jwt.sign(
@@ -16,7 +10,7 @@ export async function createToken(user: any): Promise<string> {
       id: user.id,
       email: user.email,
     },
-    JWT_SECRET_VALUE,
+    JWT_SECRET,
     { expiresIn: '7d' }
   );
 
@@ -25,10 +19,9 @@ export async function createToken(user: any): Promise<string> {
 
 export async function verifyToken(token: string) {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET_VALUE);
+    const decoded = jwt.verify(token, JWT_SECRET);
     return decoded;
-  } catch (error) {
-    console.error('Token verification failed:', error);
+  } catch {
     return null;
   }
 }
@@ -38,28 +31,16 @@ export async function getCurrentUser() {
     const cookieStore = await cookies();
     const token = cookieStore.get('auth')?.value;
 
-    if (!token) {
-      console.log('No auth token found in cookies');
-      return null;
-    }
+    if (!token) return null;
 
     const decoded = await verifyToken(token);
-    if (!decoded) {
-      console.log('Token verification failed');
-      return null;
-    }
+    if (!decoded) return null;
 
-    // Token is valid, return decoded user data directly
-    return {
-      id: (decoded as any).id,
-      email: (decoded as any).email,
-      name: 'Admin',
-      email_verified: true,
-      avatar_url: null,
-      created_at: new Date().toISOString(),
-    };
-  } catch (error) {
-    console.error('getCurrentUser error:', error);
+    const userId = (decoded as any).id;
+    const user = await getUserById(userId);
+
+    return user;
+  } catch {
     return null;
   }
 }
