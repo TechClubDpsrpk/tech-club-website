@@ -102,7 +102,7 @@ export default function AdminPage() {
   }, [router]);
 
   const handleLogout = () => {
-    router.replace('/admin/login');
+    router.replace('/login');
   };
 
   const handleDeleteUser = async (userId: string) => {

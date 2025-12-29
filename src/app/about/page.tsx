@@ -6,22 +6,22 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 const teamStructure = {
-  president: { name: 'arghya Sarkar', role: 'President', image: '/team/arghya.jpeg' },
-  vicePresident: { name: 'ankush Roy', role: 'Vice President', image: '/team/ankush.jpg' },
+  president: { name: 'arghya sarkar', role: 'President', image: '/team/arghya.jpeg' },
+  vicePresident: { name: 'ankush roy', role: 'Vice President', image: '/team/ankush.png' },
   mentors: [
     { name: 'anshuman tripathi', image: '/team/anshuman.jpg' },
     { name: 'avanindra chakraborty', image: '/team/avanindra.jpg' },
     { name: 'naitik chattaraj', image: '/team/naitik.jpeg' },
     { name: 'parthiv pal', image: '/team/parthiv.jpg' },
     { name: 'rishabh das', image: '/team/rishabh.jpeg' },
-    { name: 'sampreet roy', image: '/team/sampreet.jpg' },
+    { name: 'sampreet roy', image: '/team/sampreet.png' },
     { name: 'shameek dalal', image: '/team/shameek.jpg' },
     { name: 'soham sen', image: '/team/soham.jpg' },
     { name: 'soumili dey', image: '/team/soumili.jpg' },
   ],
   offstageExecutives: [
     { name: 'aryaka sikdar', image: '/team/aryaka.jpeg' },
-    { name: 'swapnil basu', image: '/team/swapnil.jpg' },
+    { name: 'swapnil basu', image: '/team/swapnil.jpeg' },
   ],
   creativeHeads: [
     { name: 'adiya roy', role: 'Graphics', image: '/team/adiya.jpeg' },
