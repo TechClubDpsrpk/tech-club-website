@@ -24,11 +24,11 @@
     "motion": "^12.23.1",
     "next": "^15.5.9",
     "next-themes": "^0.4.6",
-    "nodemailer": "^6.9.7",
+    "nodemailer": "^7.0.12",
     "pnpm": "^10.13.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-markdown": "^9.0.1",
+    "react-markdown": "^9.1.0",
     "react-router-dom": "^7.7.1",
     "tailwind-merge": "^3.3.1"
   },
