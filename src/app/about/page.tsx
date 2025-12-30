@@ -26,7 +26,7 @@ const teamStructure = {
   creativeHeads: [
     { name: 'adiya roy', role: 'Graphics', image: '/team/adiya.jpeg' },
     { name: 'aritro sen', role: 'PR Executive', image: '/team/aritro.jpg' },
-    { name: 'niharika paul', role: 'Graphics', image: '/team/niharika.jpg' },
+    { name: 'niharika paul', role: 'Graphics', image: '/team/niharika.jpeg' },
     { name: 'prithuraj saha', role: 'Video', image: '/team/prithuraj.jpg' },
   ],
 };
