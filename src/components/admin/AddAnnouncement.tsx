@@ -12,11 +12,11 @@ export default function AddAnnouncement() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-if (imageUrl && !imageUrl.startsWith('http')) {
-  alert('Please enter a valid image URL');
-  setLoading(false);
-  return;
-}
+    if (imageUrl && !imageUrl.startsWith('http')) {
+      alert('Please enter a valid image URL');
+      setLoading(false);
+      return;
+    }
     const { error } = await supabase.from('announcements').insert({
       heading,
       description,
@@ -46,13 +46,19 @@ if (imageUrl && !imageUrl.startsWith('http')) {
         required
       />
 
-      <textarea
-        placeholder="Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        className="w-full border p-2 rounded"
-        required
-      />
+      <div>
+        <textarea
+          placeholder="Description (Markdown supported: **bold**, *italic*, [links](url), etc.)"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="w-full border p-2 rounded"
+          required
+          rows={6}
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          💡 Tip: Use **text** for bold, *text* for italic, [text](url) for links
+        </p>
+      </div>
 
       <input
         type="url"
