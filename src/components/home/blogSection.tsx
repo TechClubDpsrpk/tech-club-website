@@ -19,7 +19,7 @@ const BlogSection = () => {
   ];
 
   return (
-    <section className="bg-black px-6 pb-24 text-white md:px-18 lg:px-42">
+    <section className="bg-black px-6 pt-20 pb-24 text-white md:px-18 lg:px-42">
       <div className="mx-auto max-w-6xl space-y-20">
         {/* Heading */}
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2">

@@ -8,8 +8,8 @@ export default function Home() {
     <>
       <Hero data-navbar-theme="dark" />
       <Intro data-navbar-theme="dark" />
+      <Clubs data-navbar-theme="dark" />
       <BlogSection data-navbar-theme="dark" />
-      <Clubs data-navbar-theme="light" />
     </>
   );
 }
