@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   User,
@@ -41,9 +41,9 @@ type User = {
   is_admin?: boolean;
 };
 
-export default function AccountPage() {
+// Main component without searchParams
+function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -108,7 +108,7 @@ export default function AccountPage() {
       });
 
       // Show welcome modal if this is a new signup
-      if (searchParams.get('newSignup') === 'true') {
+      if (showWelcome) {
         setShowWelcomeModal(true);
       }
     } catch {
@@ -804,5 +804,26 @@ export default function AccountPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Wrapper that reads searchParams
+function AccountPageWithParams() {
+  const searchParams = useSearchParams();
+  const showWelcome = searchParams.get('newSignup') === 'true';
+  
+  return <AccountPageContent showWelcome={showWelcome} />;
+}
+
+// Export with Suspense boundary
+export default function AccountPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center bg-gray-900">
+        <p className="text-white">Loading…</p>
+      </div>
+    }>
+      <AccountPageWithParams />
+    </Suspense>
   );
 }
