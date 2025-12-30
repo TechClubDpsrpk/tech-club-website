@@ -41,6 +41,8 @@ type User = {
   is_admin?: boolean;
 };
 
+type TabType = 'profile' | 'security' | 'sessions' | 'danger';
+
 // Main component without searchParams
 function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
   const router = useRouter();
@@ -49,6 +51,7 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabType>('profile');
 
   const [formData, setFormData] = useState({
     name: '',
@@ -107,7 +110,6 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
         interestedNiches: mergedUser.interested_niches || [],
       });
 
-      // Show welcome modal if this is a new signup
       if (showWelcome) {
         setShowWelcomeModal(true);
       }
@@ -323,7 +325,7 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-900">
+      <div className="flex min-h-screen items-center justify-center bg-black-900">
         <p className="text-white">Loading…</p>
       </div>
     );
@@ -331,15 +333,22 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
 
   if (!user) return null;
 
+  const tabs = [
+    { id: 'profile' as TabType, label: 'Profile', icon: User },
+    { id: 'security' as TabType, label: 'Security', icon: Shield },
+    { id: 'sessions' as TabType, label: 'Sessions', icon: Laptop },
+    { id: 'danger' as TabType, label: 'Danger Zone', icon: AlertTriangle },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-black px-4 pt-24 pb-16">
+    <div className="min-h-screen bg-gradient-to-br from-black-900 via-black-900 to-black px-4 pt-24 pb-16">
       {/* Welcome Modal */}
       {showWelcomeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="relative w-full max-w-md rounded-2xl border border-[#C9A227]/50 bg-gradient-to-br from-gray-800/90 to-gray-900/90 p-8 shadow-2xl flex flex-col items-center">
+          <div className="relative w-full max-w-md rounded-2xl border border-[#C9A227]/50 bg-gradient-to-br from-black-800/90 to-black-900/90 p-8 shadow-2xl flex flex-col items-center">
             <button
               onClick={() => setShowWelcomeModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white transition"
+              className="absolute top-4 right-4 text-black-400 hover:text-white transition"
             >
               <X size={20} />
             </button>
@@ -349,13 +358,13 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
 
               <h2 className="text-2xl font-bold text-white">Welcome!</h2>
               
-              <p className="text-gray-300">
+              <p className="text-black-300">
                 Hey {user?.name || 'there'}, your account has been successfully created. Let's get you set up with a complete profile.
               </p>
 
               <div className="pt-4 space-y-2 w-full">
-                <p className="text-sm text-gray-400">Complete these steps:</p>
-                <ul className="text-sm text-gray-300 space-y-1">
+                <p className="text-sm text-black-400">Complete these steps:</p>
+                <ul className="text-sm text-black-300 space-y-1">
                   <li>✓ Upload a profile picture</li>
                   <li>✓ Verify your email</li>
                   <li>✓ Check latest announcements</li>
@@ -370,7 +379,7 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
                 Let's Go!
               </button>
 
-              <p className="text-xs text-gray-500 mt-4">
+              <p className="text-xs text-black-500 mt-4">
                 Made with ❤️ by Agnihotra, Adiya, Naitik and Rishabh
               </p>
             </div>
@@ -378,11 +387,11 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
         </div>
       )}
 
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         {/* Toast */}
         {message && (
           <div
-            className={`fixed top-8 right-4 rounded-lg border px-6 py-3 backdrop-blur-xl z-50 ${
+            className={`fixed top-8 right-4 rounded-lg border px-4 py-3 backdrop-blur-xl z-50 ${
               message.type === 'success'
                 ? 'bg-green-500/20 border-green-500/50 text-green-200'
                 : 'bg-red-500/20 border-red-500/50 text-red-200'
@@ -392,14 +401,14 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
           </div>
         )}
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-4">
           {/* LEFT: Profile Card */}
-          <section className="lg:col-span-1">
+          <section className="lg:col-span-1 space-y-6">
             <div
               className={`rounded-2xl border bg-gradient-to-br p-6 shadow-xl backdrop-blur-xl ${
                 user.is_admin
-                  ? 'border-[#C9A227]/60 from-yellow-900/30 to-gray-900/60 relative'
-                  : 'border-gray-700/50 from-gray-800/60 to-gray-900/60'
+                  ? 'border-[#C9A227]/60 from-yellow-900/30 to-black-900/60 relative'
+                  : 'border-black-700/50 from-black-800/60 to-black-900/60'
               }`}
             >
               {user.is_admin && (
@@ -417,7 +426,7 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
                     className={`flex h-24 w-24 items-center justify-center rounded-full shadow-lg ${
                       user.is_admin
                         ? 'bg-gradient-to-br from-[#C9A227] via-yellow-500 to-yellow-600'
-                        : 'bg-gradient-to-br from-[#C9A227] to-gray-700'
+                        : 'bg-gradient-to-br from-[#C9A227] to-black-700'
                     }`}
                     style={
                       user.is_admin
@@ -435,20 +444,20 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
                         className="h-full w-full rounded-full object-cover"
                       />
                     ) : (
-                      <User className="h-12 w-12 text-gray-900" />
+                      <User className="h-12 w-12 text-black-900" />
                     )}
                   </div>
                   {user.is_admin && (
                     <div
-                      className="absolute -top-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-[#C9A227] border-2 border-gray-900 shadow-lg"
+                      className="absolute -top-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-[#C9A227] border-2 border-black-900 shadow-lg"
                       style={{
                         boxShadow: '0 0 15px rgba(201, 162, 39, 0.8)',
                       }}
                     >
-                      <Crown size={16} className="text-gray-900" />
+                      <Crown size={16} className="text-black-900" />
                     </div>
                   )}
-                  <label className="absolute -right-1 -bottom-1 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-gray-600 bg-[#C9A227] shadow-lg hover:scale-110 transition">
+                  <label className="absolute -right-1 -bottom-1 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-black-600 bg-[#C9A227] shadow-lg hover:scale-110 transition">
                     <svg
                       className="w-4 h-4 text-black"
                       fill="currentColor"
@@ -467,9 +476,9 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
                 </div>
 
                 <p className="text-xl font-bold text-white">{user.name}</p>
-                <p className="mt-1 break-all text-sm text-gray-400">{user.email}</p>
+                <p className="mt-1 break-all text-sm text-black-400">{user.email}</p>
 
-                <div className="mt-6 w-full space-y-3 border-t border-gray-700/50 pt-6">
+                <div className="mt-6 w-full space-y-3 border-t border-black-700/50 pt-6">
                   <div
                     className={`inline-flex w-full items-center justify-center gap-2 rounded-full px-3 py-2 text-sm ${
                       user.email_verified
@@ -511,14 +520,14 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
                   )}
 
                   <div className="flex justify-between text-sm pt-3">
-                    <span className="text-gray-400">User ID</span>
-                    <span className="font-mono text-xs text-gray-200">{user.id}</span>
+                    <span className="text-black-400">User ID</span>
+                    <span className="font-mono text-xs text-black-200">{user.id}</span>
                   </div>
 
                   {user.createdAt && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-400">Member since</span>
-                      <span className="text-gray-200">
+                      <span className="text-black-400">Member since</span>
+                      <span className="text-black-200">
                         {new Date(user.createdAt).toLocaleDateString()}
                       </span>
                     </div>
@@ -526,279 +535,352 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
                 </div>
               </div>
             </div>
+
+            {/* GitHub Stats */}
+            {user.github_id && (
+              <div className="rounded-2xl border border-black-700/50 bg-gradient-to-br from-black-800/60 to-black-900/60 p-6 shadow-xl backdrop-blur-xl">
+                <div className="mb-4 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-[#C9A227]" fill="currentColor" viewBox="0 0 24 24">
+                    <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                  </svg>
+                  <h3 className="text-sm font-semibold text-white">GitHub Stats</h3>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="rounded-lg overflow-hidden bg-black-900/30">
+                    <img 
+                      src={`https://github-readme-stats.vercel.app/api?username=${user.github_id}&show_icons=true&theme=transparent&rank_icon=github&include_all_commits&hide=stars,issues&show=reviews,prs_merged,prs_merged_percentage&text_color=C9A227&title_color=C9A227&icon_color=C9A227&bg_color=00000000`}
+                      alt="GitHub Stats"
+                      className="w-full"
+                    />
+                  </div>
+
+                  <div className="rounded-lg overflow-hidden bg-black-900/30">
+                    <img 
+                      src={`https://github-readme-stats.vercel.app/api/top-langs?username=${user.github_id}&layout=compact&langs_count=6&exclude_repo=luminolens&show_icons=true&theme=transparent&text_color=C9A227&title_color=C9A227&bg_color=00000000`}
+                      alt="Top Languages"
+                      className="w-full"
+                    />
+                  </div>
+
+                  <div className="rounded-lg overflow-hidden bg-black-900/30">
+                    <img 
+                      src={`https://streak-stats.demolab.com?user=${user.github_id}&theme=transparent&hide_border=true&ring=C9A227&fire=C9A227&currStreakLabel=C9A227&sideLabels=C9A227&currStreakNum=FFFFFF&sideNums=FFFFFF&dates=888888`}
+                      alt="GitHub Streak"
+                      className="w-full"
+                    />
+                  </div>
+
+                  <a 
+                    href={`https://github.com/${user.github_id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-center text-sm text-[#C9A227] hover:text-[#B8901E] transition mt-2"
+                  >
+                    View Full GitHub Profile →
+                  </a>
+                </div>
+              </div>
+            )}
           </section>
 
-          {/* RIGHT: Settings */}
-          <section className="space-y-6 lg:col-span-3">
-            {/* Profile Settings */}
-            <div className="rounded-2xl border border-gray-700/50 bg-gradient-to-br from-gray-800/60 to-gray-900/60 p-6 shadow-xl backdrop-blur-xl">
-              <div className="mb-6 flex items-center gap-3">
-                <User size={20} className="text-[#C9A227]" />
-                <h2 className="text-lg font-semibold text-white">Profile Settings</h2>
+          {/* RIGHT: Tabbed Settings */}
+          <section className="lg:col-span-3">
+            {/* Tab Navigation */}
+            <div className="mb-6 border-b border-black-700/50">
+              <div className="flex gap-6 overflow-x-auto">
+                {tabs.map((tab) => {
+                  const Icon = tab.icon;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition border-b-2 whitespace-nowrap ${
+                        activeTab === tab.id
+                          ? 'border-[#C9A227] text-[#C9A227]'
+                          : 'border-transparent text-black-400 hover:text-black-200 hover:border-black-600'
+                      }`}
+                    >
+                      <Icon size={16} />
+                      {tab.label}
+                    </button>
+                  );
+                })}
               </div>
+            </div>
 
-              <form onSubmit={handleSaveProfile} className="space-y-4">
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <label className="block">
-                    <span className="mb-2 block text-sm font-medium text-gray-400">
-                      Full Name
-                    </span>
-                    <input
-                      type="text"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full rounded-xl border border-gray-700/50 bg-gray-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
-                    />
-                  </label>
-                  <label className="block">
-                    <span className="mb-2 block text-sm font-medium text-gray-400">
-                      Email
-                    </span>
-                    <input
-                      type="email"
-                      value={user.email}
-                      disabled
-                      className="w-full rounded-xl border border-gray-700/50 bg-gray-900/60 px-4 py-3 text-gray-500 outline-none"
-                    />
-                  </label>
-                </div>
+            {/* Tab Content */}
+            <div>
+              {/* Profile Tab */}
+              {activeTab === 'profile' && (
+                <div className="rounded-2xl border border-black-700/50 bg-gradient-to-br from-black-800/60 to-black-900/60 p-6 shadow-xl backdrop-blur-xl">
+                  <h2 className="text-lg font-semibold text-white mb-6">Profile Settings</h2>
 
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <label className="block">
-                    <span className="mb-2 block text-sm font-medium text-gray-400">
-                      Phone Number
-                    </span>
-                    <input
-                      type="tel"
-                      value={formData.phoneNumber}
-                      onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                      placeholder="+91 98765 43210"
-                      className="w-full rounded-xl border border-gray-700/50 bg-gray-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
-                    />
-                  </label>
-                  <label className="block">
-                    <span className="mb-2 block text-sm font-medium text-gray-400">
-                      GitHub ID (Optional)
-                    </span>
-                    <input
-                      type="text"
-                      value={formData.githubId}
-                      onChange={(e) => setFormData({ ...formData, githubId: e.target.value })}
-                      placeholder="your-github-username"
-                      className="w-full rounded-xl border border-gray-700/50 bg-gray-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
-                    />
-                  </label>
-                </div>
-
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <label className="block">
-                    <span className="mb-2 block text-sm font-medium text-gray-400">
-                      Class
-                    </span>
-                    <input
-                      type="text"
-                      value={formData.class}
-                      onChange={(e) => setFormData({ ...formData, class: e.target.value })}
-                      placeholder="e.g., 10th, 11th"
-                      className="w-full rounded-xl border border-gray-700/50 bg-gray-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
-                    />
-                  </label>
-                  <label className="block">
-                    <span className="mb-2 block text-sm font-medium text-gray-400">
-                      Section
-                    </span>
-                    <input
-                      type="text"
-                      value={formData.section}
-                      onChange={(e) => setFormData({ ...formData, section: e.target.value })}
-                      placeholder="e.g., A, B"
-                      className="w-full rounded-xl border border-gray-700/50 bg-gray-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
-                    />
-                  </label>
-                </div>
-
-                <div>
-                  <label className="mb-3 block text-sm font-medium text-gray-400">
-                    Interested Niches (Select at least one)
-                  </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    {NICHES.map((niche) => (
-                      <label key={niche} className="flex items-center space-x-2 cursor-pointer">
+                  <form onSubmit={handleSaveProfile} className="space-y-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-medium text-black-400">
+                          Full Name
+                        </span>
                         <input
-                          type="checkbox"
-                          checked={formData.interestedNiches.includes(niche)}
-                          onChange={() => handleNicheToggle(niche)}
-                          className="h-4 w-4 rounded border-gray-600 bg-gray-700 accent-[#C9A227]"
+                          type="text"
+                          value={formData.name}
+                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
                         />
-                        <span className="text-sm text-gray-300">{niche}</span>
                       </label>
-                    ))}
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-medium text-black-400">
+                          Email
+                        </span>
+                        <input
+                          type="email"
+                          value={user.email}
+                          disabled
+                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-black-500 outline-none"
+                        />
+                      </label>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-medium text-black-400">
+                          Phone Number
+                        </span>
+                        <input
+                          type="tel"
+                          value={formData.phoneNumber}
+                          onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                          placeholder="+91 98765 43210"
+                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-medium text-black-400">
+                          GitHub ID (Optional)
+                        </span>
+                        <input
+                          type="text"
+                          value={formData.githubId}
+                          onChange={(e) => setFormData({ ...formData, githubId: e.target.value })}
+                          placeholder="your-github-username"
+                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+                        />
+                      </label>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-medium text-black-400">
+                          Class
+                        </span>
+                        <input
+                          type="text"
+                          value={formData.class}
+                          onChange={(e) => setFormData({ ...formData, class: e.target.value })}
+                          placeholder="e.g., 10th, 11th"
+                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-medium text-black-400">
+                          Section
+                        </span>
+                        <input
+                          type="text"
+                          value={formData.section}
+                          onChange={(e) => setFormData({ ...formData, section: e.target.value })}
+                          placeholder="e.g., A, B"
+                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+                        />
+                      </label>
+                    </div>
+
+                    <div>
+                      <label className="mb-3 block text-sm font-medium text-black-400">
+                        Interested Niches (Select at least one)
+                      </label>
+                      <div className="grid grid-cols-2 gap-3">
+                        {NICHES.map((niche) => (
+                          <label key={niche} className="flex items-center space-x-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={formData.interestedNiches.includes(niche)}
+                              onChange={() => handleNicheToggle(niche)}
+                              className="h-4 w-4 rounded border-black-600 bg-black-700 accent-[#C9A227]"
+                            />
+                            <span className="text-sm text-black-300">{niche}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={saving}
+                      className="rounded-xl bg-[#C9A227] px-6 py-3 font-semibold text-black transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {saving ? 'Saving...' : 'Save Changes'}
+                    </button>
+                  </form>
+                </div>
+              )}
+
+              {/* Security Tab */}
+              {activeTab === 'security' && (
+                <div className="rounded-2xl border border-black-700/50 bg-gradient-to-br from-black-800/60 to-black-900/60 p-6 shadow-xl backdrop-blur-xl">
+                  <h2 className="text-lg font-semibold text-white mb-6">Change Password</h2>
+
+                  <form onSubmit={handleUpdatePassword} className="space-y-4">
+                    <label className="block">
+                      <span className="mb-2 block text-sm font-medium text-black-400">
+                        Current Password
+                      </span>
+                      <div className="relative">
+                        <input
+                          type={showPasswords.current ? 'text' : 'password'}
+                          value={passwordData.current}
+                          onChange={(e) =>
+                            setPasswordData({ ...passwordData, current: e.target.value })
+                          }
+                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 pr-12 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setShowPasswords({
+                              ...showPasswords,
+                              current: !showPasswords.current,
+                            })
+                          }
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-black-400"
+                        >
+                          {showPasswords.current ? (
+                            <EyeOff size={18} />
+                          ) : (
+                            <Eye size={18} />
+                          )}
+                        </button>
+                      </div>
+                    </label>
+
+                    <label className="block">
+                      <span className="mb-2 block text-sm font-medium text-black-400">
+                        New Password
+                      </span>
+                      <div className="relative">
+                        <input
+                          type={showPasswords.new ? 'text' : 'password'}
+                          value={passwordData.new}
+                          onChange={(e) =>
+                            setPasswordData({ ...passwordData, new: e.target.value })
+                          }
+                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 pr-12 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setShowPasswords({
+                              ...showPasswords,
+                              new: !showPasswords.new,
+                            })
+                          }
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-black-400"
+                        >
+                          {showPasswords.new ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                      </div>
+                    </label>
+
+                    <label className="block">
+                      <span className="mb-2 block text-sm font-medium text-black-400">
+                        Confirm Password
+                      </span>
+                      <div className="relative">
+                        <input
+                          type={showPasswords.confirm ? 'text' : 'password'}
+                          value={passwordData.confirm}
+                          onChange={(e) =>
+                            setPasswordData({ ...passwordData, confirm: e.target.value })
+                          }
+                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 pr-12 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setShowPasswords({
+                              ...showPasswords,
+                              confirm: !showPasswords.confirm,
+                            })
+                          }
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-black-400"
+                        >
+                          {showPasswords.confirm ? (
+                            <EyeOff size={18} />
+                          ) : (
+                            <Eye size={18} />
+                          )}
+                        </button>
+                      </div>
+                    </label>
+
+                    <button
+                      type="submit"
+                      disabled={saving}
+                      className="rounded-xl bg-[#C9A227] px-6 py-3 font-semibold text-black transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {saving ? 'Updating...' : 'Update Password'}
+                    </button>
+                  </form>
+                </div>
+              )}
+
+              {/* Sessions Tab */}
+              {activeTab === 'sessions' && (
+                <div className="rounded-2xl border border-black-700/50 bg-gradient-to-br from-black-800/60 to-black-900/60 p-6 shadow-xl backdrop-blur-xl">
+                  <h2 className="text-lg font-semibold text-white mb-6">Active Sessions</h2>
+
+                  <ul className="space-y-3">
+                    <li className="flex items-center justify-between rounded-xl border border-black-700/50 bg-black-900/30 px-4 py-3">
+                      <div className="text-black-200 font-medium">
+                        Current Session
+                        <span className="ml-2 rounded-full bg-green-500/20 px-2 py-1 text-xs text-green-400">
+                          (active)
+                        </span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              )}
+
+              {/* Danger Zone Tab */}
+              {activeTab === 'danger' && (
+                <div className="rounded-2xl border border-red-500/30 bg-gradient-to-br from-black-800/60 to-black-900/60 p-6 shadow-xl backdrop-blur-xl">
+                  <h2 className="text-lg font-semibold text-white mb-6">Danger Zone</h2>
+                  
+                  <p className="text-sm text-black-400 mb-6">
+                    These actions are irreversible. Please be certain before proceeding.
+                  </p>
+
+                  <div className="flex flex-wrap gap-3">
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center gap-2 rounded-xl border border-black-700 px-6 py-3 text-black-200 hover:bg-black-800 transition"
+                    >
+                      <LogOut size={16} />
+                      Sign Out
+                    </button>
+                    <button
+                      onClick={handleDeleteAccount}
+                      disabled={saving}
+                      className="flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/15 px-6 py-3 text-red-300 hover:bg-red-500/25 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <Trash2 size={16} />
+                      Delete Account
+                    </button>
                   </div>
                 </div>
-
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="rounded-xl bg-[#C9A227] px-6 py-3 font-semibold text-black transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {saving ? 'Saving...' : 'Save Changes'}
-                </button>
-              </form>
-            </div>
-
-            {/* Security */}
-            <div className="rounded-2xl border border-gray-700/50 bg-gradient-to-br from-gray-800/60 to-gray-900/60 p-6 shadow-xl backdrop-blur-xl">
-              <div className="mb-6 flex items-center gap-3">
-                <Shield size={20} className="text-[#C9A227]" />
-                <h2 className="text-lg font-semibold text-white">Security</h2>
-              </div>
-
-              <form onSubmit={handleUpdatePassword} className="space-y-4">
-                <label className="block">
-                  <span className="mb-2 block text-sm font-medium text-gray-400">
-                    Current Password
-                  </span>
-                  <div className="relative">
-                    <input
-                      type={showPasswords.current ? 'text' : 'password'}
-                      value={passwordData.current}
-                      onChange={(e) =>
-                        setPasswordData({ ...passwordData, current: e.target.value })
-                      }
-                      className="w-full rounded-xl border border-gray-700/50 bg-gray-900/60 px-4 py-3 pr-12 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
-                    />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowPasswords({
-                          ...showPasswords,
-                          current: !showPasswords.current,
-                        })
-                      }
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
-                    >
-                      {showPasswords.current ? (
-                        <EyeOff size={18} />
-                      ) : (
-                        <Eye size={18} />
-                      )}
-                    </button>
-                  </div>
-                </label>
-
-                <label className="block">
-                  <span className="mb-2 block text-sm font-medium text-gray-400">
-                    New Password
-                  </span>
-                  <div className="relative">
-                    <input
-                      type={showPasswords.new ? 'text' : 'password'}
-                      value={passwordData.new}
-                      onChange={(e) =>
-                        setPasswordData({ ...passwordData, new: e.target.value })
-                      }
-                      className="w-full rounded-xl border border-gray-700/50 bg-gray-900/60 px-4 py-3 pr-12 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
-                    />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowPasswords({
-                          ...showPasswords,
-                          new: !showPasswords.new,
-                        })
-                      }
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
-                    >
-                      {showPasswords.new ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button>
-                  </div>
-                </label>
-
-                <label className="block">
-                  <span className="mb-2 block text-sm font-medium text-gray-400">
-                    Confirm Password
-                  </span>
-                  <div className="relative">
-                    <input
-                      type={showPasswords.confirm ? 'text' : 'password'}
-                      value={passwordData.confirm}
-                      onChange={(e) =>
-                        setPasswordData({ ...passwordData, confirm: e.target.value })
-                      }
-                      className="w-full rounded-xl border border-gray-700/50 bg-gray-900/60 px-4 py-3 pr-12 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
-                    />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowPasswords({
-                          ...showPasswords,
-                          confirm: !showPasswords.confirm,
-                        })
-                      }
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
-                    >
-                      {showPasswords.confirm ? (
-                        <EyeOff size={18} />
-                      ) : (
-                        <Eye size={18} />
-                      )}
-                    </button>
-                  </div>
-                </label>
-
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="rounded-xl bg-[#C9A227] px-6 py-3 font-semibold text-black transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {saving ? 'Updating...' : 'Update Password'}
-                </button>
-              </form>
-            </div>
-
-            {/* Sessions */}
-            <div className="rounded-2xl border border-gray-700/50 bg-gradient-to-br from-gray-800/60 to-gray-900/60 p-6 shadow-xl backdrop-blur-xl">
-              <div className="mb-6 flex items-center gap-3">
-                <Laptop size={20} className="text-[#C9A227]" />
-                <h2 className="text-lg font-semibold text-white">Sessions & Devices</h2>
-              </div>
-
-              <ul className="space-y-3">
-                <li className="flex items-center justify-between rounded-xl border border-gray-700/50 bg-gray-900/30 px-4 py-3">
-                  <div className="text-gray-200 font-medium">
-                    Current Session
-                    <span className="ml-2 rounded-full bg-green-500/20 px-2 py-1 text-xs text-green-400">
-                      (current)
-                    </span>
-                  </div>
-                </li>
-              </ul>
-            </div>
-
-            {/* Danger Zone */}
-            <div className="rounded-2xl border border-red-500/30 bg-gradient-to-br from-gray-800/60 to-gray-900/60 p-6 shadow-xl backdrop-blur-xl">
-              <div className="mb-6 flex items-center gap-3">
-                <AlertTriangle size={20} className="text-red-400" />
-                <h2 className="text-lg font-semibold text-white">Danger Zone</h2>
-              </div>
-
-              <div className="flex flex-wrap gap-3">
-                <button
-                  onClick={handleDeleteAccount}
-                  disabled={saving}
-                  className="flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/15 px-6 py-3 text-red-300 hover:bg-red-500/25 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Trash2 size={16} />
-                  Delete Account
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-2 rounded-xl border border-gray-700 px-6 py-3 text-gray-200 hover:bg-gray-800 transition"
-                >
-                  <LogOut size={16} />
-                  Sign Out
-                </button>
-              </div>
+              )}
             </div>
           </section>
         </div>
@@ -819,7 +901,7 @@ function AccountPageWithParams() {
 export default function AccountPage() {
   return (
     <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center bg-gray-900">
+      <div className="flex min-h-screen items-center justify-center bg-black-900">
         <p className="text-white">Loading…</p>
       </div>
     }>
