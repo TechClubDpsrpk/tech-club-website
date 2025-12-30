@@ -66,11 +66,13 @@ function LegacyTimeline() {
       content: (
         <div>
           <p className="mb-4 text-xs text-yellow-600 md:text-sm dark:text-yellow-400">
-            ⚡ Peak form: National Design Champion. Full-stack website built from scratch. Carousel
-            hero. School roasted. Reputation sealed.
+            Now with a new Discord server and website up and running, the Tech Club finally laid the
+            foundation for an ever-expanding community of tech enthusiasts, learners and
+            participants, to maintain the school's excellence in the technological domain.
           </p>
-          <p className="text-xs text-neutral-500 italic dark:text-neutral-400">
-            &quot;Built by students. Loved by all. Approved by parents. Blocked by one.&quot; 😭
+          <p className="text-xs text-neutral-600 dark:text-neutral-300">
+            We conducted workshops, won trophies, and had succeeded in establishing DPS Ruby Park's
+            tech scene.
           </p>
         </div>
       ),
