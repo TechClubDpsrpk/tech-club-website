@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   User,
   Shield,
@@ -13,6 +13,7 @@ import {
   LogOut,
   Trash2,
   Crown,
+  X,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -42,10 +43,12 @@ type User = {
 
 export default function AccountPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -103,6 +106,11 @@ export default function AccountPage() {
         githubId: mergedUser.github_id || '',
         interestedNiches: mergedUser.interested_niches || [],
       });
+
+      // Show welcome modal if this is a new signup
+      if (searchParams.get('newSignup') === 'true') {
+        setShowWelcomeModal(true);
+      }
     } catch {
       router.push('/login');
     } finally {
@@ -325,6 +333,51 @@ export default function AccountPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-black px-4 pt-24 pb-16">
+      {/* Welcome Modal */}
+      {showWelcomeModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="relative w-full max-w-md rounded-2xl border border-[#C9A227]/50 bg-gradient-to-br from-gray-800/90 to-gray-900/90 p-8 shadow-2xl flex flex-col items-center">
+            <button
+              onClick={() => setShowWelcomeModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white transition"
+            >
+              <X size={20} />
+            </button>
+
+            <div className="text-center space-y-4 w-full flex flex-col items-center">
+              <img src="/tc-logo.svg" alt="TC Logo" className="w-24 h-24 mb-4" />
+
+              <h2 className="text-2xl font-bold text-white">Welcome!</h2>
+              
+              <p className="text-gray-300">
+                Hey {user?.name || 'there'}, your account has been successfully created. Let's get you set up with a complete profile.
+              </p>
+
+              <div className="pt-4 space-y-2 w-full">
+                <p className="text-sm text-gray-400">Complete these steps:</p>
+                <ul className="text-sm text-gray-300 space-y-1">
+                  <li>✓ Upload a profile picture</li>
+                  <li>✓ Verify your email</li>
+                  <li>✓ Check latest announcements</li>
+                  <li>✓ Have a look around the website!</li>
+                </ul>
+              </div>
+
+              <button
+                onClick={() => setShowWelcomeModal(false)}
+                className="w-full mt-6 rounded-lg bg-[#C9A227] px-4 py-3 font-semibold text-black hover:bg-[#B8901E] transition"
+              >
+                Let's Go!
+              </button>
+
+              <p className="text-xs text-gray-500 mt-4">
+                Made with ❤️ by Agnihotra, Adiya, Naitik and Rishabh
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="mx-auto max-w-6xl">
         {/* Toast */}
         {message && (
@@ -443,7 +496,7 @@ export default function AccountPage() {
                       disabled={resendingEmail}
                       className="w-full rounded-lg border border-yellow-500/30 bg-yellow-500/20 px-3 py-2 text-xs text-yellow-300 hover:bg-yellow-500/30 transition disabled:opacity-50"
                     >
-                      {resendingEmail ? 'Sending...' : 'Resend verification email'}
+                      {resendingEmail ? 'Sending...' : 'Send verification email'}
                     </button>
                   )}
 

@@ -78,7 +78,7 @@ export default function SignupPage() {
         return;
       }
 
-      router.push('/');
+      router.push('/account?newSignup=true');
       router.refresh();
     } catch (err) {
       setError('An error occurred. Please try again.');
