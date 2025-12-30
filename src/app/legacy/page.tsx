@@ -78,7 +78,7 @@ function LegacyTimeline() {
   ];
 
   return (
-    <div className="relative w-full overflow-clip">
+    <div className="relative w-full overflow-x-hidden">
       <Timeline data={data} />
     </div>
   );
