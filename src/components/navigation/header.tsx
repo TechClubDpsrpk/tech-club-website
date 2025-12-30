@@ -118,21 +118,15 @@ const Header = () => {
                 {link.isLogo ? (
                   <Link
                     href="/"
-                    className={`flex items-center justify-center rounded-full px-2 py-2 transition-all duration-300 ${
+                    className={`flex items-center justify-center rounded-full p-[3px] transition-all duration-300 ${
                       isActive
-                        ? 'scale-105 bg-[#C9A227] shadow-lg shadow-[#C9A227]/20'
+                        ? 'bg-[#C9A227]'
                         : isLightMode
                           ? 'hover:bg-gray-100'
                           : 'hover:bg-gray-800/50'
                     }`}
                   >
-                    <Image
-                      src={isActive ? '/tc-logo_active.svg' : '/tc-logo.svg'}
-                      alt="Logo"
-                      width={20}
-                      height={20}
-                      priority
-                    />
+                    <Image src="/tc-logo_circle.svg" alt="Logo" width={30} height={30} priority />
                   </Link>
                 ) : link.isOpt === false ? (
                   <Link
