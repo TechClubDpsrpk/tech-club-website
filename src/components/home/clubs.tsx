@@ -33,12 +33,12 @@ const Clubs = ({ className, ...props }: ClubsProps) => {
     <section
       ref={targetRef}
       {...props}
-      className={`relative overflow-hidden bg-[#dfe1d7] px-6 pb-16 md:px-24 ${className ?? ''}`}
+      className={`relative overflow-hidden bg-[#dfe1d7] px-6 pb-20 md:px-24 md:pb-16 ${className ?? ''}`}
     >
       {/* === Whole Section Parallax Wrapper === */}
       <motion.div style={{ y: ySlow }} className="will-change-transform">
         {/* === Strip 1 - Parallax Left === */}
-        <div className="-mt-22 -ml-20 opacity-70">
+        <div className="-mt-22 -ml-20 hidden opacity-70 md:block">
           {Array.from({ length: 6 }, (_, i) => {
             const pt = i * 12.5;
             const xTransform = i % 2 === 0 ? xFastR : xFastL;
@@ -63,10 +63,10 @@ const Clubs = ({ className, ...props }: ClubsProps) => {
         <div className="my-5" />
 
         {/* === Main Grid === */}
-        <div className="grid grid-cols-1 gap-12 pt-32 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-12 pt-20 md:pt-32 lg:grid-cols-2">
           {/* Left text */}
-          <div className="flex scale-125 items-center justify-center text-zinc-700">
-            <p className="max-w-xl text-lg leading-5">
+          <div className="flex scale-100 items-center justify-center text-zinc-700 md:scale-125">
+            <p className="max-w-xl text-base leading-5 md:text-lg">
               The Tech Club isn&apos;t just about code. It&apos;s a canvas for innovation, design,
               and creation. Across hardware, AI, gaming, and more — we explore tech with a story, a
               purpose, and precision.
@@ -79,7 +79,7 @@ const Clubs = ({ className, ...props }: ClubsProps) => {
           </div>
 
           {/* Right list */}
-          <div className="mx-auto flex max-w-xl scale-110 flex-col items-start gap-2 text-[#444]">
+          <div className="mx-auto flex max-w-xl scale-100 flex-col items-start gap-2 text-[#444] md:scale-110">
             {clubList.map(({ title, icon: Icon }, index) => (
               <React.Fragment key={title}>
                 <div className="flex items-center gap-3 transition-transform hover:scale-110 hover:text-[#222]">

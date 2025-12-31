@@ -83,22 +83,22 @@ const Intro = ({ className, ...props }: IntroProps) => {
       {/* THIS is what the navbar observes */}
       <section
         {...props}
-        className={`min-h-screen bg-black px-6 pt-48 pb-32 text-white md:px-10 ${className ?? ''}`}
+        className={`min-h-screen bg-black px-6 pt-24 pb-16 text-white md:px-10 md:pt-48 md:pb-32 ${className ?? ''}`}
       >
         <div className="mx-auto max-w-7xl space-y-10 md:px-6 lg:px-24">
           <div className="flex flex-col space-y-4 md:space-y-6">
             <div className="lg:items-center lg:justify-between">
-              <h2 className="text-5xl font-light md:text-6xl">
+              <h2 className="text-4xl font-light md:text-6xl">
                 Where{' '}
                 <span className="font-[family-name:monospace] font-medium md:text-6xl">ideas</span>{' '}
                 turn into{' '}
               </h2>
-              <span className="font-[family-name:monospace] font-medium md:text-6xl">
+              <span className="pb-3 font-[family-name:monospace] text-4xl font-medium md:text-6xl">
                 {displayText}.
               </span>
             </div>
 
-            <p className="text-md max-w-3xl text-zinc-300">
+            <p className="max-w-3xl text-sm text-zinc-300 md:text-lg">
               We’re a community of <span className="font-medium text-white">builders</span>,{' '}
               <span className="font-medium text-white">coders</span>,{' '}
               <span className="font-medium text-white">designers</span> and{' '}
@@ -127,7 +127,7 @@ const Intro = ({ className, ...props }: IntroProps) => {
                     {feature.icon}
                     <h3 className="pt-3 text-xl font-semibold">{feature.title}</h3>
                     <h5 className="text-md pb-3 text-zinc-400">{feature.sub}</h5>
-                    <p className="text-sm text-zinc-200">{feature.description}</p>
+                    <p className="text-[11px] text-zinc-200 md:text-sm">{feature.description}</p>
                   </div>
                 </div>
               </MagicCard>
