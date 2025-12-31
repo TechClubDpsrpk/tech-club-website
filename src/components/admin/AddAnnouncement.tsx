@@ -12,11 +12,13 @@ export default function AddAnnouncement() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
     if (imageUrl && !imageUrl.startsWith('http')) {
       alert('Please enter a valid image URL');
       setLoading(false);
       return;
     }
+
     const { error } = await supabase.from('announcements').insert({
       heading,
       description,
@@ -29,49 +31,44 @@ export default function AddAnnouncement() {
       setHeading('');
       setDescription('');
       setImageUrl('');
-      alert('Announcement added!');
+      alert('Announcement added successfully!');
     }
 
     setLoading(false);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4 rounded-xl shadow-md">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <input
         type="text"
-        placeholder="Heading"
+        placeholder="Announcement Heading"
         value={heading}
         onChange={(e) => setHeading(e.target.value)}
-        className="w-full border p-2 rounded"
+        className="w-full border border-gray-700 bg-gray-900/60 p-3 rounded-lg text-white placeholder-gray-400 focus:border-[#C9A227] focus:outline-none transition"
         required
       />
 
-      <div>
-        <textarea
-          placeholder="Description (Markdown supported: **bold**, *italic*, [links](url), etc.)"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full border p-2 rounded"
-          required
-          rows={6}
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          💡 Tip: Use **text** for bold, *text* for italic, [text](url) for links
-        </p>
-      </div>
+      <textarea
+        placeholder="Description (Markdown supported: **bold**, *italic*, [links](url), etc.)"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        className="w-full border border-gray-700 bg-gray-900/60 p-3 rounded-lg text-white placeholder-gray-400 focus:border-[#C9A227] focus:outline-none transition"
+        required
+        rows={6}
+      />
 
       <input
         type="url"
         placeholder="Image URL (optional)"
         value={imageUrl}
         onChange={(e) => setImageUrl(e.target.value)}
-        className="w-full border p-2 rounded"
+        className="w-full border border-gray-700 bg-gray-900/60 p-3 rounded-lg text-white placeholder-gray-400 focus:border-[#C9A227] focus:outline-none transition"
       />
 
       <button
         type="submit"
         disabled={loading}
-        className="bg-[#C9A227] cursor-pointer text-white px-4 py-2 rounded-xl hover:bg-[#B8901E] focus:outline-none focus:ring-2 focus:ring-[#C9A227] focus:ring-offset-2 disabled:opacity-50 transition-[2s]"
+        className="w-full bg-[#C9A227] cursor-pointer text-black px-4 py-3 rounded-lg hover:bg-[#B8901E] focus:outline-none focus:ring-2 focus:ring-[#C9A227] focus:ring-offset-2 disabled:opacity-50 transition font-semibold"
       >
         {loading ? 'Adding...' : 'Add Announcement'}
       </button>
