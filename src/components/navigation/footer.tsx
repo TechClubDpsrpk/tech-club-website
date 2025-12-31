@@ -6,27 +6,26 @@ import { FlickeringGrid } from '../magicui/flickering-grid';
 
 const footerLinks = [
   {
-    title: '(Tech Club)',
+    title: 'tech club',
     links: [
-      { label: 'Home', href: '/' },
-      { label: 'About Us', href: '/about' },
+      { label: 'home', href: '/' },
+      { label: 'about us', href: '/about' },
     ],
   },
   {
-    title: '(Resources)',
+    title: 'resources',
     links: [
-      { label: 'Gallery', href: '/gallery' },
-      { label: 'Announcements', href: '/announcements' },
-      { label: 'Legacy', href: '/legacy' },
-      { label: 'Contact Us', href: '/contact' },
+      { label: 'gallery', href: '/gallery' },
+      { label: 'legacy', href: '/legacy' },
+      { label: 'contact us', href: '/contact' },
     ],
   },
   {
-    title: '(Socials)',
+    title: 'socials',
     links: [
-      { label: 'Youtube', href: '/gallery' },
-      { label: 'Facebook', href: '/announcements' },
-      { label: 'Medium', href: '/legacy' },
+      { label: 'youtube', href: 'https://www.youtube.com/@techclubdpsrpk' },
+      { label: 'facebook', href: '/announcements' },
+      { label: 'medium', href: 'https://medium.com/@techclubdpsrpk' },
     ],
   },
 ];
@@ -36,8 +35,8 @@ const Footer = () => {
     <div className="-pb-1 bottom-0 -z-10 flex w-screen flex-col justify-center overflow-hidden">
       <div className="flex flex-col gap-2 px-4 pt-10 md:flex-row md:px-24">
         {footerLinks.map((section) => (
-          <div key={section.title} className="flex flex-col p-2 md:p-6">
-            <p className="scale-z-105 font-[family-name:var(--font-vt)] text-xl font-medium text-zinc-100">
+          <div key={section.title} className="flex flex-col p-2 md:p-6 md:pr-10">
+            <p className="scale-z-105 pb-2 font-[family-name:var(--font-space-mono)] text-xl text-zinc-100">
               {section.title}
             </p>
 
@@ -45,6 +44,8 @@ const Footer = () => {
               <Link
                 key={label}
                 href={href}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="group relative inline-flex w-fit items-center py-1 text-sm text-zinc-400 transition-all duration-300 hover:text-[#fac924]"
               >
                 <span className="relative inline-block transition-transform duration-300 group-hover:translate-x-1">
@@ -80,7 +81,7 @@ const Footer = () => {
       </div>
       <div className="-z-10">
         <FlickeringGrid
-          className="relative inset-0 -top-14 z-0 -mt-[785px] overflow-hidden [mask-image:radial-gradient(700px_circle_at_center,white,transparent)]"
+          className="relative inset-0 -top-14 z-0 -mt-[785px] overflow-hidden [mask-image:radial-gradient(600px_circle_at_center,white,transparent)]"
           squareSize={4}
           gridGap={6}
           color="#FAC924"
