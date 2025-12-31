@@ -1,26 +1,85 @@
 /* eslint-disable @next/next/no-img-element */
-import { BlurFade } from '@/components/magicui/blur-fade';
-import Image from 'next/image';
+'use client';
 
-const images = Array.from({ length: 9 }, (_, i) => {
-  const isLandscape = i % 2 === 0;
-  const width = isLandscape ? 800 : 600;
-  const height = isLandscape ? 600 : 800;
-  return `https://picsum.photos/seed/${i + 1}/${width}/${height}`;
-});
+import { BlurFade } from '@/components/magicui/blur-fade';
+import { useEffect, useState } from 'react';
+
+interface GDriveImage {
+  id: string;
+  name: string;
+  mimeType: string;
+}
 
 export function BlurFadeGallery() {
+  const [images, setImages] = useState<GDriveImage[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchImages() {
+      try {
+        const response = await fetch('/api/gdrive-images');
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch images');
+        }
+        
+        const data = await response.json();
+        setImages(data.images || []);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load images');
+        console.error('Error fetching images:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchImages();
+  }, []);
+
+  if (loading) {
+    return (
+      <section id="photos" className="min-h-screen">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <p className="text-lg text-gray-600">Loading gallery...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section id="photos" className="min-h-screen">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <p className="text-lg text-red-600 mb-2">Error loading images</p>
+            <p className="text-sm text-gray-600">{error}</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (images.length === 0) {
+    return (
+      <section id="photos" className="min-h-screen">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <p className="text-lg text-gray-600">No images found in Google Drive folder</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="photos">
       <div className="columns-2 gap-4 p-4 pt-20 sm:columns-3">
-        {images.map((imageUrl, idx) => (
-          <BlurFade key={imageUrl} delay={0.25 + idx * 0.05} inView>
-            <Image
-              width={800}
-              height={600}
+        {images.map((image, idx) => (
+          <BlurFade key={image.id} delay={0.25 + idx * 0.05} inView>
+            <img
               className="mb-4 size-full rounded-sm object-contain"
-              src={imageUrl}
-              alt={`Random stock image ${idx + 1}`}
+              src={`/api/gdrive-image/${image.id}`}
+              alt={image.name}
+              loading="lazy"
             />
           </BlurFade>
         ))}
