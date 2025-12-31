@@ -4,9 +4,12 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Await the params
+    const { id } = await params;
+    
     const auth = new google.auth.GoogleAuth({
       credentials: {
         client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
@@ -19,13 +22,13 @@ export async function GET(
 
     // Get file metadata first to get the mime type
     const fileMetadata = await drive.files.get({
-      fileId: params.id,
+      fileId: id,
       fields: 'mimeType',
     });
 
     // Get file content as a stream
     const response = await drive.files.get(
-      { fileId: params.id, alt: 'media' },
+      { fileId: id, alt: 'media' },
       { responseType: 'stream' }
     );
 
