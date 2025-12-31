@@ -57,11 +57,11 @@ export function ProjectsBeam() {
   }, []);
 
   if (loading) {
-    return <p className="mt-10 text-center">Loading projects…</p>;
+    return <p className="mt-10 text-center">Loading quests…</p>;
   }
 
   if (!projects.length) {
-    return <p className="mt-10 text-center">No projects available yet</p>;
+    return <p className="mt-10 text-center">No quests available yet</p>;
   }
 
   return (
