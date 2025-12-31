@@ -93,9 +93,9 @@ export default function ActivitySection({ userId }: ActivitySectionProps) {
       {activities.length === 0 ? (
         <div className="py-8 text-center">
           <p className="text-gray-400">
-            No projects completed yet. Visit the{' '}
-            <a href="/projects" className="text-[#C9A227] hover:underline">
-              projects page
+            No quests completed yet. Visit the{' '}
+            <a href="/quests" className="text-[#C9A227] hover:underline">
+              quests page
             </a>{' '}
             to participate!
           </p>

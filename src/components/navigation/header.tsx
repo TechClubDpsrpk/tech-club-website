@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
-import { Megaphone, User, Users, Images, Landmark, Mail, UserPlus, FolderOpenDot } from 'lucide-react';
+import { Megaphone, User, Users, Images, Mail, UserPlus,  LandPlot } from 'lucide-react';
 
 const Header = () => {
   const pathname = usePathname() ?? '';
@@ -21,7 +21,7 @@ const Header = () => {
     { href: '/gallery', label: 'Gallery', icon: Images, isOpt: false },
     { href: '/contact', label: 'Contact Us', icon: Mail, isOpt: false },
     { href: '/announcements', label: 'Announcements', icon: Megaphone, isOpt: true },
-    { href: '/projects', label: 'Projects', icon: FolderOpenDot, isOpt: true },
+    { href: '/quests', label: 'Quests', icon: LandPlot, isOpt: true },
   ];
 
   useEffect(() => {

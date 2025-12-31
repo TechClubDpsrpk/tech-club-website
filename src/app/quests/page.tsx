@@ -8,9 +8,9 @@ export default function ProjectsPage() {
       <div className="mx-auto max-w-4xl px-4 mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2">Projects</h1>
+            <h1 className="text-4xl font-bold text-white mb-2">Quests</h1>
             <p className="text-gray-400">
-              Contribute to exciting projects and earn points
+              Contribute to exciting quests and earn points
             </p>
           </div>
           <Link
