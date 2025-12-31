@@ -16,7 +16,7 @@ import {
   X,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
-
+import ActivitySection from '@/components/account/ActivitySection';
 const NICHES = [
   'Robotics',
   'Development',
@@ -586,6 +586,7 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
 
           {/* RIGHT: Tabbed Settings */}
           <section className="lg:col-span-3">
+<ActivitySection userId={user.id} />
             {/* Tab Navigation */}
             <div className="mb-6 border-b border-black-700/50">
               <div className="flex gap-6 overflow-x-auto">
