@@ -161,7 +161,10 @@
     @apply bg-background text-foreground;
     margin: 0;
     padding: 0;
-    background: radial-gradient(circle at top center, rgb(71, 71, 21) 0%, rgba(0, 0, 0, 1) 20%);
+    background: radial-gradient(
+      circle at top center,
+      rgba(235, 189, 47, 0.6) 0%,
+      rgba(0, 0, 0, 1) 15%
+    );
   }
 }
-
