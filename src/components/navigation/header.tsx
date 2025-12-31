@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
-import { Megaphone, User, Users, Images, Mail, UserPlus,  LandPlot } from 'lucide-react';
+import { Megaphone, User, Users, Images, Mail, UserPlus, LandPlot } from 'lucide-react';
 
 const Header = () => {
   const pathname = usePathname() ?? '';
@@ -13,6 +13,7 @@ const Header = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isAtTop, setIsAtTop] = useState(true);
 
   const navLinks = [
     { href: '/', isLogo: true },
@@ -57,6 +58,15 @@ const Header = () => {
 
       if (!ticking) {
         window.requestAnimationFrame(() => {
+          // On mobile, always keep header shortened
+          if (window.innerWidth < 768) {
+            setIsScrolled(true);
+            setIsAtTop(currentScrollY < -1);
+            lastScrollY = currentScrollY;
+            ticking = false;
+            return;
+          }
+
           // Show icons only when scrolled down more than 100px
           if (currentScrollY > 100 && currentScrollY > lastScrollY) {
             setIsScrolled(true);
@@ -102,7 +112,9 @@ const Header = () => {
   }, [pathname]);
 
   return (
-    <header className="fixed top-4 left-1/2 z-50 -translate-x-1/2">
+    <header
+      className={`fixed ${isAtTop ? 'top-4' : 'bottom-4'} left-1/2 z-50 -translate-x-1/2 md:top-4`}
+    >
       <nav
         className={`rounded-full border px-2 py-2 shadow-xl backdrop-blur-xl transition-all duration-500 ${
           isLightMode ? 'border-gray-200/50 bg-white/90' : 'border-gray-700/50 bg-gray-900/50'
