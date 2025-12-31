@@ -57,11 +57,11 @@ const MemberCard = ({
       />
     </div>
     <div className="mt-1 max-w-[80px] text-center sm:mt-2 sm:max-w-[100px]">
-      <p className="font-[family-name:var(--font-space-mono)] text-[10px] leading-tight font-semibold text-white sm:text-xs lg:text-sm">
+      <p className="font-[family-name:var(--font-space-mono)] text-[10px] leading-tight text-white sm:text-xs lg:text-sm">
         {member.name}
       </p>
       {(role || member.role) && (
-        <p className="font-[family-name:var(--font-vt)] text-[8px] text-yellow-400 sm:text-[10px] lg:text-xs">
+        <p className="font-[family-name:var(--font-vt)] text-[10px] text-yellow-400 sm:text-[12px] lg:text-sm">
           {role || member.role}
         </p>
       )}
@@ -109,7 +109,7 @@ const FourWaySplit = () => (
 export default function AboutTechClub() {
   return (
     <>
-      <section className="flex min-h-screen flex-col items-center rounded-xl px-6 py-24 text-white md:px-18 lg:px-42">
+      <section className="flex min-h-screen flex-col items-center rounded-xl px-6 pt-24 pb-16 text-white md:px-18 lg:px-42">
         <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
           {/* Glare Card with Logo */}
           <GlareCard className="flex items-center justify-center bg-[#202225]">
@@ -124,35 +124,35 @@ export default function AboutTechClub() {
           </GlareCard>
 
           {/* Heading */}
-          <h1 className="mt-10 font-[family-name:var(--font-vt)] text-4xl font-extrabold tracking-tight md:text-5xl">
+          <h1 className="mt-16 mb-8 font-[family-name:monospace] text-5xl font-medium tracking-tight md:text-6xl">
             About Tech Club
           </h1>
 
           {/* Description */}
-          <p className="mt-6 font-[family-name:var(--font-space-mono)] text-sm leading-relaxed text-zinc-400">
+          <p className="mt-6 font-[family-name:var(--font-space-mono)] leading-relaxed text-zinc-300">
             Welcome to Tech Club — where sleep schedules go to die, and bugs mysteriously disappear
             just before demo day. We&apos;re a group of caffeine-powered keyboard mashers who claim
             to &quot;innovate,&quot; &quot;build,&quot; and &quot;collaborate&quot; — mostly by
             arguing over dark mode vs. light mode.
           </p>
 
-          <p className="mt-4 font-[family-name:var(--font-space-mono)] text-sm text-zinc-400">
+          <p className="mt-4 font-[family-name:var(--font-space-mono)] text-[15px] text-zinc-300">
             We specialize in turning perfectly good weekends into frantic hackathons and pretending
             to understand what half the buzzwords actually mean. AI? Blockchain? Quantum pizza
             delivery? Sure, why not. If it&apos;s trendy and barely stable, we&apos;re into it.
           </p>
 
-          <p className="mt-4 font-[family-name:var(--font-space-mono)] text-sm text-zinc-400">
+          <p className="mt-4 font-[family-name:var(--font-space-mono)] text-zinc-300">
             If you&apos;ve ever broken production at 2AM and called it a &quot;learning
             experience,&quot; or declared a figma wireframe &quot;done&quot; because you&apos;re out
             of coffee — congratulations, you&apos;re one of us.
           </p>
         </div>
       </section>
-      <section className="min-h-screen px-6 py-24 text-white md:px-18 lg:px-42">
+      <section className="min-h-screen px-6 pt-24 pb-20 text-white md:px-18 lg:px-42">
         <div className="mx-auto max-w-7xl">
           <div className="mb-8 text-center sm:mb-12">
-            <h2 className="font-[family-name:var(--font-vt)] text-2xl leading-tight font-extrabold tracking-tight sm:text-4xl lg:text-6xl">
+            <h2 className="font-[family-name:monospace] text-4xl font-medium tracking-tight sm:text-3xl md:text-4xl lg:text-5xl">
               TECH CLUB BOARD 2025–26
             </h2>
             <p className="mt-2 font-[family-name:var(--font-space-mono)] text-xs text-zinc-400 sm:mt-4 sm:text-sm lg:text-base">
@@ -181,7 +181,7 @@ export default function AboutTechClub() {
                 {/* Left Branch - Mentors */}
                 <div className="flex w-1/2 flex-col items-center">
                   <div className="rounded-full border-2 border-yellow-400 bg-gray-900 px-6 py-2">
-                    <p className="font-[family-name:var(--font-vt)] text-sm font-bold text-yellow-400">
+                    <p className="text-md font-[family-name:var(--font-vt)] text-yellow-400">
                       MENTORS
                     </p>
                   </div>
@@ -210,7 +210,7 @@ export default function AboutTechClub() {
                   <div className="flex w-full justify-center gap-24">
                     <div className="flex flex-col items-center">
                       <div className="rounded-full border-2 border-yellow-400 bg-gray-900 px-4 py-2">
-                        <p className="font-[family-name:var(--font-vt)] text-xs font-bold whitespace-nowrap text-yellow-400">
+                        <p className="font-[family-name:var(--font-vt)] text-sm whitespace-nowrap text-yellow-400">
                           OFFSTAGE EXECUTIVE
                         </p>
                       </div>
@@ -220,7 +220,7 @@ export default function AboutTechClub() {
 
                     <div className="flex flex-col items-center">
                       <div className="rounded-full border-2 border-yellow-400 bg-gray-900 px-4 py-2">
-                        <p className="font-[family-name:var(--font-vt)] text-xs font-bold whitespace-nowrap text-yellow-400">
+                        <p className="font-[family-name:var(--font-vt)] text-sm whitespace-nowrap text-yellow-400">
                           OFFSTAGE EXECUTIVE
                         </p>
                       </div>
@@ -240,7 +240,7 @@ export default function AboutTechClub() {
                       {teamStructure.creativeHeads.map((head, idx) => (
                         <div key={idx} className="flex flex-col items-center">
                           <div className="rounded-full border-2 border-yellow-400 bg-gray-900 px-3 py-2">
-                            <p className="font-[family-name:var(--font-vt)] text-[10px] font-bold whitespace-nowrap text-yellow-400">
+                            <p className="font-[family-name:var(--font-vt)] text-[11px] whitespace-nowrap text-yellow-400">
                               {head.role === 'Video'
                                 ? 'CREATIVE HEAD (VIDEO)'
                                 : head.role === 'Graphics'
