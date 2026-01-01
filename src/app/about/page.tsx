@@ -10,7 +10,7 @@ const teamStructure = {
   vicePresident: { name: 'ankush roy', role: 'Vice President', image: '/team/ankush.png' },
   mentors: [
     { name: 'anshuman tripathi', image: '/team/anshuman.jpeg' },
-    { name: 'avanindra chakraborty', image: '/team/avanindra.jpg' },
+    { name: 'avanindra chakraborty', image: '/team/avanindra.jpeg' },
     { name: 'naitik chattaraj', image: '/team/naitik.jpeg' },
     { name: 'parthiv pal', image: '/team/parthiv.jpg' },
     { name: 'rishabh das', image: '/team/rishabh.jpeg' },
