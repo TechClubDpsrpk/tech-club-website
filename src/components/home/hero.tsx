@@ -8,8 +8,10 @@ type HeroProps = React.HTMLAttributes<HTMLElement>;
 const Hero = ({ className, ...props }: HeroProps) => {
   return (
     <section {...props} className={`home ${className ?? ''}`}>
-      <div className="yellow-circle-top-left" />
-      <div className="yellow-circle-bottom-right" />
+      <div className="circle-container">
+        <div className="yellow-circle-top-left overflow-hidden" />
+        <div className="yellow-circle-bottom-right overflow-hidden" />
+      </div>
 
       <div className="container">
         <div className="home-content">

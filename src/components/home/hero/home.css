@@ -7,7 +7,8 @@
   min-height: 100vh;
   width: 100vw;
   max-width: 100vw;
-  overflow: hidden;
+  overflow-x: hidden !important;
+  overflow-y: auto;
 }
 
 .container {
@@ -100,115 +101,31 @@ h1 {
   gap: 20px;
 }
 
-.orbit-container {
-  flex-shrink: 0;
-  width: 600px;
-  height: 600px;
-  position: relative;
-  margin-left: auto; /* 👈 pushes it to the right */
-  margin-right: 5vw; /* 👈 adds spacing from right edge */
-}
+.circle-container {
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
 
-/* Elliptical Orbits */
-.orbit-path {
+  overflow: hidden;
   position: absolute;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.yellow-circle-top-left,
+.yellow-circle-bottom-right {
+  width: 56vw;
+  height: 56vw;
+  background-color: #fac71e;
   border-radius: 50%;
-}
-
-/* Customize each path size and rotation */
-.path1 {
-  width: 450px;
-  height: 300px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(20deg);
-}
-
-.path2 {
-  width: 480px;
-  height: 310px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-20deg);
-}
-
-.path3 {
-  width: 500px;
-  height: 320px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-
-.path4 {
-  width: 470px;
-  height: 330px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(80deg);
-}
-
-/* Center image */
-.center-img {
   position: absolute;
-  width: 220px;
-  height: 220px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  object-fit: cover;
-  z-index: 2;
-  border: 5px solid white;
-}
-
-/* Orbiting images */
-.orbit-img {
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid white;
-}
-
-/* Custom positions on the elliptical paths */
-.pos1 {
-  top: 80px;
-  left: 150px;
-}
-.pos2 {
-  top: 100px;
-  right: 130px;
-}
-.pos3 {
-  bottom: 90px;
-  left: 140px;
-}
-.pos4 {
-  bottom: 80px;
-  right: 120px;
+  z-index: -1;
 }
 
 .yellow-circle-top-left {
-  width: 900px;
-  height: 900px;
-  background-color: #fac71e;
-  border-radius: 50%;
-  position: absolute;
-  top: -400px;
-  left: -450px;
-  z-index: -1;
+  top: -24.8vw;
+  left: -27.8vw;
 }
 
 .yellow-circle-bottom-right {
-  width: 900px;
-  height: 900px;
-  background-color: #fac71e;
-  border-radius: 50%;
-  position: absolute;
-  bottom: -425px;
-  right: -450px;
-  z-index: -1;
+  bottom: -26.5vw;
+  right: -28vw;
 }
