@@ -6,11 +6,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { Megaphone, User, Users, Images, Mail, UserPlus, LandPlot } from 'lucide-react';
+import { supabase } from '@/lib/supabaseClient';
 
 const Header = () => {
   const pathname = usePathname() ?? '';
   const [isLightMode, setIsLightMode] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isAtTop, setIsAtTop] = useState(true);
@@ -21,8 +23,8 @@ const Header = () => {
     // { href: '/legacy', label: 'Legacy', icon: Landmark, isOpt: false },
     { href: '/gallery', label: 'Gallery', icon: Images, isOpt: false },
     { href: '/contact', label: 'Contact Us', icon: Mail, isOpt: false },
-    { href: '/announcements', label: 'Announcements', icon: Megaphone, isOpt: true },
-    { href: '/quests', label: 'Quests', icon: LandPlot, isOpt: true },
+    { href: '/announcements', label: 'Announcements', icon: Megaphone, isOpt: true, requiresVerified: false },
+    { href: '/quests', label: 'Quests', icon: LandPlot, isOpt: true, requiresVerified: true },
   ];
 
   useEffect(() => {
@@ -35,12 +37,28 @@ const Header = () => {
         if (response.ok) {
           const data = await response.json();
           setIsAuthenticated(data.isAuthenticated);
+          
+          // Fetch email_verified from Supabase
+          if (data.isAuthenticated && data.user?.id) {
+            const { data: userData } = await supabase
+              .from('users')
+              .select('email_verified')
+              .eq('id', data.user.id)
+              .single();
+            
+            console.log('User data from Supabase:', userData);
+            setEmailVerified(userData?.email_verified || false);
+          } else {
+            setEmailVerified(false);
+          }
         } else {
           setIsAuthenticated(false);
+          setEmailVerified(false);
         }
       } catch (error) {
         console.error('Auth check failed:', error);
         setIsAuthenticated(false);
+        setEmailVerified(false);
       } finally {
         setLoading(false);
       }
@@ -125,6 +143,24 @@ const Header = () => {
             const isActive =
               pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
             const isHome = link.href === '/';
+
+            // Check if link should be shown based on authentication and verification
+            const shouldShowOptionalLink = link.isOpt 
+              ? isAuthenticated && (!link.requiresVerified || emailVerified)
+              : true;
+
+            if (link.href === '/quests') {
+              console.log('Quests visibility check:', {
+                isAuthenticated,
+                emailVerified,
+                requiresVerified: link.requiresVerified,
+                shouldShowOptionalLink
+              });
+            }
+
+            if (!shouldShowOptionalLink && link.isOpt) {
+              return null;
+            }
 
             return (
               <React.Fragment key={link.href}>

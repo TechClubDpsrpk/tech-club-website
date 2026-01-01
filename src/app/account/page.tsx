@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import ActivitySection from '@/components/account/ActivitySection';
+
 const NICHES = [
   'Robotics',
   'Development',
@@ -42,6 +43,83 @@ type User = {
 };
 
 type TabType = 'profile' | 'security' | 'sessions' | 'danger';
+
+// GitHub Stats Card Component with error handling
+const GitHubStatsCard = ({ githubId }: { githubId: string }) => {
+  const [statsError, setStatsError] = useState(false);
+  const [langsError, setLangsError] = useState(false);
+  const [streakError, setStreakError] = useState(false);
+
+  return (
+    <div className="rounded-2xl border border-black-700/50 bg-gradient-to-br from-black-800/60 to-black-900/60 p-6 shadow-xl backdrop-blur-xl">
+      <div className="mb-4 flex items-center gap-2">
+        <svg className="w-5 h-5 text-[#C9A227]" fill="currentColor" viewBox="0 0 24 24">
+          <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+        </svg>
+        <h3 className="text-sm font-semibold text-white">GitHub Stats</h3>
+      </div>
+      
+      <div className="space-y-3">
+        {/* General Stats */}
+        <div className="rounded-lg overflow-hidden bg-black-900/30">
+          {!statsError ? (
+            <img 
+              src={`https://github-readme-stats.vercel.app/api?username=${githubId}&show_icons=true&theme=transparent&rank_icon=github&include_all_commits&hide=stars,issues&show=reviews,prs_merged,prs_merged_percentage&text_color=C9A227&title_color=C9A227&icon_color=C9A227&bg_color=00000000`}
+              alt="GitHub Stats"
+              className="w-full"
+              onError={() => setStatsError(true)}
+            />
+          ) : (
+            <div className="flex items-center justify-center p-8 text-black-500">
+              <p className="text-sm">Stats unavailable</p>
+            </div>
+          )}
+        </div>
+
+        {/* Top Languages */}
+        <div className="rounded-lg overflow-hidden bg-black-900/30">
+          {!langsError ? (
+            <img 
+              src={`https://github-readme-stats.vercel.app/api/top-langs?username=${githubId}&layout=compact&langs_count=6&exclude_repo=luminolens&show_icons=true&theme=transparent&text_color=C9A227&title_color=C9A227&bg_color=00000000`}
+              alt="Top Languages"
+              className="w-full"
+              onError={() => setLangsError(true)}
+            />
+          ) : (
+            <div className="flex items-center justify-center p-8 text-black-500">
+              <p className="text-sm">Language stats unavailable</p>
+            </div>
+          )}
+        </div>
+
+        {/* GitHub Streak */}
+        <div className="rounded-lg overflow-hidden bg-black-900/30">
+          {!streakError ? (
+            <img 
+              src={`https://streak-stats.demolab.com?user=${githubId}&theme=transparent&hide_border=true&ring=C9A227&fire=C9A227&currStreakLabel=C9A227&sideLabels=C9A227&currStreakNum=FFFFFF&sideNums=FFFFFF&dates=888888`}
+              alt="GitHub Streak"
+              className="w-full"
+              onError={() => setStreakError(true)}
+            />
+          ) : (
+            <div className="flex items-center justify-center p-8 text-black-500">
+              <p className="text-sm">Streak stats unavailable</p>
+            </div>
+          )}
+        </div>
+
+        <a 
+          href={`https://github.com/${githubId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block text-center text-sm text-[#C9A227] hover:text-[#B8901E] transition mt-2"
+        >
+          View Full GitHub Profile →
+        </a>
+      </div>
+    </div>
+  );
+};
 
 // Main component without searchParams
 function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
@@ -538,55 +616,13 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
 
             {/* GitHub Stats */}
             {user.github_id && (
-              <div className="rounded-2xl border border-black-700/50 bg-gradient-to-br from-black-800/60 to-black-900/60 p-6 shadow-xl backdrop-blur-xl">
-                <div className="mb-4 flex items-center gap-2">
-                  <svg className="w-5 h-5 text-[#C9A227]" fill="currentColor" viewBox="0 0 24 24">
-                    <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-                  </svg>
-                  <h3 className="text-sm font-semibold text-white">GitHub Stats</h3>
-                </div>
-                
-                <div className="space-y-3">
-                  <div className="rounded-lg overflow-hidden bg-black-900/30">
-                    <img 
-                      src={`https://github-readme-stats.vercel.app/api?username=${user.github_id}&show_icons=true&theme=transparent&rank_icon=github&include_all_commits&hide=stars,issues&show=reviews,prs_merged,prs_merged_percentage&text_color=C9A227&title_color=C9A227&icon_color=C9A227&bg_color=00000000`}
-                      alt="GitHub Stats"
-                      className="w-full"
-                    />
-                  </div>
-
-                  <div className="rounded-lg overflow-hidden bg-black-900/30">
-                    <img 
-                      src={`https://github-readme-stats.vercel.app/api/top-langs?username=${user.github_id}&layout=compact&langs_count=6&exclude_repo=luminolens&show_icons=true&theme=transparent&text_color=C9A227&title_color=C9A227&bg_color=00000000`}
-                      alt="Top Languages"
-                      className="w-full"
-                    />
-                  </div>
-
-                  <div className="rounded-lg overflow-hidden bg-black-900/30">
-                    <img 
-                      src={`https://streak-stats.demolab.com?user=${user.github_id}&theme=transparent&hide_border=true&ring=C9A227&fire=C9A227&currStreakLabel=C9A227&sideLabels=C9A227&currStreakNum=FFFFFF&sideNums=FFFFFF&dates=888888`}
-                      alt="GitHub Streak"
-                      className="w-full"
-                    />
-                  </div>
-
-                  <a 
-                    href={`https://github.com/${user.github_id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block text-center text-sm text-[#C9A227] hover:text-[#B8901E] transition mt-2"
-                  >
-                    View Full GitHub Profile →
-                  </a>
-                </div>
-              </div>
+              <GitHubStatsCard githubId={user.github_id} />
             )}
           </section>
 
           {/* RIGHT: Tabbed Settings */}
           <section className="lg:col-span-3">
-<ActivitySection userId={user.id} />
+            <ActivitySection userId={user.id} />
             {/* Tab Navigation */}
             <div className="mb-6 border-b border-black-700/50">
               <div className="flex gap-6 overflow-x-auto">
