@@ -21,7 +21,7 @@ const teamStructure = {
   ],
   offstageExecutives: [
     { name: 'aryaka sikdar', image: '/team/aryaka.jpeg' },
-    { name: 'swapnil basu', image: '/team/swapnil.jpg' },
+    { name: 'swapnil basu', image: '/team/swapnil.JPG' },
   ],
   creativeHeads: [
     { name: 'adiya roy', role: 'Graphics', image: '/team/adiya.jpeg' },
