@@ -27,6 +27,9 @@ export default function AdminLogin() {
 
       const data = await res.json();
 
+      // 🔍 ADD THIS HERE - Debug logging
+      console.log('🔍 Full API Response:', data);
+
       if (data.success) {
         // Redirect to admin dashboard
         router.replace('/admin');
