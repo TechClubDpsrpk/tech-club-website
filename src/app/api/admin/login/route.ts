@@ -13,7 +13,10 @@ export async function POST(req: NextRequest) {
       ADMIN_PASSWORD_HASH?.length
     );
   }
-
+  console.log('Hash exists:', !!ADMIN_PASSWORD_HASH);
+  console.log('Hash length:', ADMIN_PASSWORD_HASH?.length);
+  console.log('Hash starts with $2b$:', ADMIN_PASSWORD_HASH?.startsWith('$2b$'));
+  console.log('Environment:', process.env.NODE_ENV);
   try {
     const { password } = await req.json();
 
