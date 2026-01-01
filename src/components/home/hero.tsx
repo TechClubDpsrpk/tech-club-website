@@ -9,6 +9,9 @@ type HeroProps = React.HTMLAttributes<HTMLElement>;
 const Hero = ({ className, ...props }: HeroProps) => {
   return (
     <section {...props} className={`home ${className ?? ''}`}>
+      <div className="yellow-circle-top-left" />
+      <div className="yellow-circle-bottom-right" />
+
       <div className="container">
         <div className="home-content">
           <p className="top">
@@ -16,32 +19,28 @@ const Hero = ({ className, ...props }: HeroProps) => {
           </p>
 
           <h1>
-            Welcome to
+            turning <span className="text-[#fac71e]">ideas</span>
             <br />
-            the{' '}
-            <i>
-              <span className="bold">Tech Club</span>
-            </i>{' '}
+            into <span className="text-[#fac71e]">projects</span>
           </h1>
 
           <p className="description">
-            We come together to innovate, collaborate, and pretend we know what we’re <br />
-            doing. Whether you’re obsessed with AI, code, robots, or just making things <br />
-            look cool, this is the perfect place to overcommit, under-caffeinate, and <br />
-            accidentally invent the future.
+            Whether you’re obsessed with AI, code, robots, or just making <br /> things look cool,
+            this is the perfect place to overcommit, <br />
+            under-caffeinate, and accidentally invent the future.
           </p>
 
           <div className="button-group">
-            <Link href="/signup" className="btn">
+            <Link href="/signup" className="btn-1">
               Join The Discord
             </Link>
-            <Link href="/signup" className="btn pr">
+            <Link href="/signup" className="btn-2">
               Sign Up
             </Link>
           </div>
         </div>
 
-        <div className="orbit-container">
+        {/* <div className="orbit-container">
           <div className="orbit-path path1"></div>
           <div className="orbit-path path2"></div>
           <div className="orbit-path path3"></div>
@@ -52,7 +51,7 @@ const Hero = ({ className, ...props }: HeroProps) => {
           <img src="/2.jpg" className="orbit-img pos2" />
           <img src="/1.jpg" className="orbit-img pos3" />
           <img src="/2.jpg" className="orbit-img pos4" />
-        </div>
+        </div> */}
       </div>
     </section>
   );

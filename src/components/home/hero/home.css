@@ -4,8 +4,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: nowrap; /* 💥 DON'T allow children to wrap */
-  overflow: hidden; /* optional: hide anything extra */
+  flex-wrap: nowrap;
 
   font-family: 'Roboto Mono', sans-serif;
   color: #fff;
@@ -15,7 +14,8 @@
 .container {
   width: 100%;
   display: flex;
-  max-width: 1800px;
+  align-items: center;
+  justify-content: center;
   margin: 0 auto;
   padding: 5px;
 }
@@ -24,8 +24,8 @@
   display: flex;
   flex-shrink: 0;
   flex-direction: column;
-  align-items: flex-start; /* left-align content */
-  padding-left: 5vw; /* optional: adds some space from the left edge */
+  align-items: center;
+  padding-left: 5vw;
 }
 
 .dps {
@@ -39,46 +39,61 @@
 }
 
 h1 {
-  font-family: 'Space Grotesk', sans-serif;
-  font-weight: 300;
-  font-size: 3rem !important;
+  font-family: 'Rethink Sans', 'sans-serif';
+  font-weight: 200;
+  font-size: 70px !important;
+  line-height: 95%;
+  letter-spacing: -2px;
 }
 
 .description {
-  color: grey;
-  margin-bottom: 40px; /* increased spacing below description */
+  color: #dddddd;
+  margin-bottom: 40px;
   line-height: 1.6;
+  font-family: 'Space Mono', monospace;
+  font-size: 18px !important;
+  text-align: center;
+  margin-top: 30px;
 }
 
-.btn {
-  padding: 10px 20px;
+.btn-1 {
+  padding: 10px 30px;
   margin: 10px 12px 0 0; /* tighter spacing between buttons, top margin only */
   position: relative;
-  background: rgba(30, 30, 30, 0.25);
+  background: rgba(250, 250, 250, 0.2);
   backdrop-filter: blur(18px) saturate(180%);
   border: 1px solid rgba(243, 243, 243, 0.1);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
   border-radius: 2rem;
-  font-family: 'Space Grotesk', sans-serif !important;
-  font-size: 1rem !important;
+  font-family: 'Rethink Sans', sans-serif !important;
+  font-size: 16px !important;
   color: white;
   text-decoration: none;
 }
 
-.btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+.btn-1:hover {
+  background: rgba(255, 255, 255, 0.3);
   color: #fff;
   cursor: pointer;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  transform: scale(1.05);
 }
 
-.pr {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+.btn-2 {
+  padding: 10px 40px;
+  margin: 10px 12px 0 0; /* tighter spacing between buttons, top margin only */
+  position: relative;
+  border-radius: 2rem;
+  font-family: 'Rethink Sans', sans-serif !important;
+  font-size: 16px !important;
+  text-decoration: none;
+  background: #f9ca24;
+  color: #000;
 }
 
-.pr:hover {
-  background: rgba(255, 255, 255, 0.2);
+.btn-2:hover {
+  background: #ffc703;
+  transform: scale(1.05);
+  cursor: pointer;
 }
 .button-group {
   display: flex;
@@ -174,4 +189,26 @@ h1 {
 .pos4 {
   bottom: 80px;
   right: 120px;
+}
+
+.yellow-circle-top-left {
+  width: 900px;
+  height: 900px;
+  background-color: #fac71e;
+  border-radius: 50%;
+  position: absolute;
+  top: -400px;
+  left: -450px;
+  z-index: -1;
+}
+
+.yellow-circle-bottom-right {
+  width: 900px;
+  height: 900px;
+  background-color: #fac71e;
+  border-radius: 50%;
+  position: absolute;
+  bottom: -425px;
+  right: -450px;
+  z-index: -1;
 }
