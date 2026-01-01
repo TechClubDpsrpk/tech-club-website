@@ -175,6 +175,11 @@
     );
   }
 
+  /* Remove gradient on home page */
+  body.no-gradient {
+    background: #000;
+  }
+
   @media (max-width: 768px) {
     body {
       background: radial-gradient(
@@ -182,6 +187,10 @@
         rgba(235, 189, 47, 0.6) 0%,
         rgba(0, 0, 0, 1) 5%
       );
+    }
+
+    body.no-gradient {
+      background: #000;
     }
   }
 }
