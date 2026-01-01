@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Space+Grotesk:wght@300..700&display=swap');
 .home {
   height: 100vh;
   display: flex;
@@ -33,12 +32,6 @@
   color: #f9ca24;
 }
 
-.bold {
-  font-family: 'Space Grotesk', sans-serif;
-  font-weight: 700;
-  font-size: 3rem !important;
-}
-
 h1 {
   font-family: 'Rethink Sans', 'sans-serif';
   font-weight: 200;
@@ -55,25 +48,29 @@ h1 {
   font-size: 20px !important;
   text-align: center;
   margin-top: 30px;
+  width: 36%;
 }
 
 .btn-1 {
   padding: 10px 25px;
   margin: 10px 12px 0 0; /* tighter spacing between buttons, top margin only */
   position: relative;
-  background: rgba(250, 250, 250, 0.2);
-  backdrop-filter: blur(18px) saturate(180%);
-  border: 1px solid rgba(243, 243, 243, 0.1);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  background: #333 !important;
+  border: 1px solid #000;
   border-radius: 2rem;
   font-family: 'Rethink Sans', sans-serif !important;
   font-size: 18px !important;
   color: white;
   text-decoration: none;
+  left: auto;
+  right: auto;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .btn-1:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: #555 !important;
   color: #fff;
   cursor: pointer;
   transform: scale(1.05);
@@ -83,12 +80,18 @@ h1 {
   padding: 10px 56px;
   margin: 10px 12px 0 0; /* tighter spacing between buttons, top margin only */
   position: relative;
+  border: 1.5px solid #000;
   border-radius: 2rem;
   font-family: 'Rethink Sans', sans-serif !important;
   font-size: 18px !important;
   text-decoration: none;
   background: #f9ca24;
   color: #000;
+  left: auto;
+  right: auto;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .btn-2:hover {
@@ -128,4 +131,61 @@ h1 {
 .yellow-circle-bottom-right {
   bottom: -26.5vw;
   right: -28vw;
+}
+
+@media (max-width: 768px) {
+  .home-content {
+    padding-top: 25px;
+  }
+
+  h1 {
+    font-size: 36px !important;
+  }
+
+  .description {
+    font-size: 11px !important;
+    width: 54%;
+    margin-top: 15px;
+    line-height: 14px;
+    margin-bottom: 10px;
+  }
+
+  .button-group {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .btn-1 {
+    font-size: 9px !important;
+    padding: 7px 12px;
+    margin-bottom: -5px;
+  }
+  .btn-2 {
+    font-size: 9px !important;
+    padding: 5px 12px;
+  }
+
+  .container {
+    flex-direction: column;
+  }
+
+  .yellow-circle-top-left,
+  .yellow-circle-bottom-right {
+    width: 95vw;
+    height: 95vw;
+  }
+
+  .yellow-circle-top-left {
+    top: -55vw;
+    left: -45vw;
+  }
+
+  .yellow-circle-bottom-right {
+    bottom: -27vw;
+    right: -50vw;
+  }
+
+  .tag {
+    font-size: 10px !important;
+  }
 }

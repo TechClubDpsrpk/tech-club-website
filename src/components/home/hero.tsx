@@ -15,7 +15,7 @@ const Hero = ({ className, ...props }: HeroProps) => {
 
       <div className="container">
         <div className="home-content">
-          <p className="top">
+          <p className="top tag">
             Tech Club | <span className="dps">DPSRPK</span>
           </p>
 
@@ -26,9 +26,8 @@ const Hero = ({ className, ...props }: HeroProps) => {
           </h1>
 
           <p className="description">
-            Whether you’re obsessed with AI, code, robots, or just making <br /> things look cool,
-            this is the perfect place to overcommit, <br />
-            under-caffeinate, and accidentally invent the future.
+            Whether you’re obsessed with AI, code, robots, or just making things look cool, this is
+            the perfect place to overcommit, under-caffeinate, and accidentally invent the future.
           </p>
 
           <div className="button-group">
