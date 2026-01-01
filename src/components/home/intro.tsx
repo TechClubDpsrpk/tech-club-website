@@ -56,7 +56,7 @@ const Intro = ({ className, ...props }: IntroProps) => {
     const shouldDelete = isDeleting;
 
     if (!shouldDelete && displayText === currentWord) {
-      setTimeout(() => setIsDeleting(true), 1500);
+      setTimeout(() => setIsDeleting(true), 1000);
     } else if (shouldDelete && displayText === '') {
       setIsDeleting(false);
       setWordIndex((prev) => (prev + 1) % words.length);
@@ -67,7 +67,7 @@ const Intro = ({ className, ...props }: IntroProps) => {
             shouldDelete ? prev.slice(0, -1) : currentWord.slice(0, prev.length + 1)
           );
         },
-        shouldDelete ? 250 : 300
+        shouldDelete ? 100 : 200
       );
     }
   }, [displayText, wordIndex, isDeleting, words]);
@@ -75,7 +75,7 @@ const Intro = ({ className, ...props }: IntroProps) => {
   return (
     <>
       {/* Floating header info (NOT observed) */}
-      <div className="absolute flex w-full justify-between p-4 pb-0 font-[family-name:var(--font-space-mono)] text-sm text-zinc-500">
+      <div className="absolute flex w-full justify-between p-4 pb-0 font-[family-name:var(--font-space-mono)] text-sm text-zinc-400">
         <p>Est. 2017</p>
         <span suppressHydrationWarning>{currentTime}</span>
       </div>
