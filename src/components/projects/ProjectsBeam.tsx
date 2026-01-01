@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { TracingBeam } from '@/components/ui/tracing-beam';
 import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
+import { Trash, Trash2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
 type Project = {
@@ -38,23 +39,82 @@ function getTruncatedText(text: string, wordLimit: number = 10): string {
 export function ProjectsBeam() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [hoverId, setHoverId] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadProjects = async () => {
-      const { data, error } = await supabase
-        .from('projects')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (!error && data) {
-        setProjects(data);
-      }
-
-      setLoading(false);
-    };
-
+    checkAdmin();
     loadProjects();
   }, []);
+
+  const checkAdmin = async () => {
+    try {
+      const response = await fetch('/api/auth/check', {
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        setIsAdmin(false);
+        return;
+      }
+
+      const data = await response.json();
+      
+      if (!data?.user?.id) {
+        setIsAdmin(false);
+        return;
+      }
+
+      const { data: userData } = await supabase
+        .from("users")
+        .select("is_admin")
+        .eq("id", data.user.id)
+        .single();
+
+      setIsAdmin(userData?.is_admin || false);
+    } catch (error) {
+      console.error("Error checking admin:", error);
+      setIsAdmin(false);
+    }
+  };
+
+  const loadProjects = async () => {
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (!error && data) {
+      setProjects(data);
+    }
+
+    setLoading(false);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!isAdmin) {
+      alert("Only admins can delete quests");
+      return;
+    }
+
+    if (!confirm("Are you sure you want to delete this quest?")) {
+      return;
+    }
+
+    setDeletingId(id);
+    const { error } = await supabase
+      .from("projects")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      alert("Error deleting quest: " + error.message);
+    } else {
+      setProjects(projects.filter((p) => p.id !== id));
+    }
+    setDeletingId(null);
+  };
 
   if (loading) {
     return <p className="mt-10 text-center">Loading quests…</p>;
@@ -104,12 +164,31 @@ export function ProjectsBeam() {
               <ReactMarkdown>{getTruncatedText(project.description)}</ReactMarkdown>
             </div>
 
-            {/* Learn More button - only this is clickable */}
-            <Link href={`/quests/${project.id}`}>
-              <button className="mt-4 rounded-lg bg-[#C9A227] text-black px-4 py-2 font-semibold hover:bg-[#B8901E] transition">
-                Learn More
-              </button>
-            </Link>
+            {/* Buttons */}
+            <div className="mt-4 flex gap-3">
+              <Link href={`/quests/${project.id}`}>
+                <button className="rounded-lg bg-[#C9A227] text-black px-4 py-2 font-semibold hover:bg-[#B8901E] transition">
+                  Learn More
+                </button>
+              </Link>
+
+{isAdmin && (
+                <button
+                  onClick={() => handleDelete(project.id)}
+                  disabled={deletingId === project.id}
+                  onMouseEnter={() => setHoverId(project.id)}
+                  onMouseLeave={() => setHoverId(null)}
+                  className="flex items-center justify-center rounded-lg bg-red-500/20 border border-red-500/50 p-2 text-red-400 hover:bg-red-500/30 disabled:opacity-50 transition-all flex-shrink-0 hover:cursor-pointer"
+                  title="Delete quest"
+                >
+                  {hoverId === project.id ? (
+                    <Trash2 size={16} />
+                  ) : (
+                    <Trash size={16} />
+                  )}
+                </button>
+              )}
+            </div>
           </div>
         ))}
       </div>
