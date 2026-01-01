@@ -458,7 +458,7 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
               </button>
 
               <p className="text-xs text-black-500 mt-4">
-                Made with ❤️ by Agnihotra, Adiya, Naitik and Rishabh
+                Made with ❤️ by Tech Club (2025-26)
               </p>
             </div>
           </div>
