@@ -105,7 +105,7 @@ export function ProjectsBeam() {
             </div>
 
             {/* Learn More button - only this is clickable */}
-            <Link href={`/projects/${project.id}`}>
+            <Link href={`/quests/${project.id}`}>
               <button className="mt-4 rounded-lg bg-[#C9A227] text-black px-4 py-2 font-semibold hover:bg-[#B8901E] transition">
                 Learn More
               </button>
