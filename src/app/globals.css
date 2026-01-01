@@ -3,6 +3,13 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('../../public/fonts/HelveticaNowDisplay-Regular.woff2') format('woff2');
+  src: url('../../public/fonts/HelveticaNowDisplay-Regular.woff') format('woff');
+  src: url('../../public/fonts/HelveticaNowDisplay-Regular.ttf') format('truetype');
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
