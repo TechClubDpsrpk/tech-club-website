@@ -44,7 +44,7 @@ type User = {
 
 type TabType = 'profile' | 'security' | 'sessions' | 'danger';
 
-// GitHub Stats Card Component with error handling
+// GitHub Stats Card Component
 const GitHubStatsCard = ({ githubId }: { githubId: string }) => {
   const [statsError, setStatsError] = useState(false);
   const [langsError, setLangsError] = useState(false);
@@ -60,7 +60,6 @@ const GitHubStatsCard = ({ githubId }: { githubId: string }) => {
       </div>
       
       <div className="space-y-3">
-        {/* General Stats */}
         <div className="rounded-lg overflow-hidden bg-black-900/30">
           {!statsError ? (
             <img 
@@ -76,7 +75,6 @@ const GitHubStatsCard = ({ githubId }: { githubId: string }) => {
           )}
         </div>
 
-        {/* Top Languages */}
         <div className="rounded-lg overflow-hidden bg-black-900/30">
           {!langsError ? (
             <img 
@@ -92,7 +90,6 @@ const GitHubStatsCard = ({ githubId }: { githubId: string }) => {
           )}
         </div>
 
-        {/* GitHub Streak */}
         <div className="rounded-lg overflow-hidden bg-black-900/30">
           {!streakError ? (
             <img 
@@ -121,7 +118,7 @@ const GitHubStatsCard = ({ githubId }: { githubId: string }) => {
   );
 };
 
-// Main component without searchParams
+// Main component
 function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -130,6 +127,8 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('profile');
+  const [sessions, setSessions] = useState<any[]>([]);
+  const [loadingSessions, setLoadingSessions] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -145,13 +144,20 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
     new: '',
     confirm: '',
   });
+  
   const [showPasswords, setShowPasswords] = useState({
     current: false,
     new: false,
     confirm: false,
   });
+  
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [resendingEmail, setResendingEmail] = useState(false);
+
+  const showMsg = (type: 'success' | 'error', text: string) => {
+    setMessage({ type, text });
+    setTimeout(() => setMessage(null), 3000);
+  };
 
   const fetchUser = async () => {
     try {
@@ -198,14 +204,60 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
     }
   };
 
+  const fetchSessions = async () => {
+    setLoadingSessions(true);
+    try {
+      const response = await fetch('/api/auth/sessions', {
+        credentials: 'include',
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setSessions(data.sessions || []);
+      }
+    } catch (error) {
+      console.error('Error fetching sessions:', error);
+    } finally {
+      setLoadingSessions(false);
+    }
+  };
+
+  const handleRevokeSession = async (sessionId?: string, revokeAll = false) => {
+    if (revokeAll && !confirm('Revoke all other sessions? You will remain logged in on this device.')) {
+      return;
+    }
+    
+    if (sessionId && !confirm('Revoke this session?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/auth/sessions/revoke', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId, revokeAll }),
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        showMsg('success', revokeAll ? 'All other sessions revoked' : 'Session revoked');
+        fetchSessions();
+      } else {
+        showMsg('error', 'Failed to revoke session');
+      }
+    } catch {
+      showMsg('error', 'An error occurred');
+    }
+  };
+
   useEffect(() => {
     fetchUser();
   }, [router]);
 
-  const showMsg = (type: 'success' | 'error', text: string) => {
-    setMessage({ type, text });
-    setTimeout(() => setMessage(null), 3000);
-  };
+  useEffect(() => {
+    if (activeTab === 'sessions') {
+      fetchSessions();
+    }
+  }, [activeTab]);
 
   const handleNicheToggle = (niche: string) => {
     setFormData((prev) => ({
@@ -875,18 +927,97 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
               {/* Sessions Tab */}
               {activeTab === 'sessions' && (
                 <div className="rounded-2xl border border-black-700/50 bg-gradient-to-br from-black-800/60 to-black-900/60 p-6 shadow-xl backdrop-blur-xl">
-                  <h2 className="text-lg font-semibold text-white mb-6">Active Sessions</h2>
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-lg font-semibold text-white">Active Sessions</h2>
+                    {sessions.length > 1 && (
+                      <button
+                        onClick={() => handleRevokeSession(undefined, true)}
+                        className="text-sm text-red-400 hover:text-red-300 transition"
+                      >
+                        Revoke all other sessions
+                      </button>
+                    )}
+                  </div>
 
-                  <ul className="space-y-3">
-                    <li className="flex items-center justify-between rounded-xl border border-black-700/50 bg-black-900/30 px-4 py-3">
-                      <div className="text-black-200 font-medium">
-                        Current Session
-                        <span className="ml-2 rounded-full bg-green-500/20 px-2 py-1 text-xs text-green-400">
-                          (active)
-                        </span>
-                      </div>
-                    </li>
-                  </ul>
+                  {loadingSessions ? (
+                    <div className="text-center py-8 text-black-400">
+                      Loading sessions...
+                    </div>
+                  ) : sessions.length === 0 ? (
+                    <div className="text-center py-8 text-black-400">
+                      No active sessions found
+                    </div>
+                  ) : (
+                    <ul className="space-y-3">
+                      {sessions.map((session) => (
+                        <li
+                          key={session.id}
+                          className={`rounded-xl border px-4 py-4 ${
+                            session.is_current
+                              ? 'border-[#C9A227]/50 bg-[#C9A227]/10'
+                              : 'border-black-700/50 bg-black-900/30'
+                          }`}
+                        >
+                          <div className="flex items-start justify-between gap-4">
+                            <div className="flex-1 space-y-2">
+                              <div className="flex items-center gap-2">
+                                <Laptop size={18} className="text-[#C9A227]" />
+                                <span className="font-medium text-white">
+                                  {session.device_info || 'Unknown Device'}
+                                </span>
+                                {session.is_current && (
+                                  <span className="rounded-full bg-green-500/20 px-2 py-0.5 text-xs text-green-400">
+                                    Current
+                                  </span>
+                                )}
+                              </div>
+                              
+                              <div className="text-sm text-black-400 space-y-1">
+                                <div className="flex items-center gap-2">
+                                  <span className="font-mono">{session.browser}</span>
+                                  <span>•</span>
+                                  <span>{session.os}</span>
+                                </div>
+                                
+                                {session.city !== 'Unknown' && (
+                                  <div>
+                                    📍 {session.city}, {session.country}
+                                  </div>
+                                )}
+                                
+                                <div className="flex items-center gap-4">
+                                  <span>IP: {session.ip_address}</span>
+                                  <span>
+                                    Last active:{' '}
+                                    {new Date(session.last_active_at).toLocaleString()}
+                                  </span>
+                                </div>
+                                
+                                <div className="text-xs text-black-500">
+                                  Created: {new Date(session.created_at).toLocaleString()}
+                                </div>
+                              </div>
+                            </div>
+
+                            {!session.is_current && (
+                              <button
+                                onClick={() => handleRevokeSession(session.id)}
+                                className="shrink-0 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-400 hover:bg-red-500/20 transition"
+                              >
+                                Revoke
+                              </button>
+                            )}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+
+                  <div className="mt-6 pt-6 border-t border-black-700/50 text-sm text-black-400">
+                    <p>
+                      💡 <strong>Tip:</strong> If you see unfamiliar sessions, revoke them immediately and change your password.
+                    </p>
+                  </div>
                 </div>
               )}
 

@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
+import { NextRequest } from 'next/server';
 import { getUserById } from './db';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
@@ -23,6 +24,42 @@ export async function verifyToken(token: string) {
     return decoded;
   } catch {
     return null;
+  }
+}
+
+// NEW: Verify authentication from NextRequest (for API routes)
+export async function verifyAuth(req: NextRequest): Promise<{
+  authenticated: boolean;
+  userId: string | null;
+  user?: any;
+}> {
+  try {
+    const token = req.cookies.get('auth')?.value;
+
+    if (!token) {
+      return { authenticated: false, userId: null };
+    }
+
+    const decoded = await verifyToken(token);
+    if (!decoded) {
+      return { authenticated: false, userId: null };
+    }
+
+    const userId = (decoded as any).id;
+    const user = await getUserById(userId);
+
+    if (!user) {
+      return { authenticated: false, userId: null };
+    }
+
+    return { 
+      authenticated: true, 
+      userId: user.id,
+      user 
+    };
+  } catch (error) {
+    console.error('Auth verification error:', error);
+    return { authenticated: false, userId: null };
   }
 }
 
