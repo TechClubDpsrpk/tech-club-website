@@ -6,6 +6,8 @@ import Header from '@/components/navigation/header';
 import Footer from '@/components/navigation/footer';
 import ContactForm from '@/components/home/contactForm';
 import { JetBrains_Mono } from 'next/font/google';
+import { headers } from 'next/headers';
+import { cookies } from 'next/headers';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -47,11 +49,15 @@ export const metadata: Metadata = {
   description: 'A flagship club of DPS Ruby Park, Kolkata, India',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Check for site access cookie
+  const cookieStore = await cookies();
+  const hasSiteAccess = cookieStore.has('site_access');
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -61,10 +67,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${rethinkSans.variable} ${instrumentSerif.variable} ${vt.variable} ${spaceMono.variable} no-gradient overflow-x-hidden bg-black font-[family-name:var(--font-rethink-sans)] antialiased`}
       >
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          <Header />
+          {hasSiteAccess && <Header />}
           {children}
-
-          <Footer />
+          {hasSiteAccess && <Footer />}
         </ThemeProvider>
       </body>
     </html>
