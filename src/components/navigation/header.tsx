@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
-import { Megaphone, User, Users, Images, Mail, UserPlus, LandPlot } from 'lucide-react';
+import { Megaphone, User, Users, Images, Mail, UserPlus, LandPlot, Newspaper } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 
 const Header = () => {
@@ -20,7 +20,7 @@ const Header = () => {
   const navLinks = [
     { href: '/', isLogo: true },
     { href: '/about', label: 'About Us', icon: Users, isOpt: false },
-    // { href: '/legacy', label: 'Legacy', icon: Landmark, isOpt: false },
+     { href: '/blogs', label: 'Blogs', icon: Newspaper, isOpt: false },
     { href: '/gallery', label: 'Gallery', icon: Images, isOpt: false },
     { href: '/contact', label: 'Contact Us', icon: Mail, isOpt: false },
     { href: '/announcements', label: 'Announcements', icon: Megaphone, isOpt: true, requiresVerified: false },
