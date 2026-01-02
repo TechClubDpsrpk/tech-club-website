@@ -47,16 +47,19 @@ export default function Blogs() {
           // Remove HTML tags from description
           let cleanDesc = item.description.replace(/<[^>]*>/g, '').trim();
           
-          // Extract author from "By Name" pattern at the start (must have at least 2 capitalized words)
-          // Stop at the first lowercase word or punctuation
           let extractedAuthor = null;
-          const authorMatch = cleanDesc.match(/^By\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)(?=\s+[a-z]|\s*[.,:;!?]|$)/);
+
+          // Match: By John Doe / by John Doe / -by John Doe
+          const authorRegex = /^\s*(?:[-–]\s*)?by\s+([A-Za-z]+)\s+([A-Za-z]+)/i;
+
+
+
+          const authorMatch = cleanDesc.match(authorRegex);
+
           if (authorMatch) {
-            extractedAuthor = authorMatch[1].trim();
-            // Remove the byline from description
-            cleanDesc = cleanDesc.replace(/^By\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)+\s*/, '').trim();
+            extractedAuthor = `${authorMatch[1]} ${authorMatch[2]}`.trim();
+            cleanDesc = cleanDesc.replace(authorRegex, '').trim();
           }
-          
           return {
             title: item.title,
             link: item.link,
