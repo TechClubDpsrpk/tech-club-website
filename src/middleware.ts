@@ -17,6 +17,78 @@ interface JwtPayload {
   [key: string]: any;
 }
 
+// Helper function to get user IP
+function getUserIP(request: NextRequest): string {
+  const forwarded = request.headers.get('x-forwarded-for');
+  const realIp = request.headers.get('x-real-ip');
+  
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();
+  }
+  if (realIp) {
+    return realIp;
+  }
+  return 'unknown';
+}
+
+// Check if IP is banned
+async function checkIPBan(ip: string): Promise<{ banned: boolean; reason?: string }> {
+  if (ip === 'unknown') return { banned: false };
+
+  const { data, error } = await supabase
+    .from('banned_ips')
+    .select('reason, ban_expires_at')
+    .eq('ip_address', ip)
+    .maybeSingle();
+
+  if (error || !data) return { banned: false };
+
+  // Check if ban has expired
+  if (data.ban_expires_at) {
+    const expiryDate = new Date(data.ban_expires_at);
+    if (expiryDate < new Date()) {
+      // Ban expired, remove it
+      await supabase.from('banned_ips').delete().eq('ip_address', ip);
+      return { banned: false };
+    }
+  }
+
+  return { banned: true, reason: data.reason };
+}
+
+// Check if user is banned
+async function checkUserBan(userId: string): Promise<{ banned: boolean; reason?: string }> {
+  const { data, error } = await supabase
+    .from('users')
+    .select('is_banned, ban_reason, ban_expires_at')
+    .eq('id', userId)
+    .single();
+
+  if (error || !data) return { banned: false };
+
+  // Check if ban has expired
+  if (data.is_banned && data.ban_expires_at) {
+    const expiryDate = new Date(data.ban_expires_at);
+    if (expiryDate < new Date()) {
+      // Ban expired, unban user
+      await supabase
+        .from('users')
+        .update({ 
+          is_banned: false, 
+          ban_reason: null, 
+          ban_expires_at: null 
+        })
+        .eq('id', userId);
+      return { banned: false };
+    }
+  }
+
+  return { 
+    banned: data.is_banned || false, 
+    reason: data.ban_reason 
+  };
+}
+
 async function verifyJWT(token: string): Promise<JwtPayload | null> {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
@@ -30,12 +102,46 @@ async function verifyJWT(token: string): Promise<JwtPayload | null> {
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get('auth')?.value;
   const pathname = request.nextUrl.pathname;
+  const userIP = getUserIP(request);
 
   console.log('Middleware checking:', { 
     pathname, 
     hasToken: !!token,
-    tokenPreview: token ? token.substring(0, 20) + '...' : 'none'
+    userIP
   });
+
+  // FIRST: Check IP ban for ALL routes (except admin login)
+  if (pathname !== '/admin/login' && pathname !== '/banned') {
+    const ipBanCheck = await checkIPBan(userIP);
+    if (ipBanCheck.banned) {
+      console.log('IP is banned:', userIP);
+      return NextResponse.redirect(
+        new URL(`/banned?reason=${encodeURIComponent(ipBanCheck.reason || 'IP banned')}`, request.url)
+      );
+    }
+  }
+
+  // If user has token, check user ban
+  if (token && pathname !== '/banned') {
+    const payload = await verifyJWT(token);
+    if (payload) {
+      const userBanCheck = await checkUserBan(payload.id);
+      if (userBanCheck.banned) {
+        console.log('User is banned:', payload.id);
+        const response = NextResponse.redirect(
+          new URL(`/banned?reason=${encodeURIComponent(userBanCheck.reason || 'Account banned')}`, request.url)
+        );
+        response.cookies.delete('auth');
+        return response;
+      }
+
+      // Update user's last IP
+      await supabase
+        .from('users')
+        .update({ last_ip: userIP })
+        .eq('id', payload.id);
+    }
+  }
 
   // Check if route is admin route (but not login page)
   const isAdminRoute =
@@ -61,7 +167,6 @@ export async function middleware(request: NextRequest) {
         userId: payload.id
       });
 
-      // Check if user is actually an admin using is_admin column
       const { data: userData, error } = await supabase
         .from('users')
         .select('is_admin')
@@ -110,24 +215,11 @@ export async function middleware(request: NextRequest) {
         return response;
       }
 
-      console.log('Quest token verification result:', { 
-        success: true, 
-        userId: payload.id
-      });
-
-      console.log('Token verified, checking email verification for user:', payload.id);
-
       const { data: userData, error } = await supabase
         .from('users')
         .select('email_verified')
         .eq('id', payload.id)
         .single();
-
-      console.log('Email verification check:', { 
-        userId: payload.id,
-        emailVerified: userData?.email_verified,
-        error: error?.message
-      });
 
       if (error) {
         console.error('Supabase error:', error);
@@ -172,11 +264,6 @@ export async function middleware(request: NextRequest) {
         return response;
       }
 
-      console.log('Auth token verification result:', { 
-        success: true, 
-        userId: payload.id
-      });
-
       console.log('Auth check passed for announcements');
       return NextResponse.next();
     } catch (error) {
@@ -210,11 +297,6 @@ export async function middleware(request: NextRequest) {
         return response;
       }
 
-      console.log('Protected route token verification result:', { 
-        success: true, 
-        userId: payload.id
-      });
-
       console.log('Protected route access granted');
       return NextResponse.next();
     } catch (error) {
@@ -229,5 +311,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/account/:path*', '/admin/:path*', '/quests/:path*', '/announcements/:path*'],
+  matcher: ['/account/:path*', '/admin/:path*', '/quests/:path*', '/announcements/:path*', '/banned'],
 };

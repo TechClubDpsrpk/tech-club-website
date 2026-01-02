@@ -14,11 +14,14 @@ import {
   Megaphone,
   LayoutDashboard,
   FolderKanban,
+  Ban,
+  ShieldAlert,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import AddAnnouncement from '@/components/admin/AddAnnouncement';
 import AddProject from '@/components/admin/AddProject';
 import ProjectSubmissions from '@/components/admin/ProjectSubmissions';
+import { BanUserModal } from '@/app/admin/BanUserModal';
 
 type User = {
   id: string;
@@ -31,6 +34,8 @@ type User = {
   interested_niches: string[];
   is_admin: boolean;
   email_verified: boolean;
+  is_banned?: boolean;
+  ban_reason?: string;
   created_at?: string;
 };
 
@@ -47,6 +52,7 @@ export default function AdminPage() {
   const [updatingAdmin, setUpdatingAdmin] = useState<string | null>(null);
   const [expandedUser, setExpandedUser] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');
+  const [banModalUser, setBanModalUser] = useState<{ id: string; name: string } | null>(null);
 
   useEffect(() => {
     const checkAdminAccess = async () => {
@@ -157,6 +163,48 @@ export default function AdminPage() {
       setError('An error occurred while updating admin status');
     } finally {
       setUpdatingAdmin(null);
+    }
+  };
+
+  const handleBanSuccess = () => {
+    // Refresh the users list after a successful ban
+    const fetchUsers = async () => {
+      const { data } = await supabase
+        .from("users")
+        .select("*")
+        .order('created_at', { ascending: false });
+      if (data) setUsers(data);
+    };
+    fetchUsers();
+  };
+
+  const handleUnbanUser = async (userId: string) => {
+    if (!confirm('Are you sure you want to unban this user?')) return;
+
+    try {
+      const response = await fetch('/api/admin/unban-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to unban user');
+      }
+
+      alert('User unbanned successfully');
+      
+      // Refresh users list
+      const { data: updatedUsers } = await supabase
+        .from('users')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (updatedUsers) setUsers(updatedUsers);
+    } catch (error) {
+      console.error('Error unbanning user:', error);
+      alert(error instanceof Error ? error.message : 'Failed to unban user');
     }
   };
 
@@ -376,6 +424,12 @@ export default function AdminPage() {
                                 Verified
                               </div>
                             )}
+                            {user.is_banned && (
+                              <div className="inline-flex items-center gap-1 rounded-full bg-red-500/20 px-2 py-0.5 text-xs font-medium text-red-400">
+                                <ShieldAlert size={12} />
+                                Banned
+                              </div>
+                            )}
                           </div>
                           <p className="text-sm text-[#C9A227]/70">{user.email}</p>
                         </div>
@@ -480,6 +534,23 @@ export default function AdminPage() {
                                     ? 'Remove Admin'
                                     : 'Make Admin'}
                               </button>
+                              {user.is_banned ? (
+                                <button
+                                  onClick={() => handleUnbanUser(user.id)}
+                                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium bg-green-600/20 text-green-400 hover:bg-green-600/30 transition"
+                                >
+                                  <ShieldAlert size={14} />
+                                  Unban User
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => setBanModalUser({ id: user.id, name: user.name })}
+                                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium bg-red-600/20 text-red-400 hover:bg-red-600/30 transition"
+                                >
+                                  <Ban size={14} />
+                                  Ban User
+                                </button>
+                              )}
                               <button
                                 onClick={() => handleDeleteUser(user.id)}
                                 disabled={deleting === user.id}
@@ -500,6 +571,15 @@ export default function AdminPage() {
           )}
         </div>
       </div>
+
+      {banModalUser && (
+        <BanUserModal
+          userId={banModalUser.id}
+          username={banModalUser.name}
+          onClose={() => setBanModalUser(null)}
+          onSuccess={handleBanSuccess}
+        />
+      )}
     </div>
   );
 }

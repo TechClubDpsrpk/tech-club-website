@@ -254,3 +254,160 @@ export async function sendVerificationEmail(
     throw error;
   }
 }
+export async function sendBanEmail(
+  email: string,
+  username: string,
+  reason: string,
+  isTemporary: boolean,
+  expiryDate?: Date
+) {
+  try {
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM_EMAIL,
+      to: email,
+      subject: 'Account Suspended | Tech Club DPSRPK',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>${emailStyles}</head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <img src="https://techclubdpsrpk.vercel.app/tc-logo.png" 
+                   alt="Tech Club Logo" 
+                   style="max-width: 140px; height: auto; margin-bottom: 15px; display: block; margin-left: auto; margin-right: auto;">
+              <div class="logo-accent">Account Status Update</div>
+            </div>
+            
+            <div class="content">
+              <div class="greeting" style="color: #dc2626;">Account Suspended</div>
+              
+              <p class="text">
+                Hello <span class="accent-text">${username}</span>,
+              </p>
+              
+              <p class="text">
+                Your Tech Club account has been <span style="color: #dc2626; font-weight: bold;">${isTemporary ? 'temporarily' : 'permanently'} suspended</span>.
+              </p>
+              
+              <div class="code-block" style="border-left-color: #dc2626; background-color: #1a0a0a;">
+                <span style="color: #dc2626;">REASON:</span> ${reason}
+              </div>
+              
+              ${isTemporary && expiryDate ? `
+                <div class="divider"></div>
+                
+                <p class="text">
+                  <span class="accent-text">Ban Duration:</span> Until ${expiryDate.toLocaleString('en-US', { 
+                    dateStyle: 'full', 
+                    timeStyle: 'short' 
+                  })}
+                </p>
+                
+                <p class="text">
+                  You will be able to access your account after this date.
+                </p>
+              ` : `
+                <div class="divider"></div>
+                
+                <p class="text" style="color: #dc2626;">
+                  <strong>This is a permanent ban.</strong>
+                </p>
+                
+                <p class="text">
+                  If you believe this was done in error, please contact our support team.
+                </p>
+              `}
+              
+              <p class="text" style="margin-top: 30px; font-size: 12px; color: #999;">
+                If you have any questions or concerns, feel free to reach out to us.
+              </p>
+            </div>
+            
+            <div class="footer">
+              <p>Tech Club | DPS Ruby Park</p>
+              <p style="margin-top: 8px; color: #555;">
+                This is an automated message regarding your account status.
+              </p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+    });
+    console.log('✅ Ban email sent to:', email);
+  } catch (error) {
+    console.error('❌ Failed to send ban email:', error);
+    throw error;
+  }
+}
+
+export async function sendUnbanEmail(email: string, username: string) {
+  try {
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM_EMAIL,
+      to: email,
+      subject: 'Account Reinstated | Tech Club DPSRPK',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>${emailStyles}</head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <img src="https://techclubdpsrpk.vercel.app/tc-logo.png" 
+                   alt="Tech Club Logo" 
+                   style="max-width: 140px; height: auto; margin-bottom: 15px; display: block; margin-left: auto; margin-right: auto;">
+              <div class="logo-accent">Account Status Update</div>
+            </div>
+            
+            <div class="content">
+              <div class="greeting" style="color: #10b981;">Account Reinstated</div>
+              
+              <p class="text">
+                Hello <span class="accent-text">${username}</span>,
+              </p>
+              
+              <p class="text">
+                Good news! Your Tech Club account has been <span style="color: #10b981; font-weight: bold;">reinstated</span>.
+              </p>
+              
+              <div class="divider"></div>
+              
+              <p class="text">
+                You can now access all features and continue using our platform.
+              </p>
+              
+              <div class="code-block" style="border-left-color: #10b981;">
+                <span style="color: #10b981;">$ status: ACTIVE</span><br>
+                <span style="color: #C9A227;">$ access: FULL</span>
+              </div>
+              
+              <p class="text" style="margin-top: 25px;">
+                <strong class="accent-text">Welcome back!</strong> We're glad to have you back in the Tech Club community.
+              </p>
+              
+              <div style="text-align: center;">
+                <a href="${process.env.NEXT_PUBLIC_APP_URL}" class="cta-button">
+                  Return to Dashboard
+                </a>
+              </div>
+            </div>
+            
+            <div class="footer">
+              <p>Tech Club | DPS Ruby Park</p>
+              <p style="margin-top: 8px; color: #555;">
+                Questions? Reach out to us anytime.
+              </p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+    });
+    console.log('✅ Unban email sent to:', email);
+  } catch (error) {
+    console.error('❌ Failed to send unban email:', error);
+    throw error;
+  }
+}
