@@ -51,11 +51,11 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-900 to-black p-4">
+    <div className="flex min-h-screen items-center justify-center bg-black">
       <div className="w-full max-w-md">
-        <div className="rounded-2xl border border-gray-700/50 bg-gray-800/50 p-8 shadow-xl backdrop-blur-xl">
-          <h1 className="mb-2 text-3xl font-bold text-white">Welcome Back</h1>
-          <p className="mb-8 text-gray-400">Login to your account</p>
+        <div className="mt-16 min-h-full rounded-2xl border border-[#fac825] bg-black p-8 backdrop-blur-xl">
+          <h1 className="mb-2 text-xl font-bold text-white md:text-2xl">Welcome Back</h1>
+          <p className="mb-8 text-center text-xl text-gray-400">Login to your account</p>
 
           {error && (
             <div className="mb-6 rounded-lg border border-red-500/50 bg-red-500/20 p-4 text-sm text-red-200">
@@ -73,7 +73,7 @@ export default function LoginPage() {
                 onChange={handleChange}
                 placeholder="you@example.com"
                 required
-                className="w-full rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:outline-none"
+                className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none"
               />
             </div>
 
@@ -86,14 +86,14 @@ export default function LoginPage() {
                 onChange={handleChange}
                 placeholder="••••••••"
                 required
-                className="w-full rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:outline-none"
+                className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="mt-6 w-full rounded-lg bg-[#C9A227] px-4 py-3 font-semibold text-black transition cursor-pointer hover:bg-[#c4b370] disabled:cursor-not-allowed disabled:opacity-50"
+              className="mt-6 w-full cursor-pointer rounded-lg bg-[#C9A227] px-4 py-3 font-semibold text-black transition hover:scale-[101%] hover:bg-[#d4b436] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? 'Logging in...' : 'Login'}
             </button>
@@ -101,7 +101,7 @@ export default function LoginPage() {
 
           <p className="mt-6 text-center text-gray-400">
             Don't have an account?{' '}
-            <Link href="/signup" className="text-[#C9A227] hover:underline">
+            <Link href="/signup" className="text-[#ab8e30] transition hover:text-[#C9A227]">
               Sign up here
             </Link>
           </p>

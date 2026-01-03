@@ -88,11 +88,11 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-900 to-black p-4">
-      <div className="w-full max-w-2xl">
-        <div className="rounded-2xl border border-gray-700/50 bg-gray-800/50 p-8 shadow-xl backdrop-blur-xl">
-          <h1 className="mb-2 text-3xl font-bold text-white">Create Account</h1>
-          <p className="mb-8 text-gray-400">Join us today</p>
+    <div className="flex min-h-screen items-center justify-center bg-black p-4">
+      <div className="w-full max-w-5xl">
+        <div className="mt-20 mb-10 rounded-2xl border border-[#fac825] bg-black p-8 backdrop-blur-xl">
+          <h1 className="mb-2 text-xl font-bold text-white md:text-2xl">Create Account</h1>
+          <p className="mb-8 text-center text-xl text-gray-400">Join the tech club today</p>
 
           {error && (
             <div className="mb-6 rounded-lg border border-red-500/50 bg-red-500/20 p-4 text-sm text-red-200">
@@ -110,7 +110,7 @@ export default function SignupPage() {
                 onChange={handleChange}
                 placeholder="John Doe"
                 required
-                className="w-full rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:outline-none"
+                className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none"
               />
             </div>
 
@@ -123,7 +123,7 @@ export default function SignupPage() {
                 onChange={handleChange}
                 placeholder="you@example.com"
                 required
-                className="w-full rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:outline-none"
+                className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none"
               />
             </div>
 
@@ -136,7 +136,7 @@ export default function SignupPage() {
                 onChange={handleChange}
                 placeholder="+91 98765 43210"
                 required
-                className="w-full rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:outline-none"
+                className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none"
               />
             </div>
 
@@ -150,7 +150,7 @@ export default function SignupPage() {
                   onChange={handleChange}
                   placeholder="e.g., 10th, 11th"
                   required
-                  className="w-full rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:outline-none"
+                  className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none"
                 />
               </div>
 
@@ -163,7 +163,7 @@ export default function SignupPage() {
                   onChange={handleChange}
                   placeholder="e.g., A, B"
                   required
-                  className="w-full rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:outline-none"
+                  className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none"
                 />
               </div>
             </div>
@@ -178,38 +178,40 @@ export default function SignupPage() {
                 value={formData.githubId}
                 onChange={handleChange}
                 placeholder="your-github-username"
-                className="w-full rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:outline-none"
+                className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none"
               />
             </div>
 
-            <div>
-              <label className="mb-2 block text-sm font-medium text-gray-300">Password</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="••••••••"
-                required
-                minLength={8}
-                className="w-full rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:outline-none"
-              />
-              <p className="mt-1 text-xs text-gray-400">Min 8 characters</p>
-            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="mb-2 block text-sm font-medium text-gray-300">Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  required
+                  minLength={8}
+                  className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none"
+                />
+                <p className="mt-1 text-xs text-gray-400">Min 8 characters</p>
+              </div>
 
-            <div>
-              <label className="mb-2 block text-sm font-medium text-gray-300">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                placeholder="••••••••"
-                required
-                className="w-full rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:outline-none"
-              />
+              <div>
+                <label className="mb-2 block text-sm font-medium text-gray-300">
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  required
+                  className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none"
+                />
+              </div>
             </div>
 
             <div>
@@ -218,7 +220,7 @@ export default function SignupPage() {
               </label>
               <div className="grid grid-cols-2 gap-3">
                 {NICHES.map((niche) => (
-                  <label key={niche} className="flex items-center space-x-2 cursor-pointer">
+                  <label key={niche} className="flex cursor-pointer items-center space-x-2">
                     <input
                       type="checkbox"
                       checked={formData.interestedNiches.includes(niche)}
@@ -234,7 +236,7 @@ export default function SignupPage() {
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="mt-6 w-full rounded-lg bg-[#C9A227] px-4 py-3 cursor-pointer font-semibold text-black transition hover:bg-[#d4b436] disabled:cursor-not-allowed disabled:opacity-50"
+              className="mt-6 w-full cursor-pointer rounded-lg bg-[#C9A227] px-4 py-3 font-semibold text-black transition hover:scale-[101%] hover:bg-[#d4b436] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? 'Creating Account...' : 'Sign Up'}
             </button>
@@ -242,7 +244,7 @@ export default function SignupPage() {
 
           <p className="mt-6 text-center text-gray-400">
             Already have an account?{' '}
-            <Link href="/login" className="text-[#C9A227] hover:underline">
+            <Link href="/login" className="text-[#ab8e30] transition hover:text-[#C9A227]">
               Login here
             </Link>
           </p>
