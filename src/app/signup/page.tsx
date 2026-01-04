@@ -38,7 +38,9 @@ export default function SignupPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -121,7 +123,7 @@ export default function SignupPage() {
             {/* Full Name */}
             <div>
               <label className="mb-1 block text-sm font-medium text-gray-300 md:mb-2">
-                Full Name *
+                Full Name
               </label>
               <input
                 type="text"
@@ -341,7 +343,8 @@ export default function SignupPage() {
                 What are your skills and/or achievements in the field of science and technology?
               </label>
               <p className="mb-2 text-xs text-gray-400">
-                Also mention your previous experiences. We welcome complete beginners! Feel free to skip if you're just starting your tech journey.
+                Also mention your previous experiences. We welcome complete beginners! Feel free to
+                skip if you're just starting your tech journey.
               </p>
               <textarea
                 name="skillsAndAchievements"
@@ -359,7 +362,8 @@ export default function SignupPage() {
                 Do you want to participate in events? If yes, what kind(s)? *
               </label>
               <p className="mb-2 text-xs text-gray-400">
-                For example: workshops for beginners, hackathons on Data Science or Web development, inter-school fests like Competitive Programming.
+                For example: workshops for beginners, hackathons on Data Science or Web development,
+                inter-school fests like Competitive Programming.
               </p>
               <textarea
                 name="eventParticipation"
