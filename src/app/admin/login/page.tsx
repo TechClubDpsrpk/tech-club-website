@@ -63,7 +63,7 @@ export default function AdminLogin() {
 
             {/* Header */}
             <div className="relative mb-6 text-center">
-              <h1 className="mt-5 mb-1 bg-[#ffffff] bg-clip-text text-xl font-bold tracking-tight text-transparent md:mb-2 md:text-[25px]">
+              <h1 className="mt-5 mb-1 bg-[#ffffff] bg-clip-text text-xl font-bold tracking-tight text-transparent md:mb-2 md:text-3xl">
                 ADMIN ACCESS
               </h1>
               <div className="flex items-center justify-center gap-1 text-slate-400 md:gap-2">
