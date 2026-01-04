@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 
     if (revokeAll) {
       // Revoke all sessions except current one
-      const currentSessionToken = req.cookies.get('session')?.value;
+      const currentSessionToken = req.cookies.get('auth')?.value;  // ✅ Changed to 'auth'
       
       const { error } = await supabase
         .from('sessions')
