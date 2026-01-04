@@ -2,10 +2,19 @@ import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { NextRequest } from 'next/server';
 import { getUserById } from './db';
+import { createClient } from '@supabase/supabase-js';
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || 'your-secret-key'
 );
+
+// Create a reusable Supabase client getter
+function getSupabaseClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+}
 
 export async function createToken(user: any): Promise<string> {
   const token = await new SignJWT({
@@ -38,36 +47,51 @@ export async function verifyAuth(req: NextRequest): Promise<{
     const token = req.cookies.get('auth')?.value;
 
     if (!token) {
+      console.log('[verifyAuth] No token found in cookies');
       return { authenticated: false, userId: null };
     }
 
-    // Verify JWT
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    // Verify JWT first
+    let payload;
+    try {
+      const result = await jwtVerify(token, JWT_SECRET);
+      payload = result.payload;
+    } catch (jwtError) {
+      console.log('[verifyAuth] JWT verification failed:', jwtError);
+      return { authenticated: false, userId: null };
+    }
+
     const userId = payload.id as string;
 
     // Check if session exists in database
-    const { createClient } = await import('@supabase/supabase-js');
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-
-    const { data: session, error } = await supabase
+    const supabase = getSupabaseClient();
+    
+    const { data: sessions, error } = await supabase
       .from('sessions')
-      .select('id')
+      .select('id, user_id')
       .eq('session_token', token)
       .eq('user_id', userId)
-      .gte('expires_at', new Date().toISOString())
-      .single();
+      .gte('expires_at', new Date().toISOString());
 
-    // If session doesn't exist or has been revoked, deny access
-    if (error || !session) {
+    // Log for debugging
+    console.log('[verifyAuth] Session check:', {
+      userId,
+      sessionsFound: sessions?.length || 0,
+      error: error?.message,
+      hasToken: !!token
+    });
+
+    // If no sessions found or error, deny access
+    if (error || !sessions || sessions.length === 0) {
+      console.log('[verifyAuth] No valid session found');
       return { authenticated: false, userId: null };
     }
 
+    // Get user info
     const user = await getUserById(userId);
 
     if (!user) {
+      console.log('[verifyAuth] User not found in database');
       return { authenticated: false, userId: null };
     }
 
@@ -77,7 +101,7 @@ export async function verifyAuth(req: NextRequest): Promise<{
       user 
     };
   } catch (error) {
-    console.error('Auth verification error:', error);
+    console.error('[verifyAuth] Unexpected error:', error);
     return { authenticated: false, userId: null };
   }
 }
@@ -103,12 +127,7 @@ export async function getCurrentUser() {
 
 export async function uploadAvatar(userId: string, file: File) {
   try {
-    const { createClient } = await import('@supabase/supabase-js');
-    
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabase = getSupabaseClient();
 
     const fileExt = file.name.split('.').pop();
     const fileName = `${userId}/avatar.${fileExt}`;
