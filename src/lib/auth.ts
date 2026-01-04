@@ -37,7 +37,6 @@ export async function verifyToken(token: string) {
   }
 }
 
-// Verify authentication from NextRequest (for API routes)
 export async function verifyAuth(req: NextRequest): Promise<{
   authenticated: boolean;
   userId: string | null;
@@ -46,8 +45,12 @@ export async function verifyAuth(req: NextRequest): Promise<{
   try {
     const token = req.cookies.get('auth')?.value;
 
+    console.log('=== VERIFY AUTH DEBUG ===');
+    console.log('Token exists:', !!token);
+    console.log('Token (first 20 chars):', token?.substring(0, 20));
+
     if (!token) {
-      console.log('[verifyAuth] No token found in cookies');
+      console.log('No token found');
       return { authenticated: false, userId: null };
     }
 
@@ -56,8 +59,9 @@ export async function verifyAuth(req: NextRequest): Promise<{
     try {
       const result = await jwtVerify(token, JWT_SECRET);
       payload = result.payload;
+      console.log('JWT verified successfully, userId:', payload.id);
     } catch (jwtError) {
-      console.log('[verifyAuth] JWT verification failed:', jwtError);
+      console.log('JWT verification failed:', jwtError);
       return { authenticated: false, userId: null };
     }
 
@@ -66,32 +70,45 @@ export async function verifyAuth(req: NextRequest): Promise<{
     // Check if session exists in database
     const supabase = getSupabaseClient();
     
-    const { data: sessions, error } = await supabase
+    console.log('Checking session in DB for userId:', userId);
+    
+    const { data: sessions, error, count } = await supabase
       .from('sessions')
-      .select('id, user_id')
+      .select('*', { count: 'exact' })
       .eq('session_token', token)
-      .eq('user_id', userId)
-      .gte('expires_at', new Date().toISOString());
+      .eq('user_id', userId);
 
-    // Log for debugging
-    console.log('[verifyAuth] Session check:', {
-      userId,
-      sessionsFound: sessions?.length || 0,
-      error: error?.message,
-      hasToken: !!token
-    });
+    console.log('Database query result:');
+    console.log('- Error:', error);
+    console.log('- Sessions found:', sessions?.length);
+    console.log('- Count:', count);
+    console.log('- Sessions data:', JSON.stringify(sessions, null, 2));
 
-    // If no sessions found or error, deny access
-    if (error || !sessions || sessions.length === 0) {
-      console.log('[verifyAuth] No valid session found');
+    if (error) {
+      console.log('Database error occurred:', error);
       return { authenticated: false, userId: null };
     }
 
-    // Get user info
+    if (!sessions || sessions.length === 0) {
+      console.log('No sessions found - user should be logged out');
+      return { authenticated: false, userId: null };
+    }
+
+    // Check expiration manually
+    const now = new Date();
+    const validSessions = sessions.filter(s => new Date(s.expires_at) > now);
+    console.log('Valid (non-expired) sessions:', validSessions.length);
+
+    if (validSessions.length === 0) {
+      console.log('All sessions expired');
+      return { authenticated: false, userId: null };
+    }
+
     const user = await getUserById(userId);
+    console.log('User found:', !!user);
+    console.log('=== END DEBUG ===');
 
     if (!user) {
-      console.log('[verifyAuth] User not found in database');
       return { authenticated: false, userId: null };
     }
 
@@ -101,10 +118,11 @@ export async function verifyAuth(req: NextRequest): Promise<{
       user 
     };
   } catch (error) {
-    console.error('[verifyAuth] Unexpected error:', error);
+    console.error('Unexpected error in verifyAuth:', error);
     return { authenticated: false, userId: null };
   }
 }
+
 
 export async function getCurrentUser() {
   try {
