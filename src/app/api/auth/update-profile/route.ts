@@ -15,7 +15,9 @@ export async function POST(request: NextRequest) {
       phoneNumber,
       class: userClass,
       section,
+      admissionNumber,
       githubId,
+      discordId,
       interestedNiches,
     } = body;
 
@@ -48,6 +50,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (!admissionNumber || !admissionNumber.trim()) {
+      return NextResponse.json(
+        { error: 'Admission number cannot be empty' },
+        { status: 400 }
+      );
+    }
+
     if (!Array.isArray(interestedNiches) || interestedNiches.length === 0) {
       return NextResponse.json(
         { error: 'Please select at least one niche' },
@@ -61,7 +70,9 @@ export async function POST(request: NextRequest) {
       phoneNumber,
       class: userClass,
       section,
+      admissionNumber,
       githubId: githubId || null,
+      discordId: discordId || null,
       interestedNiches,
     });
 

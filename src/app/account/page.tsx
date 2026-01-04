@@ -34,7 +34,13 @@ type User = {
   phone_number?: string;
   class?: string;
   section?: string;
+  admission_number?: string;  // Add this
   github_id?: string | null;
+  discord_id?: string | null;  // Add this
+  why_join_tech_club?: string;  // Add this
+  skills_and_achievements?: string | null;  // Add this
+  event_participation?: string;  // Add this
+  projects?: string | null;  // Add this
   interested_niches?: string[];
   avatarUrl?: string | null;
   email_verified?: boolean;
@@ -130,14 +136,16 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
   const [sessions, setSessions] = useState<any[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(false);
 
-  const [formData, setFormData] = useState({
-    name: '',
-    phoneNumber: '',
-    class: '',
-    section: '',
-    githubId: '',
-    interestedNiches: [] as string[],
-  });
+const [formData, setFormData] = useState({
+  name: '',
+  phoneNumber: '',
+  class: '',
+  section: '',
+  admissionNumber: '',  // Add this
+  githubId: '',
+  discordId: '',  // Add this
+  interestedNiches: [] as string[],
+});
 
   const [passwordData, setPasswordData] = useState({
     current: '',
@@ -185,14 +193,16 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
       };
 
       setUser(mergedUser);
-      setFormData({
-        name: mergedUser.name || '',
-        phoneNumber: mergedUser.phone_number || '',
-        class: mergedUser.class || '',
-        section: mergedUser.section || '',
-        githubId: mergedUser.github_id || '',
-        interestedNiches: mergedUser.interested_niches || [],
-      });
+setFormData({
+  name: mergedUser.name || '',
+  phoneNumber: mergedUser.phone_number || '',
+  class: mergedUser.class || '',
+  section: mergedUser.section || '',
+  admissionNumber: mergedUser.admission_number || '',  // Add this
+  githubId: mergedUser.github_id || '',
+  discordId: mergedUser.discord_id || '',  // Add this
+  interestedNiches: mergedUser.interested_niches || [],
+});
 
       if (showWelcome) {
         setShowWelcomeModal(true);
@@ -289,20 +299,25 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
       showMsg('error', 'Please select at least one niche');
       return;
     }
-
+if (!formData.admissionNumber.trim()) {
+  showMsg('error', 'Admission number cannot be empty');
+  return;
+}
     setSaving(true);
     try {
       const response = await fetch('/api/auth/update-profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formData.name,
-          phoneNumber: formData.phoneNumber,
-          class: formData.class,
-          section: formData.section,
-          githubId: formData.githubId,
-          interestedNiches: formData.interestedNiches,
-        }),
+body: JSON.stringify({
+  name: formData.name,
+  phoneNumber: formData.phoneNumber,
+  class: formData.class,
+  section: formData.section,
+  admissionNumber: formData.admissionNumber,  // Add this
+  githubId: formData.githubId,
+  discordId: formData.discordId,  // Add this
+  interestedNiches: formData.interestedNiches,
+}),
         credentials: 'include',
       });
 
@@ -700,120 +715,198 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
 
             {/* Tab Content */}
             <div>
-              {/* Profile Tab */}
-              {activeTab === 'profile' && (
-                <div className="rounded-2xl border border-black-700/50 bg-gradient-to-br from-black-800/60 to-black-900/60 p-6 shadow-xl backdrop-blur-xl">
-                  <h2 className="text-lg font-semibold text-white mb-6">Profile Settings</h2>
+             {/* Profile Tab */}
+{activeTab === 'profile' && (
+  <div className="rounded-2xl border border-black-700/50 bg-gradient-to-br from-black-800/60 to-black-900/60 p-6 shadow-xl backdrop-blur-xl">
+    <h2 className="text-lg font-semibold text-white mb-6">Profile Settings</h2>
 
-                  <form onSubmit={handleSaveProfile} className="space-y-4">
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                      <label className="block">
-                        <span className="mb-2 block text-sm font-medium text-black-400">
-                          Full Name
-                        </span>
-                        <input
-                          type="text"
-                          value={formData.name}
-                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
-                        />
-                      </label>
-                      <label className="block">
-                        <span className="mb-2 block text-sm font-medium text-black-400">
-                          Email
-                        </span>
-                        <input
-                          type="email"
-                          value={user.email}
-                          disabled
-                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-black-500 outline-none"
-                        />
-                      </label>
-                    </div>
+    <form onSubmit={handleSaveProfile} className="space-y-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <label className="block">
+          <span className="mb-2 block text-sm font-medium text-black-400">
+            Full Name
+          </span>
+          <input
+            type="text"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+          />
+        </label>
+        <label className="block">
+          <span className="mb-2 block text-sm font-medium text-black-400">
+            Email
+          </span>
+          <input
+            type="email"
+            value={user.email}
+            disabled
+            className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-black-500 outline-none cursor-not-allowed"
+          />
+        </label>
+      </div>
 
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                      <label className="block">
-                        <span className="mb-2 block text-sm font-medium text-black-400">
-                          Phone Number
-                        </span>
-                        <input
-                          type="tel"
-                          value={formData.phoneNumber}
-                          onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                          placeholder="+91 98765 43210"
-                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
-                        />
-                      </label>
-                      <label className="block">
-                        <span className="mb-2 block text-sm font-medium text-black-400">
-                          GitHub ID (Optional)
-                        </span>
-                        <input
-                          type="text"
-                          value={formData.githubId}
-                          onChange={(e) => setFormData({ ...formData, githubId: e.target.value })}
-                          placeholder="your-github-username"
-                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
-                        />
-                      </label>
-                    </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <label className="block">
+          <span className="mb-2 block text-sm font-medium text-black-400">
+            Phone Number
+          </span>
+          <input
+            type="tel"
+            value={formData.phoneNumber}
+            onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+            placeholder="+91 98765 43210"
+            className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+          />
+        </label>
+        <label className="block">
+          <span className="mb-2 block text-sm font-medium text-black-400">
+            Admission Number
+          </span>
+          <input
+            type="text"
+            value={formData.admissionNumber}
+            onChange={(e) => setFormData({ ...formData, admissionNumber: e.target.value })}
+            placeholder="e.g. 12345"
+            className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+          />
+        </label>
+      </div>
 
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                      <label className="block">
-                        <span className="mb-2 block text-sm font-medium text-black-400">
-                          Class
-                        </span>
-                        <input
-                          type="text"
-                          value={formData.class}
-                          onChange={(e) => setFormData({ ...formData, class: e.target.value })}
-                          placeholder="e.g., 10th, 11th"
-                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
-                        />
-                      </label>
-                      <label className="block">
-                        <span className="mb-2 block text-sm font-medium text-black-400">
-                          Section
-                        </span>
-                        <input
-                          type="text"
-                          value={formData.section}
-                          onChange={(e) => setFormData({ ...formData, section: e.target.value })}
-                          placeholder="e.g., A, B"
-                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
-                        />
-                      </label>
-                    </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <label className="block">
+          <span className="mb-2 block text-sm font-medium text-black-400">
+            Class
+          </span>
+          <input
+            type="text"
+            value={formData.class}
+            onChange={(e) => setFormData({ ...formData, class: e.target.value })}
+            placeholder="e.g., 10, 11"
+            className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+          />
+        </label>
+        <label className="block">
+          <span className="mb-2 block text-sm font-medium text-black-400">
+            Section
+          </span>
+          <input
+            type="text"
+            value={formData.section}
+            onChange={(e) => setFormData({ ...formData, section: e.target.value })}
+            placeholder="e.g., A, B"
+            className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+          />
+        </label>
+      </div>
 
-                    <div>
-                      <label className="mb-3 block text-sm font-medium text-black-400">
-                        Interested Niches (Select at least one)
-                      </label>
-                      <div className="grid grid-cols-2 gap-3">
-                        {NICHES.map((niche) => (
-                          <label key={niche} className="flex items-center space-x-2 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={formData.interestedNiches.includes(niche)}
-                              onChange={() => handleNicheToggle(niche)}
-                              className="h-4 w-4 rounded border-black-600 bg-black-700 accent-[#C9A227]"
-                            />
-                            <span className="text-sm text-black-300">{niche}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <label className="block">
+          <span className="mb-2 block text-sm font-medium text-black-400">
+            GitHub ID (Optional)
+          </span>
+          <input
+            type="text"
+            value={formData.githubId}
+            onChange={(e) => setFormData({ ...formData, githubId: e.target.value })}
+            placeholder="your-github-username"
+            className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+          />
+        </label>
+        <label className="block">
+          <span className="mb-2 block text-sm font-medium text-black-400">
+            Discord ID (Optional)
+          </span>
+          <input
+            type="text"
+            value={formData.discordId}
+            onChange={(e) => setFormData({ ...formData, discordId: e.target.value })}
+            placeholder="username#1234"
+            className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+          />
+        </label>
+      </div>
 
-                    <button
-                      type="submit"
-                      disabled={saving}
-                      className="rounded-xl bg-[#C9A227] px-6 py-3 font-semibold text-black transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {saving ? 'Saving...' : 'Save Changes'}
-                    </button>
-                  </form>
-                </div>
-              )}
+      <div>
+        <label className="mb-3 block text-sm font-medium text-black-400">
+          Interested Niches (Select at least one)
+        </label>
+        <div className="grid grid-cols-2 gap-3">
+          {NICHES.map((niche) => (
+            <label key={niche} className="flex items-center space-x-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.interestedNiches.includes(niche)}
+                onChange={() => handleNicheToggle(niche)}
+                className="h-4 w-4 rounded border-black-600 bg-black-700 accent-[#C9A227]"
+              />
+              <span className="text-sm text-black-300">{niche}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Application Responses (Read-only) */}
+      {(user.why_join_tech_club || user.skills_and_achievements || user.event_participation || user.projects) && (
+        <div className="mt-8 pt-8 border-t border-black-700/50 space-y-4">
+          <h3 className="text-md font-semibold text-white mb-4">Your Application Responses</h3>
+          
+          {user.why_join_tech_club && (
+            <div>
+              <label className="mb-2 block text-sm font-medium text-black-400">
+                Why you wanted to join Tech Club
+              </label>
+              <div className="rounded-xl border border-black-700/50 bg-black-900/30 px-4 py-3 text-sm text-black-300">
+                {user.why_join_tech_club}
+              </div>
+            </div>
+          )}
+
+          {user.skills_and_achievements && (
+            <div>
+              <label className="mb-2 block text-sm font-medium text-black-400">
+                Skills & Achievements
+              </label>
+              <div className="rounded-xl border border-black-700/50 bg-black-900/30 px-4 py-3 text-sm text-black-300">
+                {user.skills_and_achievements}
+              </div>
+            </div>
+          )}
+
+          {user.event_participation && (
+            <div>
+              <label className="mb-2 block text-sm font-medium text-black-400">
+                Event Participation Interests
+              </label>
+              <div className="rounded-xl border border-black-700/50 bg-black-900/30 px-4 py-3 text-sm text-black-300">
+                {user.event_participation}
+              </div>
+            </div>
+          )}
+
+          {user.projects && (
+            <div>
+              <label className="mb-2 block text-sm font-medium text-black-400">
+                Projects
+              </label>
+              <div className="rounded-xl border border-black-700/50 bg-black-900/30 px-4 py-3 text-sm text-black-300 whitespace-pre-wrap">
+                {user.projects}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      <button
+        type="submit"
+        disabled={saving}
+        className="rounded-xl bg-[#C9A227] px-6 py-3 font-semibold text-black transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {saving ? 'Saving...' : 'Save Changes'}
+      </button>
+    </form>
+  </div>
+)}
 
               {/* Security Tab */}
               {activeTab === 'security' && (
