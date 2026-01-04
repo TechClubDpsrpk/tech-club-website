@@ -20,10 +20,15 @@ const Header = () => {
   const navLinks = [
     { href: '/', isLogo: true },
     { href: '/about', label: 'About Us', icon: Users, isOpt: false },
-     { href: '/blogs', label: 'Blogs', icon: Newspaper, isOpt: false },
-    { href: '/gallery', label: 'Gallery', icon: Images, isOpt: false },
+    { href: '/blogs', label: 'Blogs', icon: Newspaper, isOpt: false },
     { href: '/contact', label: 'Contact Us', icon: Mail, isOpt: false },
-    { href: '/announcements', label: 'Announcements', icon: Megaphone, isOpt: true, requiresVerified: false },
+    {
+      href: '/announcements',
+      label: 'Announcements',
+      icon: Megaphone,
+      isOpt: true,
+      requiresVerified: false,
+    },
     { href: '/quests', label: 'Quests', icon: LandPlot, isOpt: true, requiresVerified: true },
   ];
 
@@ -37,7 +42,7 @@ const Header = () => {
         if (response.ok) {
           const data = await response.json();
           setIsAuthenticated(data.isAuthenticated);
-          
+
           // Fetch email_verified from Supabase
           if (data.isAuthenticated && data.user?.id) {
             const { data: userData } = await supabase
@@ -45,7 +50,7 @@ const Header = () => {
               .select('email_verified')
               .eq('id', data.user.id)
               .single();
-            
+
             console.log('User data from Supabase:', userData);
             setEmailVerified(userData?.email_verified || false);
           } else {
@@ -145,7 +150,7 @@ const Header = () => {
             const isHome = link.href === '/';
 
             // Check if link should be shown based on authentication and verification
-            const shouldShowOptionalLink = link.isOpt 
+            const shouldShowOptionalLink = link.isOpt
               ? isAuthenticated && (!link.requiresVerified || emailVerified)
               : true;
 
@@ -154,7 +159,7 @@ const Header = () => {
                 isAuthenticated,
                 emailVerified,
                 requiresVerified: link.requiresVerified,
-                shouldShowOptionalLink
+                shouldShowOptionalLink,
               });
             }
 
