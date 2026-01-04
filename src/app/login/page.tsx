@@ -51,11 +51,13 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black">
+    <div className="flex min-h-screen items-center justify-center bg-black p-4">
       <div className="w-full max-w-md">
-        <div className="mt-16 min-h-full rounded-2xl border border-[#fac825] bg-black p-8 backdrop-blur-xl">
-          <h1 className="mb-2 text-xl font-bold text-white md:text-2xl">Welcome Back</h1>
-          <p className="mb-8 text-center text-xl text-gray-400">Login to your account</p>
+        <div className="min-h-full rounded-2xl border border-[#fac825] bg-black p-6 backdrop-blur-xl md:mt-12 md:p-8">
+          <h1 className="mb-2 text-center text-4xl text-white md:text-5xl">Welcome Back</h1>
+          <p className="mb-4 text-center text-sm text-gray-400 md:mb-8 md:text-xl">
+            Login to your account
+          </p>
 
           {error && (
             <div className="mb-6 rounded-lg border border-red-500/50 bg-red-500/20 p-4 text-sm text-red-200">
@@ -65,7 +67,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="mb-2 block text-sm font-medium text-gray-300">Email</label>
+              <label className="mb-1 block text-sm font-medium text-gray-300 md:mb-2">Email</label>
               <input
                 type="email"
                 name="email"
@@ -73,12 +75,14 @@ export default function LoginPage() {
                 onChange={handleChange}
                 placeholder="you@example.com"
                 required
-                className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none"
+                className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-3 py-2 text-sm text-white placeholder-gray-400 transition placeholder:text-sm focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none md:px-4 md:py-3 md:text-base md:placeholder:text-base"
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-gray-300">Password</label>
+              <label className="mb-1 block text-sm font-medium text-gray-300 md:mb-2">
+                Password
+              </label>
               <input
                 type="password"
                 name="password"
@@ -86,22 +90,22 @@ export default function LoginPage() {
                 onChange={handleChange}
                 placeholder="••••••••"
                 required
-                className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-4 py-3 text-white placeholder-gray-400 transition focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none"
+                className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-3 py-2 text-sm text-white placeholder-gray-400 transition placeholder:text-sm focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none md:px-4 md:py-3 md:text-base md:placeholder:text-base"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="mt-6 w-full cursor-pointer rounded-lg bg-[#C9A227] px-4 py-3 font-semibold text-black transition hover:scale-[101%] hover:bg-[#d4b436] disabled:cursor-not-allowed disabled:opacity-50"
+              className="mt-2 w-full cursor-pointer rounded-lg bg-[#C9A227] px-3 py-2 text-sm font-semibold text-black transition hover:scale-[101%] hover:bg-[#d4b436] disabled:cursor-not-allowed disabled:opacity-50 md:mt-6 md:px-4 md:py-3 md:text-xl"
             >
               {loading ? 'Logging in...' : 'Login'}
             </button>
           </form>
 
-          <p className="mt-6 text-center text-gray-400">
-            Don't have an account?{' '}
-            <Link href="/signup" className="text-[#ab8e30] transition hover:text-[#C9A227]">
+          <p className="mt-6 text-center text-sm text-gray-400 md:text-base">
+            Don't have an account yet?{' '}
+            <Link href="/signup" className="text-xl text-[#ab8e30] transition hover:text-[#C9A227]">
               Sign up here
             </Link>
           </p>
