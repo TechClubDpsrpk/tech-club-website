@@ -13,6 +13,9 @@ const NICHES = [
   'Graphics Designing',
 ];
 
+const CLASSES = ['9', '10', '11', '12'];
+const SECTIONS = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i)); // A to Z
+
 export default function SignupPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -23,13 +26,19 @@ export default function SignupPage() {
     class: '',
     section: '',
     phoneNumber: '',
+    admissionNumber: '',
     githubId: '',
+    discordId: '',
+    whyJoinTechClub: '',
+    skillsAndAchievements: '',
+    eventParticipation: '',
+    projects: '',
     interestedNiches: [] as string[],
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -59,6 +68,12 @@ export default function SignupPage() {
 
     if (formData.interestedNiches.length === 0) {
       setError('Please select at least one niche');
+      setLoading(false);
+      return;
+    }
+
+    if (!formData.whyJoinTechClub.trim()) {
+      setError('Please tell us why you want to join Tech Club');
       setLoading(false);
       return;
     }
@@ -102,10 +117,11 @@ export default function SignupPage() {
             </div>
           )}
 
-          <div onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Full Name */}
             <div>
               <label className="mb-1 block text-sm font-medium text-gray-300 md:mb-2">
-                Full Name
+                Full Name *
               </label>
               <input
                 type="text"
@@ -118,10 +134,11 @@ export default function SignupPage() {
               />
             </div>
 
+            {/* Email and Phone */}
             <div className="grid gap-4 md:grid-cols-2">
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-300 md:mb-2">
-                  Email
+                  Email *
                 </label>
                 <input
                   type="email"
@@ -136,7 +153,7 @@ export default function SignupPage() {
 
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-300 md:mb-2">
-                  Phone Number
+                  WhatsApp Number *
                 </label>
                 <input
                   type="tel"
@@ -149,56 +166,109 @@ export default function SignupPage() {
                 />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+
+            {/* Class (Radio) and Section (Dropdown) */}
+            <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-300 md:mb-2">
-                  Class
-                </label>
-                <input
-                  type="text"
-                  name="class"
-                  value={formData.class}
-                  onChange={handleChange}
-                  placeholder="e.g. 10, 11"
-                  required
-                  className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-3 py-2 text-sm text-white placeholder-gray-400 transition placeholder:text-sm focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none md:px-4 md:py-3 md:text-base md:placeholder:text-base"
-                />
+                <label className="mb-2 block text-sm font-medium text-gray-300">Class *</label>
+                <div className="grid grid-cols-4 gap-2">
+                  {CLASSES.map((cls) => (
+                    <label
+                      key={cls}
+                      className={`cursor-pointer rounded-md border px-3 py-2 text-center text-sm transition ${
+                        formData.class === cls
+                          ? 'border-[#C9A227] bg-[#C9A227]/20 text-[#C9A227]'
+                          : 'border-yellow-500/50 bg-gray-900 text-white hover:border-[#C9A227]'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="class"
+                        value={cls}
+                        checked={formData.class === cls}
+                        onChange={handleChange}
+                        required
+                        className="hidden"
+                      />
+                      {cls}
+                    </label>
+                  ))}
+                </div>
               </div>
 
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-300 md:mb-2">
-                  Section
+                  Section *
                 </label>
-                <input
-                  type="text"
+                <select
                   name="section"
                   value={formData.section}
                   onChange={handleChange}
-                  placeholder="e.g. A, B"
                   required
-                  className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-3 py-2 text-sm text-white placeholder-gray-400 transition placeholder:text-sm focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none md:px-4 md:py-3 md:text-base md:placeholder:text-base"
-                />
+                  className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-3 py-2 text-sm text-white transition focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none md:px-4 md:py-3 md:text-base"
+                >
+                  <option value="">Select Section</option>
+                  {SECTIONS.map((section) => (
+                    <option key={section} value={section}>
+                      {section}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
+            {/* Admission Number */}
             <div>
               <label className="mb-1 block text-sm font-medium text-gray-300 md:mb-2">
-                GitHub ID (Optional)
+                Admission Number *
               </label>
               <input
                 type="text"
-                name="githubId"
-                value={formData.githubId}
+                name="admissionNumber"
+                value={formData.admissionNumber}
                 onChange={handleChange}
-                placeholder="your-github-username"
+                placeholder="e.g. 12345"
+                required
                 className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-3 py-2 text-sm text-white placeholder-gray-400 transition placeholder:text-sm focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none md:px-4 md:py-3 md:text-base md:placeholder:text-base"
               />
             </div>
 
+            {/* GitHub ID and Discord ID */}
             <div className="grid gap-4 md:grid-cols-2">
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-300 md:mb-2">
-                  Password
+                  GitHub ID (Optional)
+                </label>
+                <input
+                  type="text"
+                  name="githubId"
+                  value={formData.githubId}
+                  onChange={handleChange}
+                  placeholder="your-github-username"
+                  className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-3 py-2 text-sm text-white placeholder-gray-400 transition placeholder:text-sm focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none md:px-4 md:py-3 md:text-base md:placeholder:text-base"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-300 md:mb-2">
+                  Discord ID (Optional)
+                </label>
+                <input
+                  type="text"
+                  name="discordId"
+                  value={formData.discordId}
+                  onChange={handleChange}
+                  placeholder="username#1234"
+                  className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-3 py-2 text-sm text-white placeholder-gray-400 transition placeholder:text-sm focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none md:px-4 md:py-3 md:text-base md:placeholder:text-base"
+                />
+              </div>
+            </div>
+
+            {/* Passwords */}
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-300 md:mb-2">
+                  Password *
                 </label>
                 <input
                   type="password"
@@ -215,7 +285,7 @@ export default function SignupPage() {
 
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-300 md:mb-2">
-                  Confirm Password
+                  Confirm Password *
                 </label>
                 <input
                   type="password"
@@ -229,9 +299,10 @@ export default function SignupPage() {
               </div>
             </div>
 
+            {/* Interested Niches */}
             <div className="mt-6">
               <label className="mb-3 block text-sm font-medium text-gray-300">
-                Interested Niches (Select at least one)
+                Interested Niches (Select at least one) *
               </label>
               <div className="grid grid-cols-2 gap-3">
                 {NICHES.map((niche) => (
@@ -248,14 +319,82 @@ export default function SignupPage() {
               </div>
             </div>
 
+            {/* Why Join Tech Club */}
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-300 md:mb-2">
+                Why do you want to be a part of Tech Club? *
+              </label>
+              <textarea
+                name="whyJoinTechClub"
+                value={formData.whyJoinTechClub}
+                onChange={handleChange}
+                placeholder="Tell us what motivates you to join..."
+                required
+                rows={4}
+                className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-3 py-2 text-sm text-white placeholder-gray-400 transition placeholder:text-sm focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none md:px-4 md:py-3 md:text-base md:placeholder:text-base"
+              />
+            </div>
+
+            {/* Skills and Achievements */}
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-300 md:mb-2">
+                What are your skills and/or achievements in the field of science and technology?
+              </label>
+              <p className="mb-2 text-xs text-gray-400">
+                Also mention your previous experiences. We welcome complete beginners! Feel free to skip if you're just starting your tech journey.
+              </p>
+              <textarea
+                name="skillsAndAchievements"
+                value={formData.skillsAndAchievements}
+                onChange={handleChange}
+                placeholder="Share your skills, achievements, or type 'Beginner' if you're just starting..."
+                rows={4}
+                className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-3 py-2 text-sm text-white placeholder-gray-400 transition placeholder:text-sm focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none md:px-4 md:py-3 md:text-base md:placeholder:text-base"
+              />
+            </div>
+
+            {/* Event Participation */}
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-300 md:mb-2">
+                Do you want to participate in events? If yes, what kind(s)? *
+              </label>
+              <p className="mb-2 text-xs text-gray-400">
+                For example: workshops for beginners, hackathons on Data Science or Web development, inter-school fests like Competitive Programming.
+              </p>
+              <textarea
+                name="eventParticipation"
+                value={formData.eventParticipation}
+                onChange={handleChange}
+                placeholder="Describe the types of events you'd like to participate in, or type 'No' if not interested..."
+                required
+                rows={3}
+                className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-3 py-2 text-sm text-white placeholder-gray-400 transition placeholder:text-sm focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none md:px-4 md:py-3 md:text-base md:placeholder:text-base"
+              />
+            </div>
+
+            {/* Projects */}
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-300 md:mb-2">
+                Do you have any projects, including GitHub links, that you can share? (Optional)
+              </label>
+              <textarea
+                name="projects"
+                value={formData.projects}
+                onChange={handleChange}
+                placeholder="Share your project links or descriptions..."
+                rows={3}
+                className="w-full rounded-md border border-yellow-500/50 bg-gray-900 px-3 py-2 text-sm text-white placeholder-gray-400 transition placeholder:text-sm focus:border-[#C9A227] focus:bg-gray-800 focus:outline-none md:px-4 md:py-3 md:text-base md:placeholder:text-base"
+              />
+            </div>
+
             <button
-              onClick={handleSubmit}
+              type="submit"
               disabled={loading}
               className="mt-2 w-full cursor-pointer rounded-lg bg-[#C9A227] px-3 py-2 text-sm font-semibold text-black transition hover:scale-[101%] hover:bg-[#d4b436] disabled:cursor-not-allowed disabled:opacity-50 md:mt-6 md:px-4 md:py-3 md:text-xl"
             >
               {loading ? 'Creating Account...' : 'Sign Up'}
             </button>
-          </div>
+          </form>
 
           <p className="mt-4 text-center text-sm text-gray-400 md:mt-6 md:text-base">
             Already have an account?{' '}

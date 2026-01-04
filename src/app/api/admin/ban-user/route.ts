@@ -40,16 +40,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get user data - FIXED: Changed 'username' to 'name'
+    // Get user data
     const { data: userData, error: userError } = await supabase
       .from('users')
-      .select('email, name, last_ip')
+      .select('email, name')
       .eq('id', userId)
       .single();
 
     if (userError || !userData) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
+
+    // Get ALL unique IPs from user's sessions
+    const { data: sessionData } = await supabase
+      .from('sessions')
+      .select('ip_address')
+      .eq('user_id', userId);
+
+    // Get unique IPs (remove duplicates and 'unknown')
+    const uniqueIPs = sessionData
+      ? [...new Set(sessionData.map(s => s.ip_address))]
+          .filter(ip => ip && ip !== 'unknown')
+      : [];
 
     // Calculate expiry date if temporary
     const banExpiresAt = durationHours
@@ -76,18 +88,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Ban IP if requested
-    if (banIP && userData.last_ip) {
-      await supabase.from('banned_ips').insert({
-        ip_address: userData.last_ip,
+    // Ban ALL unique IPs if requested
+    let bannedIPCount = 0;
+    if (banIP && uniqueIPs.length > 0) {
+      const ipBanRecords = uniqueIPs.map(ip => ({
+        ip_address: ip,
         reason: reason,
         banned_by: adminId,
         ban_expires_at: banExpiresAt?.toISOString(),
         associated_user_id: userId,
-      });
+      }));
+
+      const { error: ipBanError } = await supabase
+        .from('banned_ips')
+        .insert(ipBanRecords);
+
+      if (!ipBanError) {
+        bannedIPCount = uniqueIPs.length;
+      }
     }
 
-    // Send email - FIXED: Changed 'username' to 'name'
+    // Send ban notification email
     try {
       await sendBanEmail(
         userData.email,
@@ -104,7 +125,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: 'User banned successfully',
-      bannedIP: banIP ? userData.last_ip : null,
+      bannedIPs: banIP ? uniqueIPs : [],
+      bannedIPCount: bannedIPCount,
     });
   } catch (error) {
     console.error('Error in ban-user API:', error);

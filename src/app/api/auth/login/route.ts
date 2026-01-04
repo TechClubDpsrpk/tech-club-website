@@ -5,6 +5,20 @@ import { createToken } from '@/lib/auth';
 import { supabase } from '@/lib/supabaseClient';
 import { UAParser } from 'ua-parser-js';
 
+// Helper function to extract IP address
+function getClientIP(request: NextRequest): string {
+  const forwardedFor = request.headers.get('x-forwarded-for');
+  if (forwardedFor) {
+    return forwardedFor.split(',')[0].trim();
+  }
+  
+  return (
+    request.headers.get('x-real-ip') ||
+    request.headers.get('cf-connecting-ip') ||
+    'unknown'
+  );
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -43,17 +57,13 @@ export async function POST(request: NextRequest) {
     const device = parser.getResult();
 
     // Extract IP address
-    const ip = 
-      request.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
-      request.headers.get('x-real-ip') ||
-      request.headers.get('cf-connecting-ip') || // Cloudflare
-      'unknown';
+    const ip = getClientIP(request);
 
     // Get geolocation from IP (optional)
     let city = 'Unknown';
     let country = 'Unknown';
     
-    if (ip !== 'unknown' && !ip.startsWith('192.168.') && ip !== '127.0.0.1') {
+    if (ip !== 'unknown' && !ip.startsWith('192.168.') && !ip.startsWith('10.') && !ip.startsWith('172.') && ip !== '127.0.0.1') {
       try {
         const geoResponse = await fetch(`https://ipapi.co/${ip}/json/`, {
           headers: { 'User-Agent': 'tech-club-website' },
@@ -71,14 +81,20 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Format device info
-    const deviceInfo = [
-      device.device.vendor,
-      device.device.model,
-      device.device.type
-    ]
-      .filter(Boolean)
-      .join(' ') || 'Unknown Device';
+    // Format device info - Better approach
+    const deviceType = device.device.type || 'desktop'; // If no type, assume desktop
+
+    let deviceInfo: string;
+    if (deviceType === 'mobile' || deviceType === 'tablet') {
+      // For mobile/tablet, try to get vendor and model
+      const vendor = device.device.vendor || '';
+      const model = device.device.model || '';
+      deviceInfo = [vendor, model].filter(Boolean).join(' ') || `${deviceType.charAt(0).toUpperCase() + deviceType.slice(1)} Device`;
+    } else {
+      // For desktop, use OS as the device identifier
+      const osName = device.os.name || 'Unknown OS';
+      deviceInfo = `${osName} Computer`;
+    }
 
     const browserInfo = [
       device.browser.name,
@@ -96,6 +112,7 @@ export async function POST(request: NextRequest) {
 
     // Create session record
     try {
+      const now = new Date();
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + 7); // 7 days from now
 
@@ -108,6 +125,7 @@ export async function POST(request: NextRequest) {
         ip_address: ip,
         city,
         country,
+        last_active_at: now.toISOString(),
         expires_at: expiresAt.toISOString(),
       });
 
@@ -116,7 +134,7 @@ export async function POST(request: NextRequest) {
         .from('sessions')
         .delete()
         .eq('user_id', user.id)
-        .lt('expires_at', new Date().toISOString());
+        .lt('expires_at', now.toISOString());
 
     } catch (sessionError) {
       // Log but don't fail login if session tracking fails

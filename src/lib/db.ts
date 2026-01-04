@@ -12,7 +12,13 @@ interface CreateUserInput {
   phoneNumber: string;
   class: string;
   section: string;
+  admissionNumber: string;
   githubId: string | null;
+  discordId: string | null;
+  whyJoinTechClub: string;
+  skillsAndAchievements: string | null;
+  eventParticipation: string;
+  projects: string | null;
   interestedNiches: string[];
 }
 
@@ -21,7 +27,9 @@ interface UpdateProfileInput {
   phoneNumber: string;
   class: string;
   section: string;
+  admissionNumber: string;
   githubId: string | null;
+  discordId: string | null;
   interestedNiches: string[];
 }
 
@@ -44,7 +52,13 @@ export async function createUser(userData: CreateUserInput) {
     phoneNumber,
     class: userClass,
     section,
+    admissionNumber,
     githubId,
+    discordId,
+    whyJoinTechClub,
+    skillsAndAchievements,
+    eventParticipation,
+    projects,
     interestedNiches,
   } = userData;
 
@@ -60,7 +74,13 @@ export async function createUser(userData: CreateUserInput) {
         phone_number: phoneNumber,
         class: userClass,
         section,
+        admission_number: admissionNumber,
         github_id: githubId,
+        discord_id: discordId,
+        why_join_tech_club: whyJoinTechClub,
+        skills_and_achievements: skillsAndAchievements,
+        event_participation: eventParticipation,
+        projects: projects,
         interested_niches: interestedNiches,
         email_verified: false,
         created_at: new Date().toISOString(),
@@ -95,7 +115,9 @@ export async function updateUserProfile(userId: string, data: UpdateProfileInput
     phoneNumber,
     class: userClass,
     section,
+    admissionNumber,
     githubId,
+    discordId,
     interestedNiches,
   } = data;
 
@@ -106,7 +128,9 @@ export async function updateUserProfile(userId: string, data: UpdateProfileInput
       phone_number: phoneNumber,
       class: userClass,
       section,
+      admission_number: admissionNumber,
       github_id: githubId,
+      discord_id: discordId,
       interested_niches: interestedNiches,
     })
     .eq('id', userId)
