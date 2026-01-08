@@ -65,15 +65,15 @@ const GitHubStatsCard = ({ githubId }: { githubId: string }) => {
         <h3 className="text-sm font-semibold text-white">GitHub Stats</h3>
       </div>
       
-      <div className="space-y-3">
+<div className="space-y-3">
         <div className="rounded-lg overflow-hidden bg-black-900/30">
           {!statsError ? (
-            <img 
-              src={`https://github-readme-stats.vercel.app/api?username=${githubId}&show_icons=true&theme=transparent&rank_icon=github&include_all_commits&hide=stars,issues&show=reviews,prs_merged,prs_merged_percentage&text_color=C9A227&title_color=C9A227&icon_color=C9A227&bg_color=00000000`}
-              alt="GitHub Stats"
-              className="w-full"
-              onError={() => setStatsError(true)}
-            />
+          <img
+            src={`https://github-readme-stats-nc.vercel.app/api?username=${githubId}&show_icons=true&theme=transparent&rank_icon=default&include_all_commits=true&hide=stars,issues&show=reviews,prs_merged,prs_merged_percentage&text_color=C9A227&title_color=E5B13A&icon_color=E5B13A&bg_color=00000000&hide_border=true`}
+            alt="GitHub Stats"
+            className="w-full"
+          />
+
           ) : (
             <div className="flex items-center justify-center p-8 text-black-500">
               <p className="text-sm">Stats unavailable</p>
@@ -83,12 +83,13 @@ const GitHubStatsCard = ({ githubId }: { githubId: string }) => {
 
         <div className="rounded-lg overflow-hidden bg-black-900/30">
           {!langsError ? (
-            <img 
-              src={`https://github-readme-stats.vercel.app/api/top-langs?username=${githubId}&layout=compact&langs_count=6&exclude_repo=luminolens&show_icons=true&theme=transparent&text_color=C9A227&title_color=C9A227&bg_color=00000000`}
-              alt="Top Languages"
-              className="w-full"
-              onError={() => setLangsError(true)}
-            />
+        <img
+          src={`https://github-readme-stats-nc.vercel.app/api/top-langs?username=${githubId}&layout=compact&langs_count=6&exclude_repo=luminolens&show_icons=true&theme=transparent&text_color=C9A227&title_color=E5B13A&bg_color=00000000&hide_border=true`}
+          alt="Top Languages"
+          className="w-full"
+          onError={() => setLangsError(true)}
+        />
+
           ) : (
             <div className="flex items-center justify-center p-8 text-black-500">
               <p className="text-sm">Language stats unavailable</p>
@@ -98,12 +99,13 @@ const GitHubStatsCard = ({ githubId }: { githubId: string }) => {
 
         <div className="rounded-lg overflow-hidden bg-black-900/30">
           {!streakError ? (
-            <img 
-              src={`https://streak-stats.demolab.com?user=${githubId}&theme=transparent&hide_border=true&ring=C9A227&fire=C9A227&currStreakLabel=C9A227&sideLabels=C9A227&currStreakNum=FFFFFF&sideNums=FFFFFF&dates=888888`}
-              alt="GitHub Streak"
-              className="w-full"
-              onError={() => setStreakError(true)}
-            />
+        <img
+          src={`https://github-readme-streak-stats-nc.vercel.app?user=${githubId}&theme=transparent&ring=E5B13A&fire=E5B13A&currStreakLabel=E5B13A&sideLabels=C9A227&currStreakNum=C9A227&dates=C9A227&background=00000000&border_radius=10&hide_border=true`}
+          alt="GitHub Streak"
+          className="w-full"
+          onError={() => setStreakError(true)}
+        />
+
           ) : (
             <div className="flex items-center justify-center p-8 text-black-500">
               <p className="text-sm">Streak stats unavailable</p>
