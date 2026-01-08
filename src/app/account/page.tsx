@@ -69,7 +69,7 @@ const GitHubStatsCard = ({ githubId }: { githubId: string }) => {
         <div className="rounded-lg overflow-hidden bg-black-900/30">
           {!statsError ? (
           <img
-            src={`https://github-readme-stats-nc.vercel.app/api?username=${githubId}&show_icons=true&theme=transparent&rank_icon=default&include_all_commits=true&hide=stars,issues&show=reviews,prs_merged,prs_merged_percentage&text_color=C9A227&title_color=E5B13A&icon_color=E5B13A&bg_color=00000000&hide_border=true`}
+            src={`https://github-readme-stats-nc.vercel.app/api?username=${githubId}&show_icons=true&theme=transparent&rank_icon=default&include_all_commits=true&show=reviews,prs_merged,prs_merged_percentage&text_color=C9A227&title_color=E5B13A&icon_color=E5B13A&bg_color=00000000&hide_border=true`}
             alt="GitHub Stats"
             className="w-full"
           />
