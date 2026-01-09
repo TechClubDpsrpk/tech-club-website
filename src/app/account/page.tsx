@@ -66,62 +66,63 @@ const GitHubStatsCard = ({ githubId }: { githubId: string }) => {
       </div>
       
 <div className="space-y-3">
-        <div className="rounded-lg overflow-hidden bg-black-900/30">
-          {!statsError ? (
-          <img
-            src={`https://github-readme-stats-nc.vercel.app/api?username=${githubId}&show_icons=true&theme=transparent&rank_icon=default&include_all_commits=true&show=reviews,prs_merged,prs_merged_percentage&text_color=C9A227&title_color=E5B13A&icon_color=E5B13A&bg_color=00000000&hide_border=true`}
-            alt="GitHub Stats"
-            className="w-full"
-          />
-
-          ) : (
-            <div className="flex items-center justify-center p-8 text-black-500">
-              <p className="text-sm">Stats unavailable</p>
-            </div>
-          )}
-        </div>
-
-        <div className="rounded-lg overflow-hidden bg-black-900/30">
-          {!langsError ? (
-        <img
-          src={`https://github-readme-stats-nc.vercel.app/api/top-langs?username=${githubId}&layout=compact&langs_count=6&exclude_repo=luminolens&show_icons=true&theme=transparent&text_color=C9A227&title_color=E5B13A&bg_color=00000000&hide_border=true`}
-          alt="Top Languages"
-          className="w-full"
-          onError={() => setLangsError(true)}
-        />
-
-          ) : (
-            <div className="flex items-center justify-center p-8 text-black-500">
-              <p className="text-sm">Language stats unavailable</p>
-            </div>
-          )}
-        </div>
-
-        <div className="rounded-lg overflow-hidden bg-black-900/30">
-          {!streakError ? (
-        <img
-          src={`https://github-readme-streak-stats-nc.vercel.app?user=${githubId}&theme=transparent&ring=E5B13A&fire=E5B13A&currStreakLabel=E5B13A&sideLabels=C9A227&currStreakNum=C9A227&dates=C9A227&background=00000000&border_radius=10&hide_border=true`}
-          alt="GitHub Streak"
-          className="w-full"
-          onError={() => setStreakError(true)}
-        />
-
-          ) : (
-            <div className="flex items-center justify-center p-8 text-black-500">
-              <p className="text-sm">Streak stats unavailable</p>
-            </div>
-          )}
-        </div>
-
-        <a 
-          href={`https://github.com/${githubId}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block text-center text-sm text-[#C9A227] hover:text-[#B8901E] transition mt-2"
-        >
-          View Full GitHub Profile →
-        </a>
+  {/* GitHub Overall Stats Card */}
+  <div className="rounded-lg overflow-hidden bg-black-900/30">
+    {!statsError ? (
+      <img
+        src={`https://github-readme-stats-nc.vercel.app/api?username=${githubId}&show_icons=true&theme=transparent&rank_icon=default&include_all_commits=true&count_private=true&show=reviews,prs_merged,prs_merged_percentage&text_color=C9A227&title_color=E5B13A&icon_color=E5B13A&bg_color=00000000&hide_border=true`}
+        alt="GitHub Stats"
+        className="w-full"
+        onError={() => setStatsError(true)}
+      />
+    ) : (
+      <div className="flex items-center justify-center p-8 text-black-500">
+        <p className="text-sm">Stats unavailable</p>
       </div>
+    )}
+  </div>
+
+  {/* Top Languages Card */}
+  <div className="rounded-lg overflow-hidden bg-black-900/30">
+    {!langsError ? (
+      <img
+        src={`https://github-readme-stats-nc.vercel.app/api/top-langs?username=${githubId}&layout=compact&langs_count=6&exclude_repo=luminolens&show_icons=true&theme=transparent&text_color=C9A227&title_color=E5B13A&bg_color=00000000&hide_border=true`}
+        alt="Top Languages"
+        className="w-full"
+        onError={() => setLangsError(true)}
+      />
+    ) : (
+      <div className="flex items-center justify-center p-8 text-black-500">
+        <p className="text-sm">Language stats unavailable</p>
+      </div>
+    )}
+  </div>
+
+  {/* Streak Stats Card */}
+  <div className="rounded-lg overflow-hidden bg-black-900/30">
+    {!streakError ? (
+      <img
+        src={`https://github-readme-streak-stats-nc.vercel.app?user=${githubId}&theme=transparent&ring=E5B13A&fire=E5B13A&currStreakLabel=E5B13A&sideLabels=C9A227&currStreakNum=C9A227&dates=C9A227&background=00000000&border_radius=10&hide_border=true`}
+        alt="GitHub Streak"
+        className="w-full"
+        onError={() => setStreakError(true)}
+      />
+    ) : (
+      <div className="flex items-center justify-center p-8 text-black-500">
+        <p className="text-sm">Streak stats unavailable</p>
+      </div>
+    )}
+  </div>
+
+  <a 
+    href={`https://github.com/${githubId}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="block text-center text-sm text-[#C9A227] hover:text-[#B8901E] transition mt-2"
+  >
+    View Full GitHub Profile →
+  </a>
+</div>
     </div>
   );
 };
