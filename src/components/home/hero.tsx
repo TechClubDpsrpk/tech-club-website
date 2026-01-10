@@ -192,17 +192,17 @@ const Hero = ({ className, ...props }: HeroProps) => {
             </p>
 
             <h1>
-              <span ref={turningRef} className="inline-block opacity-0 mr-3">
+              <span ref={turningRef} className="mr-3 inline-block opacity-0">
                 turning{' '}
               </span>
-              <span ref={ideasRef} className="text-[#fac71e] inline-block opacity-0">
+              <span ref={ideasRef} className="inline-block text-[#fac71e] opacity-0">
                 ideas
               </span>
               <br />
-              <span ref={intoRef} className="inline-block opacity-0 mr-3">
+              <span ref={intoRef} className="mr-3 inline-block opacity-0">
                 into{' '}
               </span>
-              <span ref={projectsRef} className="text-[#fac71e] inline-block opacity-0">
+              <span ref={projectsRef} className="inline-block text-[#fac71e] opacity-0">
                 projects
               </span>
             </h1>
@@ -222,22 +222,22 @@ const Hero = ({ className, ...props }: HeroProps) => {
                     rel="noopener noreferrer"
                     className="btn-1"
                   >
-                    <HyperText as="span">Join The Discord</HyperText>
+                    Join The Discord
                   </a>
                 ) : (
                   <Link href="/signup" className="btn-1">
-                    <HyperText as="span">Join The Discord</HyperText>
+                    Join The Discord
                   </Link>
                 )}
 
                 {/* Sign Up / Dashboard Button */}
                 {isAuthenticated ? (
                   <Link href="/account" className="btn-2">
-                    <HyperText as="span">Dashboard</HyperText>
+                    Dashboard
                   </Link>
                 ) : (
                   <Link href="/signup" className="btn-2">
-                    <HyperText as="span">Sign Up</HyperText>
+                    Sign Up
                   </Link>
                 )}
               </div>
