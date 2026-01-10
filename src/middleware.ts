@@ -25,15 +25,15 @@ export async function middleware(request: NextRequest) {
   const token = request.cookies.get('site_access')?.value;
   const pathname = request.nextUrl.pathname;
 
-  console.log('Site lockdown middleware:', { 
-    pathname, 
+  console.log('Site lockdown middleware:', {
+    pathname,
     hasToken: !!token
   });
 
   // Routes that are always accessible (lockdown system routes + tc-logo.svg)
-  const publicRoutes = ['/coming-soon', '/site-login'];
+  const publicRoutes = ['/coming-soon', '/site-login', '/sitemap.xml', '/robots.txt'];
   const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
-  
+
   // Allow tc-logo.svg specifically
   if (pathname === '/tc-logo.svg') {
     console.log('Allowing tc-logo.svg');
@@ -54,7 +54,7 @@ export async function middleware(request: NextRequest) {
 
   try {
     const payload = await verifyJWT(token);
-    
+
     if (!payload || !payload.siteAccess) {
       console.log('Invalid or missing site access, redirecting to coming soon');
       const response = NextResponse.redirect(new URL('/coming-soon', request.url));
@@ -81,6 +81,6 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
   ],
 };

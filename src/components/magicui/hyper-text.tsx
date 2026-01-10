@@ -125,7 +125,7 @@ export function HyperText({
   return (
     <MotionComponent
       ref={elementRef}
-      className={cn('overflow-hidden py-2 text-2xl font-bold', className)}
+      className={cn('overflow-hidden', className)}
       onMouseEnter={handleAnimationTrigger}
       {...props}
     >

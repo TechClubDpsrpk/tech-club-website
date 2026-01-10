@@ -49,44 +49,81 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --animate-aurora: aurora 8s ease-in-out infinite alternate;
+
   @keyframes aurora {
     0% {
       background-position: 0% 50%;
       transform: rotate(-5deg) scale(0.9);
     }
+
     25% {
       background-position: 50% 100%;
       transform: rotate(5deg) scale(1.1);
     }
+
     50% {
       background-position: 100% 50%;
       transform: rotate(-3deg) scale(0.95);
     }
+
     75% {
       background-position: 50% 0%;
       transform: rotate(3deg) scale(1.05);
     }
+
     100% {
       background-position: 0% 50%;
       transform: rotate(-5deg) scale(0.9);
     }
   }
+
   --animate-grid: grid 15s linear infinite;
+
   @keyframes grid {
     0% {
       transform: translateY(-50%);
     }
+
     100% {
       transform: translateY(0);
     }
   }
+
   --animate-line-shadow: line-shadow 15s linear infinite;
+
   @keyframes line-shadow {
     0% {
       background-position: 0 0;
     }
+
     100% {
       background-position: 100% -100%;
+    }
+  }
+
+  --animate-spin-slow: spin-slow 3s linear infinite;
+
+  @keyframes spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  --animate-fade-in: fade-in 0.5s ease-out forwards;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 }
@@ -164,15 +201,14 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
     margin: 0;
     padding: 0;
-    background: radial-gradient(
-      circle at top center,
-      rgba(235, 189, 47, 0.6) 0%,
-      rgba(0, 0, 0, 1) 15%
-    );
+    background: radial-gradient(circle at top center,
+        rgba(235, 189, 47, 0.6) 0%,
+        rgba(0, 0, 0, 1) 15%);
   }
 
   /* Remove gradient on home page */
@@ -182,11 +218,9 @@
 
   @media (max-width: 768px) {
     body {
-      background: radial-gradient(
-        circle at top center,
-        rgba(235, 189, 47, 0.6) 0%,
-        rgba(0, 0, 0, 1) 5%
-      );
+      background: radial-gradient(circle at top center,
+          rgba(235, 189, 47, 0.6) 0%,
+          rgba(0, 0, 0, 1) 5%);
     }
 
     body.no-gradient {

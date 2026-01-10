@@ -54,7 +54,8 @@ h1 {
 
 .btn-1 {
   padding: 10px 25px;
-  margin: 10px 12px 0 0; /* tighter spacing between buttons, top margin only */
+  margin: 10px 12px 0 0;
+  /* tighter spacing between buttons, top margin only */
   position: relative;
   background: #333 !important;
   border: 1px solid #000;
@@ -96,6 +97,7 @@ h1 {
   transform: scale(1.05);
   cursor: pointer;
 }
+
 .button-group {
   display: flex;
   gap: 20px;
@@ -119,15 +121,43 @@ h1 {
   z-index: -1;
 }
 
+@keyframes slideInTopLeft {
+  from {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+  }
+
+  to {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInBottomRight {
+  from {
+    transform: translate(50%, 50%) scale(0.8);
+    opacity: 0;
+  }
+
+  to {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+}
+
 .yellow-circle-top-left {
   top: -24.8vw;
   left: -27.8vw;
+  animation: slideInTopLeft 0.8s ease-out forwards;
 }
 
 .yellow-circle-bottom-right {
   bottom: -26.5vw;
   right: -28vw;
+  animation: slideInBottomRight 0.8s ease-out forwards;
 }
+
+/* Animations moved to GSAP in hero.tsx */
 
 @media (max-width: 768px) {
   .home-content {
@@ -156,6 +186,7 @@ h1 {
     padding: 7px 12px;
     margin-bottom: -5px;
   }
+
   .btn-2 {
     font-size: 9px !important;
     padding: 5px 12px;

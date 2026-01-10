@@ -1,5 +1,8 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ArrowUpRight } from 'lucide-react';
 import { AuroraText } from '../magicui/aurora-text';
 import { FlickeringGrid } from '../magicui/flickering-grid';
@@ -31,6 +34,13 @@ const footerLinks = [
 ];
 
 const Footer = () => {
+  const pathname = usePathname();
+
+  // Hide footer on lockdown/auth routes
+  if (pathname?.startsWith('/coming-soon') || pathname?.startsWith('/site-login')) {
+    return null;
+  }
+
   return (
     <div className="-pb-1 bottom-0 -z-10 flex w-screen flex-col justify-center overflow-hidden">
       <div className="flex flex-col gap-2 px-4 pt-10 md:flex-row md:px-24">
