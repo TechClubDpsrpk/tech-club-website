@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, Lock, Shield, Fingerprint } from 'lucide-react';
 
 export default function AdminLogin() {
@@ -8,6 +9,36 @@ export default function AdminLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const router = useRouter(); // Import this
+
+  useEffect(() => {
+    async function init() {
+      try {
+        const res = await fetch('/api/admin/check');
+        const data = await res.json();
+
+        if (!data.authenticated) {
+          // Not logged in -> Go login
+          window.location.href = '/login?redirect=/admin/login';
+          return;
+        }
+        if (!data.isAdmin) {
+          // Logged in but not admin -> Go home
+          window.location.href = '/';
+          return;
+        }
+        if (data.vaultUnlocked) {
+          // Already unlocked -> Go dashboard
+          window.location.href = '/admin';
+          return;
+        }
+        // Otherwise, stay here and enter password
+      } catch (e) {
+        console.error("Auth check failed", e);
+      }
+    }
+    init();
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

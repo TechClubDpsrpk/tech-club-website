@@ -1,25 +1,6 @@
-
 import { NextRequest, NextResponse } from 'next/server';
-import { jwtVerify } from 'jose';
+import { verifySiteSession } from '@/lib/supabase-admin';
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'your-secret-key'
-);
-
-interface JwtPayload {
-  siteAccess?: boolean;
-  [key: string]: any;
-}
-
-async function verifyJWT(token: string): Promise<JwtPayload | null> {
-  try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
-    return payload as JwtPayload;
-  } catch (error) {
-    console.error('JWT verification failed:', error);
-    return null;
-  }
-}
 
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get('site_access')?.value;
@@ -53,16 +34,16 @@ export async function middleware(request: NextRequest) {
   }
 
   try {
-    const payload = await verifyJWT(token);
+    const isValid = await verifySiteSession(token);
 
-    if (!payload || !payload.siteAccess) {
-      console.log('Invalid or missing site access, redirecting to coming soon');
+    if (!isValid) {
+      console.log('Invalid or revoked site access, redirecting to coming soon');
       const response = NextResponse.redirect(new URL('/coming-soon', request.url));
       response.cookies.delete('site_access');
       return response;
     }
 
-    console.log('Valid site access token, allowing access');
+    console.log('Valid site access session, allowing access');
     return NextResponse.next();
   } catch (error) {
     console.error('Error verifying site access:', error);

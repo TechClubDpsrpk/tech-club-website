@@ -213,3 +213,4 @@ export async function verifyEmailToken(token: string): Promise<string | null> {
   await supabase.from('verification_tokens').delete().eq('token', token);
   return data.user_id;
 }
+

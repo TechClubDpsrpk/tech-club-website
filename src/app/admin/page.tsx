@@ -16,6 +16,7 @@ import {
   FolderKanban,
   Ban,
   ShieldAlert,
+  Globe,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import AddAnnouncement from '@/components/admin/AddAnnouncement';
@@ -39,7 +40,7 @@ type User = {
   created_at?: string;
 };
 
-type Tab = 'dashboard' | 'projects' | 'announcements' | 'submissions' | 'users';
+type Tab = 'dashboard' | 'projects' | 'announcements' | 'submissions' | 'users' | 'site-access';
 
 export default function AdminPage() {
   const router = useRouter();
@@ -53,47 +54,77 @@ export default function AdminPage() {
   const [expandedUser, setExpandedUser] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');
   const [banModalUser, setBanModalUser] = useState<{ id: string; name: string } | null>(null);
+  const [siteSessions, setSiteSessions] = useState<any[]>([]);
+  const [loadingSessions, setLoadingSessions] = useState(false);
 
+  const fetchSiteSessions = async () => {
+    setLoadingSessions(true);
+    try {
+      const res = await fetch('/api/admin/site-sessions');
+      const data = await res.json();
+      if (data.sessions) setSiteSessions(data.sessions);
+    } catch (e) {
+      console.error("Failed to fetch sessions", e);
+    } finally {
+      setLoadingSessions(false);
+    }
+  };
+
+  const handleRevokeSiteSession = async (sessionId: string) => {
+    if (!confirm('Are you sure you want to revoke this visitor\'s access?')) return;
+
+    try {
+      const res = await fetch('/api/admin/site-sessions', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSiteSessions(prev => prev.filter(s => s.id !== sessionId));
+      }
+    } catch (e) {
+      console.error("Revoke failed", e);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'site-access') {
+      fetchSiteSessions();
+    }
+  }, [activeTab]);
   useEffect(() => {
     const checkAdminAccess = async () => {
       try {
-        const response = await fetch('/api/auth/check', {
+        const response = await fetch('/api/admin/check', {
           credentials: 'include',
         });
 
-        if (!response.ok) {
-          router.replace('/admin/login');
-          return;
-        }
-
         const data = await response.json();
 
-        if (!data?.isAuthenticated || !data?.user) {
-          router.replace('/admin/login');
+        // 1. Not Logged In -> Go to Main Login
+        if (!data.authenticated) {
+          router.replace('/login');
           return;
         }
 
-        const { data: userData, error } = await supabase
-          .from('users')
-          .select('*')
-          .eq('id', data.user.id)
-          .single();
-
-        if (error || !userData) {
-          setError('User not found');
-          setLoading(false);
-          return;
-        }
-
-        if (!userData.is_admin) {
+        // 2. Logged In but Not Admin -> Show Error
+        if (!data.isAdmin) {
           setError('You do not have admin privileges');
           setLoading(false);
           return;
         }
 
-        setIsAdmin(true);
-        setCurrentUser(userData);
+        // 3. Admin Identity Verified, but Vault Locked -> Go to Vault
+        if (!data.vaultUnlocked) {
+          router.replace('/admin/login');
+          return;
+        }
 
+        // 4. All Checks Pass
+        setIsAdmin(true);
+        // We can use the user data from the API check or fetch fresh
+        // Fetching fresh users list
         const { data: allUsers, error: usersError } = await supabase
           .from('users')
           .select('*')
@@ -103,8 +134,16 @@ export default function AdminPage() {
           setUsers(allUsers as User[]);
         }
 
+        // Fetch current user details for display if needed
+        if (data.user) {
+          // We might need to fetch full profile to match User type if API returns limited
+          const { data: fullUser } = await supabase.from('users').select('*').eq('id', data.user.id).single();
+          if (fullUser) setCurrentUser(fullUser);
+        }
+
         setLoading(false);
-      } catch {
+      } catch (e) {
+        console.error("Admin check failed", e);
         setError('Failed to verify admin access');
         setLoading(false);
       }
@@ -195,7 +234,7 @@ export default function AdminPage() {
       }
 
       alert('User unbanned successfully');
-      
+
       // Refresh users list
       const { data: updatedUsers } = await supabase
         .from('users')
@@ -246,6 +285,7 @@ export default function AdminPage() {
     { id: 'projects' as Tab, label: 'Projects', icon: FolderKanban },
     { id: 'announcements' as Tab, label: 'Announcements', icon: Megaphone },
     { id: 'users' as Tab, label: 'Users', icon: Users },
+    { id: 'site-access' as Tab, label: 'Site Access', icon: Globe },
   ];
 
   return (
@@ -286,11 +326,10 @@ export default function AdminPage() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-3 font-medium transition whitespace-nowrap ${
-                    activeTab === tab.id
-                      ? 'text-[#C9A227] border-b-2 border-[#C9A227]'
-                      : 'text-[#C9A227]/50 hover:text-[#C9A227]/80'
-                  }`}
+                  className={`flex items-center gap-2 px-4 py-3 font-medium transition whitespace-nowrap ${activeTab === tab.id
+                    ? 'text-[#C9A227] border-b-2 border-[#C9A227]'
+                    : 'text-[#C9A227]/50 hover:text-[#C9A227]/80'
+                    }`}
                 >
                   <Icon size={18} />
                   {tab.label}
@@ -435,9 +474,8 @@ export default function AdminPage() {
                         </div>
                         <ChevronDown
                           size={20}
-                          className={`text-[#C9A227]/70 transition ${
-                            expandedUser === user.id ? 'rotate-180' : ''
-                          }`}
+                          className={`text-[#C9A227]/70 transition ${expandedUser === user.id ? 'rotate-180' : ''
+                            }`}
                         />
                       </button>
 
@@ -495,7 +533,7 @@ export default function AdminPage() {
                             </p>
                             <div className="flex flex-wrap gap-2">
                               {user.interested_niches &&
-                              user.interested_niches.length > 0 ? (
+                                user.interested_niches.length > 0 ? (
                                 user.interested_niches.map((niche) => (
                                   <span
                                     key={niche}
@@ -521,11 +559,10 @@ export default function AdminPage() {
                               <button
                                 onClick={() => handleSetAdmin(user.id, !user.is_admin)}
                                 disabled={updatingAdmin === user.id}
-                                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed ${
-                                  user.is_admin
-                                    ? 'bg-[#C9A227]/20 text-[#C9A227] hover:bg-[#C9A227]/30'
-                                    : 'border border-[#C9A227]/50 text-[#C9A227] hover:bg-[#C9A227]/10'
-                                }`}
+                                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed ${user.is_admin
+                                  ? 'bg-[#C9A227]/20 text-[#C9A227] hover:bg-[#C9A227]/30'
+                                  : 'border border-[#C9A227]/50 text-[#C9A227] hover:bg-[#C9A227]/10'
+                                  }`}
                               >
                                 <Shield size={14} />
                                 {updatingAdmin === user.id
@@ -565,6 +602,67 @@ export default function AdminPage() {
                       )}
                     </div>
                   ))}
+                </div>
+              )}
+            </div>
+          )}
+          {activeTab === 'site-access' && (
+            <div className="rounded-2xl border border-[#C9A227]/30 bg-black p-8 shadow-xl">
+              <div className="mb-6 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Globe size={24} className="text-[#C9A227]" />
+                  <h2 className="text-2xl font-bold text-white">Site Visitors</h2>
+                </div>
+                <button
+                  onClick={fetchSiteSessions}
+                  disabled={loadingSessions}
+                  className="text-xs text-[#C9A227] hover:underline"
+                >
+                  {loadingSessions ? 'Refreshing...' : 'Refresh'}
+                </button>
+              </div>
+
+              {siteSessions.length === 0 ? (
+                <div className="py-8 text-center text-[#C9A227]/50">
+                  No active visitor sessions found or site is public.
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left">
+                    <thead>
+                      <tr className="border-b border-[#C9A227]/20 text-xs uppercase tracking-wider text-[#C9A227]/50">
+                        <th className="px-4 py-3 font-medium">IP Address</th>
+                        <th className="px-4 py-3 font-medium">Location</th>
+                        <th className="px-4 py-3 font-medium">Device / Browser</th>
+                        <th className="px-4 py-3 font-medium">Last Access</th>
+                        <th className="px-4 py-3 font-medium text-right">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#C9A227]/10">
+                      {siteSessions.map((session) => (
+                        <tr key={session.id} className="text-sm text-white/90">
+                          <td className="px-4 py-4 font-mono">{session.ip_address}</td>
+                          <td className="px-4 py-4">
+                            {session.city}, {session.country}
+                          </td>
+                          <td className="px-4 py-4 max-w-xs truncate" title={session.user_agent}>
+                            {session.user_agent}
+                          </td>
+                          <td className="px-4 py-4">
+                            {new Date(session.created_at).toLocaleString()}
+                          </td>
+                          <td className="px-4 py-4 text-right">
+                            <button
+                              onClick={() => handleRevokeSiteSession(session.id)}
+                              className="text-red-400 hover:text-red-300 transition text-xs font-medium uppercase tracking-widest px-3 py-1 border border-red-400/30 rounded-full hover:bg-red-400/10"
+                            >
+                              Revoke
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               )}
             </div>
