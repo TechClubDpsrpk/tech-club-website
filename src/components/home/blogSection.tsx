@@ -6,36 +6,38 @@ import { ArrowRight } from 'lucide-react';
 const BlogSection = () => {
   const blogs = [
     {
-      title: 'Inside the Tech Lab',
+      title: 'Our Legacy',
       image: '/1.jpg',
-      description: 'A peek into how we experiment, break, and occasionally fix our tech stack.',
+      description:
+        "A reflection on the club's historical achievements, highlighting their lasting impact and inspirational role in guiding future endeavors.",
     },
     {
-      title: 'AI + Robots = Chaos',
+      title: 'Inside the Gallery',
       image: '/2.jpg',
       description:
-        'Documenting the hilarious and slightly terrifying moments from our latest AI robotics sprint.',
+        'Take a peek at what working for the Tech Club actually looks like, with images from various competitions and events, featuring and taken by our Club members.',
     },
   ];
 
   return (
-    <section className="bg-black px-6 pt-20 pb-24 text-white md:px-18 lg:px-42">
-      <div className="mx-auto max-w-6xl space-y-20">
+    <section className="max-h-[110vh] bg-black px-6 pt-10 pb-24 text-white md:px-16">
+      <div className="mx-auto max-w-6xl space-y-16">
         {/* Heading */}
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
-          <h2 className="text-4xl leading-tight font-extrabold tracking-tight md:text-6xl">
-            Everything we can imagine
+          <h2 className="pr-20 text-4xl leading-tight font-bold md:text-6xl">
+            Capturing the Journey
             <br />
-            should be real
+            That Defines Us
           </h2>
-          <p className="max-w-md text-zinc-400">
-            We’re building alongside pioneering minds, cracked engineers, and wildly creative
-            thinkers — all shaping the future of how we build, learn, and experiment in tech.
+          <p className="ml-[105px] max-w-md text-right text-zinc-400">
+            The Tech Club has made significant progress and is dedicated to continuing its efforts
+            to advance further. This highlights the hard work and commitment placed into the club's
+            development.
           </p>
         </div>
 
         {/* Blog Grid */}
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-14 md:grid-cols-2">
           {blogs.map((blog, index) => (
             <div key={index} className="group cursor-pointer space-y-4">
               <ParallaxImage src={blog.image} alt={blog.title} />

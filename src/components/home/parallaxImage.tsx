@@ -19,7 +19,7 @@ export const ParallaxImage: React.FC<ParallaxImageProps> = ({ src, alt }) => {
   const y = useTransform(scrollYProgress, [0, 1], ['-20%', '20%']);
 
   return (
-    <div ref={ref} className="relative h-[500px] overflow-hidden shadow-lg">
+    <div ref={ref} className="relative h-[300px] overflow-hidden shadow-lg">
       <motion.div style={{ y }} className="h-full w-full overflow-hidden">
         <div className="relative h-full w-full">
           <Image src={src} fill className="object-cover" alt={alt} priority />
