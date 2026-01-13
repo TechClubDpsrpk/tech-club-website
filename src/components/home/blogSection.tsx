@@ -2,6 +2,7 @@
 import React from 'react';
 import { ParallaxImage } from './parallaxImage';
 import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 const BlogSection = () => {
   const blogs = [
@@ -10,12 +11,14 @@ const BlogSection = () => {
       image: '/1.jpg',
       description:
         "A reflection on the club's historical achievements, highlighting their lasting impact and inspirational role in guiding future endeavors.",
+      href: '/legacy',
     },
     {
       title: 'Inside the Gallery',
       image: '/2.jpg',
       description:
         'Take a peek at what working for the Tech Club actually looks like, with images from various competitions and events, featuring and taken by our Club members.',
+      href: '/gallery',
     },
   ];
 
@@ -42,7 +45,7 @@ const BlogSection = () => {
             <div key={index} className="group cursor-pointer space-y-4">
               <ParallaxImage src={blog.image} alt={blog.title} />
 
-              <div className="flex items-center justify-between">
+              <Link key={index} href={blog.href} className="flex items-center justify-between">
                 {/* Title with animated underline */}
                 <h3 className="relative inline-block text-lg font-semibold text-white transition-all duration-300 group-hover:text-[#FAC924] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#FAC924] after:transition-all after:duration-300 group-hover:after:w-full">
                   {blog.title}
@@ -50,7 +53,7 @@ const BlogSection = () => {
 
                 {/* Rotating arrow */}
                 <ArrowRight className="h-5 w-5 text-[#FAC924] transition-transform duration-300 group-hover:-rotate-45" />
-              </div>
+              </Link>
 
               <p className="text-sm text-zinc-400">{blog.description}</p>
             </div>
