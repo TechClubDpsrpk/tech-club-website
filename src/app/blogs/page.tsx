@@ -85,7 +85,7 @@ export default function Blogs() {
         <div className="mx-auto mb-8 max-w-4xl px-4">
           <div>
             <h1 className="mb-2 text-center text-4xl font-bold text-white">Blogs</h1>
-            <p className="text-center text-gray-400">
+            <p className="text-md mt-6 text-center text-neutral-300 md:text-lg">
               Latest insights and updates from our community
             </p>
           </div>
@@ -101,7 +101,9 @@ export default function Blogs() {
         <div className="mx-auto mb-8 max-w-4xl px-4">
           <div>
             <h1 className="mb-2 text-4xl font-bold text-white">Blogs</h1>
-            <p className="text-gray-400">Latest insights and updates from our community</p>
+            <p className="text-md mt-6 text-center text-neutral-300 md:text-lg">
+              Latest insights and updates from our community
+            </p>
           </div>
         </div>
         <p className="mt-10 text-center text-red-400">{error}</p>
@@ -112,10 +114,10 @@ export default function Blogs() {
   if (!posts.length) {
     return (
       <div className="min-h-screen bg-black pt-24 pb-16">
-        <div className="mx-auto mb-8 max-w-4xl items-center justify-center px-4 text-center">
-          <div className="items-center text-center">
+        <div className="mx-auto mb-8 max-w-4xl px-4">
+          <div>
             <h1 className="mb-2 text-4xl font-bold text-white">Blogs</h1>
-            <p className="text-md mt-10 text-center text-neutral-400 md:text-base">
+            <p className="text-md mt-6 text-center text-neutral-300 md:text-lg">
               Latest insights and updates from our community
             </p>
           </div>
@@ -130,7 +132,9 @@ export default function Blogs() {
       <div className="mx-auto mb-8 max-w-4xl px-4">
         <div>
           <h1 className="mb-2 text-4xl font-bold text-white">Blogs</h1>
-          <p className="text-gray-400">Latest insights and updates from our community</p>
+          <p className="text-md mt-6 text-center text-neutral-300 md:text-lg">
+            Latest insights and updates from our community
+          </p>
         </div>
       </div>
       <TracingBeam className="px-6">
