@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, ArrowRight } from 'lucide-react';
 import { TracingBeam } from '@/components/ui/tracing-beam';
 import { twMerge } from 'tailwind-merge';
 
@@ -46,13 +46,11 @@ export default function Blogs() {
         const formattedPosts = data.items.map((item: any) => {
           // Remove HTML tags from description
           let cleanDesc = item.description.replace(/<[^>]*>/g, '').trim();
-          
+
           let extractedAuthor = null;
 
           // Match: By John Doe / by John Doe / -by John Doe
           const authorRegex = /^\s*(?:[-–]\s*)?by\s+([A-Za-z]+)\s+([A-Za-z]+)/i;
-
-
 
           const authorMatch = cleanDesc.match(authorRegex);
 
@@ -84,15 +82,15 @@ export default function Blogs() {
   if (loading) {
     return (
       <div className="min-h-screen bg-black pt-24 pb-16">
-        <div className="mx-auto max-w-4xl px-4 mb-8 ">
+        <div className="mx-auto mb-8 max-w-4xl px-4">
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2 text-center">Blogs</h1>
-            <p className="text-gray-400 text-center">
+            <h1 className="mb-2 text-center text-4xl font-bold text-white">Blogs</h1>
+            <p className="text-center text-gray-400">
               Latest insights and updates from our community
             </p>
           </div>
         </div>
-        <p className="mt-10 text-center text-white">Loading blog posts…</p>
+        <p className="mt-10 text-center text-2xl text-white md:text-3xl">Loading blog posts…</p>
       </div>
     );
   }
@@ -100,12 +98,10 @@ export default function Blogs() {
   if (error) {
     return (
       <div className="min-h-screen bg-black pt-24 pb-16">
-        <div className="mx-auto max-w-4xl px-4 mb-8">
+        <div className="mx-auto mb-8 max-w-4xl px-4">
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2">Blogs</h1>
-            <p className="text-gray-400">
-              Latest insights and updates from our community
-            </p>
+            <h1 className="mb-2 text-4xl font-bold text-white">Blogs</h1>
+            <p className="text-gray-400">Latest insights and updates from our community</p>
           </div>
         </div>
         <p className="mt-10 text-center text-red-400">{error}</p>
@@ -116,10 +112,10 @@ export default function Blogs() {
   if (!posts.length) {
     return (
       <div className="min-h-screen bg-black pt-24 pb-16">
-        <div className="mx-auto max-w-4xl px-4 mb-8">
-          <div>
-            <h1 className="text-4xl font-bold text-white mb-2">Blogs</h1>
-            <p className="text-gray-400">
+        <div className="mx-auto mb-8 max-w-4xl items-center justify-center px-4 text-center">
+          <div className="items-center text-center">
+            <h1 className="mb-2 text-4xl font-bold text-white">Blogs</h1>
+            <p className="text-md mt-10 text-center text-neutral-400 md:text-base">
               Latest insights and updates from our community
             </p>
           </div>
@@ -131,49 +127,39 @@ export default function Blogs() {
 
   return (
     <div className="min-h-screen bg-black pt-24 pb-16">
-      <div className="mx-auto max-w-4xl px-4 mb-8">
+      <div className="mx-auto mb-8 max-w-4xl px-4">
         <div>
-          <h1 className="text-4xl font-bold text-white mb-2">Blogs</h1>
-          <p className="text-gray-400">
-            Latest insights and updates from our community
-          </p>
+          <h1 className="mb-2 text-4xl font-bold text-white">Blogs</h1>
+          <p className="text-gray-400">Latest insights and updates from our community</p>
         </div>
       </div>
       <TracingBeam className="px-6">
-        <div className="relative mx-auto max-w-2xl pt-4 antialiased">
+        <div className="relative mx-auto max-w-2xl pt-5 antialiased">
           {posts.map((post, index) => (
-            <div key={index} className="mb-10 relative">
-              {/* Date badge */}
-              <h2 className="mb-4 w-fit rounded-full bg-black px-4 py-1 font-[family-name:var(--font-vt)] text-white">
-                {formatDate(post.pubDate)}
-              </h2>
-
+            <div key={index} className="relative mb-10 pb-8">
               {/* Title */}
               <div className="mb-4">
                 <a
                   href={post.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={twMerge(
-                    'font-[family-name:var(--font-space-mono)] text-xl hover:underline block mb-2'
-                  )}
+                  className={twMerge('mb-2 block text-xl hover:underline md:text-[27px]')}
                 >
                   {post.title}
                 </a>
-                
                 {/* Author byline */}
-                {post.author && (
-                  <p className="text-sm text-gray-500 mb-3">by {post.author}</p>
-                )}
-                
+                {post.author && <p className="mb-3 text-lg text-gray-400">by {post.author}</p>}
+
+                {/* Date badge */}
+                <h2 className="mb-2 w-fit rounded-full bg-black pl-1 font-mono text-sm text-white">
+                  {formatDate(post.pubDate)}
+                </h2>
+
                 {/* Categories */}
                 {post.categories.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {post.categories.slice(0, 3).map((cat, i) => (
-                      <span
-                        key={i}
-                        className="text-xs bg-black/50 px-3 py-1 rounded-full"
-                      >
+                      <span key={i} className="rounded-md bg-gray-800 px-4 py-1 text-xs">
                         {cat}
                       </span>
                     ))}
@@ -182,29 +168,27 @@ export default function Blogs() {
               </div>
 
               {/* Content */}
-              <div className="prose prose-sm dark:prose-invert text-sm">
+              <div className="prose prose-sm dark:prose-invert text-base">
                 {post.thumbnail && (
                   <img
                     src={post.thumbnail}
                     alt={post.title}
-                    className="mb-4 rounded-lg object-cover w-full"
+                    className="mb-4 w-full rounded-lg object-cover"
                   />
                 )}
 
-                <p className="text-gray-300 mb-4">
-                  {post.description}
-                </p>
+                <p className="mb-4 text-gray-300">{post.description}</p>
 
                 <a
                   href={post.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-semibold group/link no-underline"
+                  className="group/link inline-flex items-center gap-1 font-semibold text-white no-underline hover:text-[#FAC924]"
                 >
                   Read on Medium
-                  <ExternalLink
+                  <ArrowRight
                     size={16}
-                    className="group-hover/link:translate-x-1 transition-transform"
+                    className="-rotate-[35deg] transition-transform duration-300 group-hover/link:-rotate-45"
                   />
                 </a>
               </div>
