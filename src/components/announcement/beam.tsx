@@ -92,10 +92,7 @@ export function Beam() {
     }
 
     setDeletingId(id);
-    const { error } = await supabase
-      .from('announcements')
-      .delete()
-      .eq('id', id);
+    const { error } = await supabase.from('announcements').delete().eq('id', id);
 
     if (error) {
       alert('Error deleting announcement: ' + error.message);
@@ -106,67 +103,94 @@ export function Beam() {
   };
 
   if (loading) {
-    return <p className="mt-10 text-center">Loading announcements…</p>;
+    return (
+      <div className="min-h-[100vh]">
+        <div className="mx-auto mb-8 max-w-4xl px-4">
+          <div>
+            <h1 className="mb-2 text-4xl font-bold text-white">Announcements</h1>
+            <p className="text-md mt-6 text-center text-neutral-300 md:text-lg">
+              Latest insights and updates from our community
+            </p>
+          </div>
+        </div>
+        <p className="mt-[20%] text-center text-xl md:mt-[10%] md:text-3xl">
+          Loading Announcements
+        </p>
+      </div>
+    );
   }
 
   if (!announcements.length) {
-    return <p className="mt-10 text-center">No announcements yet</p>;
+    return (
+      <div className="min-h-[100vh]">
+        <div className="mx-auto mb-8 max-w-4xl px-4">
+          <div>
+            <h1 className="mb-2 text-4xl font-bold text-white">Announcements</h1>
+            <p className="text-md mt-6 text-center text-neutral-300 md:text-lg">
+              Latest insights and updates from our community
+            </p>
+          </div>
+        </div>
+        <p className="mt-[20%] text-center text-xl md:mt-[10%] md:text-3xl">No announcements yet</p>
+        <p className="mt-1 text-center text-lg text-neutral-300">Stay Tuned!</p>
+      </div>
+    );
   }
 
   return (
-    <TracingBeam className="px-6">
-      <div className="relative mx-auto max-w-2xl pt-4 antialiased">
-        {announcements.map((a) => (
-          <div key={a.id} className="mb-10 relative">
-            {/* Date badge */}
-            <h2 className="mb-4 w-fit rounded-full bg-black px-4 py-1 font-[family-name:var(--font-vt)] text-white">
-              {formatDate(a.created_at)}
-            </h2>
-
-            {/* Heading */}
-            <div className="flex items-start justify-between">
-              <p
-                className={twMerge(
-                  'mb-4 font-[family-name:var(--font-space-mono)] text-xl flex-1'
-                )}
-              >
-                {a.heading}
-              </p>
-              
-              {/* Delete button (admin only) - top right */}
-              {isAdmin && (
-                <button
-                  onClick={() => handleDelete(a.id)}
-                  disabled={deletingId === a.id}
-                  onMouseEnter={() => setHoverId(a.id)}
-                  onMouseLeave={() => setHoverId(null)}
-                  className="ml-4 flex items-center justify-center rounded-lg bg-red-500/20 border border-red-500/50 p-2 text-red-400 hover:bg-red-500/30 disabled:opacity-50 transition-all flex-shrink-0"
-                  title="Delete announcement"
-                >
-                  {hoverId === a.id ? (
-                    <Trash2 size={16} />
-                  ) : (
-                    <Trash size={16} />
-                  )}
-                </button>
-              )}
-            </div>
-
-            {/* Content */}
-            <div className="prose prose-sm dark:prose-invert text-sm">
-              {a.image_url && (
-                <img
-                  src={a.image_url}
-                  alt="announcement"
-                  className="mb-10 rounded-lg object-cover"
-                />
-              )}
-
-              <ReactMarkdown>{a.description}</ReactMarkdown>
-            </div>
-          </div>
-        ))}
+    <>
+      <div className="mx-auto mb-8 max-w-4xl px-4">
+        <div>
+          <h1 className="mb-2 text-4xl font-bold text-white">Announcements</h1>
+          <p className="text-md mt-6 text-center text-neutral-300 md:text-lg">
+            Latest insights and updates from our community
+          </p>
+        </div>
       </div>
-    </TracingBeam>
+      <TracingBeam className="px-6">
+        <div className="relative mx-auto max-w-2xl pt-4 antialiased">
+          {announcements.map((a) => (
+            <div key={a.id} className="relative mb-10">
+              {/* Date badge */}
+              <h2 className="mb-2 w-fit rounded-full bg-black py-1 font-mono text-sm text-neutral-400">
+                {formatDate(a.created_at)}
+              </h2>
+
+              {/* Heading */}
+              <div className="flex items-start justify-between">
+                <p className={twMerge('mb-4 flex-1 text-xl md:text-3xl')}>{a.heading}</p>
+
+                {/* Delete button (admin only) - top right */}
+                {isAdmin && (
+                  <button
+                    onClick={() => handleDelete(a.id)}
+                    disabled={deletingId === a.id}
+                    onMouseEnter={() => setHoverId(a.id)}
+                    onMouseLeave={() => setHoverId(null)}
+                    className="ml-4 flex flex-shrink-0 items-center justify-center rounded-lg border border-red-500/50 bg-red-500/20 p-2 text-red-400 transition-all hover:bg-red-500/30 disabled:opacity-50"
+                    title="Delete announcement"
+                  >
+                    {hoverId === a.id ? <Trash2 size={16} /> : <Trash size={16} />}
+                  </button>
+                )}
+              </div>
+
+              {/* Content */}
+              <div className="prose prose-sm dark:prose-invert text-sm">
+                {a.image_url && (
+                  <img
+                    src={a.image_url}
+                    alt="announcement"
+                    className="mb-10 rounded-md object-cover"
+                  />
+                )}
+
+                <ReactMarkdown className="text-base">{a.description}</ReactMarkdown>
+              </div>
+            </div>
+          ))}
+        </div>
+      </TracingBeam>
+    </>
   );
 }

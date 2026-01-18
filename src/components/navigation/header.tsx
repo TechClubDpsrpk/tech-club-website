@@ -106,8 +106,9 @@ const Header = () => {
       className={`fixed ${isAtTop ? 'top-4' : 'bottom-4'} left-1/2 z-50 -translate-x-1/2 md:top-4`}
     >
       <nav
-        className={`rounded-full border px-2 py-2 shadow-xl backdrop-blur-xl transition-all duration-500 ${isLightMode ? 'border-gray-200/50 bg-white/90' : 'border-gray-700/50 bg-gray-900/50'
-          }`}
+        className={`rounded-full border px-2 py-2 shadow-xl backdrop-blur-xl transition-all duration-500 ${
+          isLightMode ? 'border-gray-200/50 bg-white/90' : 'border-gray-700/50 bg-gray-900/50'
+        }`}
       >
         <div className="flex items-center gap-1">
           {navLinks.map((link) => {
@@ -138,31 +139,34 @@ const Header = () => {
                 {link.isLogo ? (
                   <Link
                     href="/"
-                    className={`flex items-center justify-center rounded-full p-[3px] transition-all duration-300 ${isActive
-                      ? 'bg-[#C9A227]'
-                      : isLightMode
-                        ? 'hover:bg-gray-100'
-                        : 'hover:bg-gray-800/50'
-                      }`}
+                    className={`flex items-center justify-center rounded-full p-[3px] transition-all duration-300 ${
+                      isActive
+                        ? 'bg-[#C9A227]'
+                        : isLightMode
+                          ? 'hover:bg-gray-100'
+                          : 'hover:bg-gray-800/50'
+                    }`}
                   >
                     <Image src="/tc-logo_circle.svg" alt="Logo" width={30} height={30} priority />
                   </Link>
                 ) : link.isOpt === false ? (
                   <Link
                     href={link.href}
-                    className={`group flex items-center overflow-hidden rounded-full text-sm font-medium whitespace-nowrap transition-all duration-500 ease-in-out ${isScrolled ? 'gap-0 px-2 py-2' : 'gap-2 px-5 py-2'} ${isActive
-                      ? 'scale-105 bg-[#C9A227] text-black shadow-lg shadow-[#C9A227]/20'
-                      : isLightMode
-                        ? 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                        : 'text-gray-300 hover:bg-gray-800/50 hover:text-white'
-                      }`}
+                    className={`group flex items-center overflow-hidden rounded-full text-sm font-medium whitespace-nowrap transition-all duration-500 ease-in-out ${isScrolled ? 'gap-0 px-2 py-2' : 'gap-2 px-5 py-2'} ${
+                      isActive
+                        ? 'scale-105 bg-[#C9A227] text-black shadow-lg shadow-[#C9A227]/20'
+                        : isLightMode
+                          ? 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                          : 'text-gray-300 hover:bg-gray-800/50 hover:text-white'
+                    }`}
                   >
                     {link.icon && <link.icon size={18} className="flex-shrink-0" />}
                     <span
-                      className={`hidden whitespace-nowrap transition-all duration-500 ease-in-out sm:inline ${isScrolled
-                        ? 'ml-0 max-w-0 opacity-0 group-hover:ml-1 group-hover:max-w-xs group-hover:opacity-100'
-                        : 'ml-0 max-w-xs opacity-100'
-                        }`}
+                      className={`hidden whitespace-nowrap transition-all duration-500 ease-in-out sm:inline ${
+                        isScrolled
+                          ? 'ml-0 max-w-0 opacity-0 group-hover:ml-1 group-hover:max-w-xs group-hover:opacity-100'
+                          : 'ml-0 max-w-xs opacity-100'
+                      }`}
                       style={{
                         transitionProperty: 'max-width, opacity, margin-left',
                       }}
@@ -173,19 +177,21 @@ const Header = () => {
                 ) : isAuthenticated ? (
                   <Link
                     href={link.href}
-                    className={`group flex items-center overflow-hidden rounded-full text-sm font-medium whitespace-nowrap transition-all duration-500 ease-in-out ${isScrolled ? 'gap-0 px-2 py-2' : 'gap-2 px-5 py-2'} ${isActive
-                      ? 'scale-105 bg-[#C9A227] text-black shadow-lg shadow-[#C9A227]/20'
-                      : isLightMode
-                        ? 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                        : 'text-gray-300 hover:bg-gray-800/50 hover:text-white'
-                      }`}
+                    className={`group flex items-center overflow-hidden rounded-full text-sm font-medium whitespace-nowrap transition-all duration-500 ease-in-out ${isScrolled ? 'gap-0 px-2 py-2' : 'gap-2 px-5 py-2'} ${
+                      isActive
+                        ? 'scale-105 bg-[#C9A227] text-black shadow-lg shadow-[#C9A227]/20'
+                        : isLightMode
+                          ? 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                          : 'text-gray-300 hover:bg-gray-800/50 hover:text-white'
+                    }`}
                   >
                     {link.icon && <link.icon size={18} className="flex-shrink-0" />}
                     <span
-                      className={`hidden whitespace-nowrap transition-all duration-500 ease-in-out sm:inline ${isScrolled
-                        ? 'ml-0 max-w-0 opacity-0 group-hover:ml-1 group-hover:max-w-xs group-hover:opacity-100'
-                        : 'ml-0 max-w-xs opacity-100'
-                        }`}
+                      className={`hidden whitespace-nowrap transition-all duration-500 ease-in-out sm:inline ${
+                        isScrolled
+                          ? 'ml-0 max-w-0 opacity-0 group-hover:ml-1 group-hover:max-w-xs group-hover:opacity-100'
+                          : 'ml-0 max-w-xs opacity-100'
+                      }`}
                       style={{
                         transitionProperty: 'max-width, opacity, margin-left',
                       }}
@@ -199,8 +205,9 @@ const Header = () => {
 
                 {isHome && (
                   <div
-                    className={`mx-1 h-8 w-px transition-colors duration-300 ${isLightMode ? 'bg-gray-300' : 'bg-gray-600'
-                      }`}
+                    className={`mx-1 h-8 w-px transition-colors duration-300 ${
+                      isLightMode ? 'bg-gray-300' : 'bg-gray-600'
+                    }`}
                   />
                 )}
               </React.Fragment>
@@ -208,8 +215,9 @@ const Header = () => {
           })}
 
           <div
-            className={`mx-1 h-8 w-px transition-colors duration-300 ${isLightMode ? 'bg-gray-300' : 'bg-gray-600'
-              }`}
+            className={`mx-1 h-8 w-px transition-colors duration-300 ${
+              isLightMode ? 'bg-gray-300' : 'bg-gray-600'
+            }`}
           />
 
           {!loading && (
@@ -218,12 +226,13 @@ const Header = () => {
                 <div className="flex items-center gap-2">
                   <Link
                     href="/account"
-                    className={`flex items-center gap-2 rounded-full px-2 py-2 text-sm font-medium transition-all duration-300 ${pathname === '/account'
-                      ? 'scale-105 bg-[#C9A227] text-black shadow-lg shadow-[#C9A227]/20'
-                      : isLightMode
-                        ? 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                        : 'text-gray-300 hover:bg-gray-800/50 hover:text-white'
-                      }`}
+                    className={`flex items-center gap-2 rounded-full px-2 py-2 text-sm font-medium transition-all duration-300 ${
+                      pathname === '/account'
+                        ? 'scale-105 bg-[#C9A227] text-black shadow-lg shadow-[#C9A227]/20'
+                        : isLightMode
+                          ? 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                          : 'text-gray-300 hover:bg-gray-800/50 hover:text-white'
+                    }`}
                   >
                     <User size={18} />
                   </Link>
@@ -231,12 +240,13 @@ const Header = () => {
               ) : (
                 <Link
                   href="/signup"
-                  className={`flex items-center gap-2 rounded-full px-2 py-2 text-sm font-medium transition-all duration-300 ${pathname === '/signup'
-                    ? 'scale-105 bg-[#C9A227] text-black shadow-lg shadow-[#C9A227]/20'
-                    : isLightMode
-                      ? 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                      : 'text-gray-300 hover:bg-gray-800/50 hover:text-white'
-                    }`}
+                  className={`flex items-center gap-2 rounded-full px-2 py-2 text-sm font-medium transition-all duration-300 ${
+                    pathname === '/signup'
+                      ? 'scale-105 bg-[#C9A227] text-black shadow-lg shadow-[#C9A227]/20'
+                      : isLightMode
+                        ? 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                        : 'text-gray-300 hover:bg-gray-800/50 hover:text-white'
+                  }`}
                 >
                   <UserPlus size={18} />
                 </Link>
