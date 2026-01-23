@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useAuth } from '@/components/providers/auth-provider';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -10,6 +11,7 @@ export default function LoginPage() {
     email: '',
     password: '',
   });
+  const { refreshAuth } = useAuth();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -41,6 +43,7 @@ export default function LoginPage() {
         return;
       }
 
+      await refreshAuth();
       router.push('/');
       router.refresh();
     } catch {

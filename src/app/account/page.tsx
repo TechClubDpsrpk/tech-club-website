@@ -16,6 +16,7 @@ import {
   X,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
+import { useAuth } from '@/components/providers/auth-provider';
 import ActivitySection from '@/components/account/ActivitySection';
 
 const NICHES = [
@@ -64,65 +65,65 @@ const GitHubStatsCard = ({ githubId }: { githubId: string }) => {
         </svg>
         <h3 className="text-sm font-semibold text-white">GitHub Stats</h3>
       </div>
-      
-<div className="space-y-3">
-  {/* GitHub Overall Stats Card */}
-  <div className="rounded-lg overflow-hidden bg-black-900/30">
-    {!statsError ? (
-      <img
-        src={`https://github-readme-stats-nc.vercel.app/api?username=${githubId}&show_icons=true&theme=transparent&rank_icon=default&include_all_commits=true&count_private=true&show=reviews,prs_merged,prs_merged_percentage&text_color=C9A227&title_color=E5B13A&icon_color=E5B13A&bg_color=00000000&hide_border=true`}
-        alt="GitHub Stats"
-        className="w-full"
-        onError={() => setStatsError(true)}
-      />
-    ) : (
-      <div className="flex items-center justify-center p-8 text-black-500">
-        <p className="text-sm">Stats unavailable</p>
-      </div>
-    )}
-  </div>
 
-  {/* Top Languages Card */}
-  <div className="rounded-lg overflow-hidden bg-black-900/30">
-    {!langsError ? (
-      <img
-        src={`https://github-readme-stats-nc.vercel.app/api/top-langs?username=${githubId}&layout=compact&langs_count=6&exclude_repo=luminolens&show_icons=true&theme=transparent&text_color=C9A227&title_color=E5B13A&bg_color=00000000&hide_border=true`}
-        alt="Top Languages"
-        className="w-full"
-        onError={() => setLangsError(true)}
-      />
-    ) : (
-      <div className="flex items-center justify-center p-8 text-black-500">
-        <p className="text-sm">Language stats unavailable</p>
-      </div>
-    )}
-  </div>
+      <div className="space-y-3">
+        {/* GitHub Overall Stats Card */}
+        <div className="rounded-lg overflow-hidden bg-black-900/30">
+          {!statsError ? (
+            <img
+              src={`https://github-readme-stats-nc.vercel.app/api?username=${githubId}&show_icons=true&theme=transparent&rank_icon=default&include_all_commits=true&count_private=true&show=reviews,prs_merged,prs_merged_percentage&text_color=C9A227&title_color=E5B13A&icon_color=E5B13A&bg_color=00000000&hide_border=true`}
+              alt="GitHub Stats"
+              className="w-full"
+              onError={() => setStatsError(true)}
+            />
+          ) : (
+            <div className="flex items-center justify-center p-8 text-black-500">
+              <p className="text-sm">Stats unavailable</p>
+            </div>
+          )}
+        </div>
 
-  {/* Streak Stats Card */}
-  <div className="rounded-lg overflow-hidden bg-black-900/30">
-    {!streakError ? (
-      <img
-        src={`https://github-readme-streak-stats-nc.vercel.app?user=${githubId}&theme=transparent&ring=E5B13A&fire=E5B13A&currStreakLabel=E5B13A&sideLabels=C9A227&currStreakNum=C9A227&dates=C9A227&background=00000000&border_radius=10&hide_border=true`}
-        alt="GitHub Streak"
-        className="w-full"
-        onError={() => setStreakError(true)}
-      />
-    ) : (
-      <div className="flex items-center justify-center p-8 text-black-500">
-        <p className="text-sm">Streak stats unavailable</p>
-      </div>
-    )}
-  </div>
+        {/* Top Languages Card */}
+        <div className="rounded-lg overflow-hidden bg-black-900/30">
+          {!langsError ? (
+            <img
+              src={`https://github-readme-stats-nc.vercel.app/api/top-langs?username=${githubId}&layout=compact&langs_count=6&exclude_repo=luminolens&show_icons=true&theme=transparent&text_color=C9A227&title_color=E5B13A&bg_color=00000000&hide_border=true`}
+              alt="Top Languages"
+              className="w-full"
+              onError={() => setLangsError(true)}
+            />
+          ) : (
+            <div className="flex items-center justify-center p-8 text-black-500">
+              <p className="text-sm">Language stats unavailable</p>
+            </div>
+          )}
+        </div>
 
-  <a 
-    href={`https://github.com/${githubId}`}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="block text-center text-sm text-[#C9A227] hover:text-[#B8901E] transition mt-2"
-  >
-    View Full GitHub Profile →
-  </a>
-</div>
+        {/* Streak Stats Card */}
+        <div className="rounded-lg overflow-hidden bg-black-900/30">
+          {!streakError ? (
+            <img
+              src={`https://github-readme-streak-stats-nc.vercel.app?user=${githubId}&theme=transparent&ring=E5B13A&fire=E5B13A&currStreakLabel=E5B13A&sideLabels=C9A227&currStreakNum=C9A227&dates=C9A227&background=00000000&border_radius=10&hide_border=true`}
+              alt="GitHub Streak"
+              className="w-full"
+              onError={() => setStreakError(true)}
+            />
+          ) : (
+            <div className="flex items-center justify-center p-8 text-black-500">
+              <p className="text-sm">Streak stats unavailable</p>
+            </div>
+          )}
+        </div>
+
+        <a
+          href={`https://github.com/${githubId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block text-center text-sm text-[#C9A227] hover:text-[#B8901E] transition mt-2"
+        >
+          View Full GitHub Profile →
+        </a>
+      </div>
     </div>
   );
 };
@@ -130,6 +131,7 @@ const GitHubStatsCard = ({ githubId }: { githubId: string }) => {
 // Main component
 function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
   const router = useRouter();
+  const { refreshAuth } = useAuth();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -139,29 +141,29 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
   const [sessions, setSessions] = useState<any[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(false);
 
-const [formData, setFormData] = useState({
-  name: '',
-  phoneNumber: '',
-  class: '',
-  section: '',
-  admissionNumber: '',  // Add this
-  githubId: '',
-  discordId: '',  // Add this
-  interestedNiches: [] as string[],
-});
+  const [formData, setFormData] = useState({
+    name: '',
+    phoneNumber: '',
+    class: '',
+    section: '',
+    admissionNumber: '',  // Add this
+    githubId: '',
+    discordId: '',  // Add this
+    interestedNiches: [] as string[],
+  });
 
   const [passwordData, setPasswordData] = useState({
     current: '',
     new: '',
     confirm: '',
   });
-  
+
   const [showPasswords, setShowPasswords] = useState({
     current: false,
     new: false,
     confirm: false,
   });
-  
+
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [resendingEmail, setResendingEmail] = useState(false);
 
@@ -178,7 +180,7 @@ const [formData, setFormData] = useState({
       if (!response.ok) return router.push('/login');
       const data = await response.json();
       if (!data?.isAuthenticated || !data?.user) return router.push('/login');
-      
+
       const { data: userData, error } = await supabase
         .from('users')
         .select('*')
@@ -196,16 +198,16 @@ const [formData, setFormData] = useState({
       };
 
       setUser(mergedUser);
-setFormData({
-  name: mergedUser.name || '',
-  phoneNumber: mergedUser.phone_number || '',
-  class: mergedUser.class || '',
-  section: mergedUser.section || '',
-  admissionNumber: mergedUser.admission_number || '',  // Add this
-  githubId: mergedUser.github_id || '',
-  discordId: mergedUser.discord_id || '',  // Add this
-  interestedNiches: mergedUser.interested_niches || [],
-});
+      setFormData({
+        name: mergedUser.name || '',
+        phoneNumber: mergedUser.phone_number || '',
+        class: mergedUser.class || '',
+        section: mergedUser.section || '',
+        admissionNumber: mergedUser.admission_number || '',  // Add this
+        githubId: mergedUser.github_id || '',
+        discordId: mergedUser.discord_id || '',  // Add this
+        interestedNiches: mergedUser.interested_niches || [],
+      });
 
       if (showWelcome) {
         setShowWelcomeModal(true);
@@ -238,7 +240,7 @@ setFormData({
     if (revokeAll && !confirm('Revoke all other sessions? You will remain logged in on this device.')) {
       return;
     }
-    
+
     if (sessionId && !confirm('Revoke this session?')) {
       return;
     }
@@ -302,25 +304,25 @@ setFormData({
       showMsg('error', 'Please select at least one niche');
       return;
     }
-if (!formData.admissionNumber.trim()) {
-  showMsg('error', 'Admission number cannot be empty');
-  return;
-}
+    if (!formData.admissionNumber.trim()) {
+      showMsg('error', 'Admission number cannot be empty');
+      return;
+    }
     setSaving(true);
     try {
       const response = await fetch('/api/auth/update-profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({
-  name: formData.name,
-  phoneNumber: formData.phoneNumber,
-  class: formData.class,
-  section: formData.section,
-  admissionNumber: formData.admissionNumber,  // Add this
-  githubId: formData.githubId,
-  discordId: formData.discordId,  // Add this
-  interestedNiches: formData.interestedNiches,
-}),
+        body: JSON.stringify({
+          name: formData.name,
+          phoneNumber: formData.phoneNumber,
+          class: formData.class,
+          section: formData.section,
+          admissionNumber: formData.admissionNumber,  // Add this
+          githubId: formData.githubId,
+          discordId: formData.discordId,  // Add this
+          interestedNiches: formData.interestedNiches,
+        }),
         credentials: 'include',
       });
 
@@ -385,6 +387,7 @@ body: JSON.stringify({
         method: 'POST',
         credentials: 'include',
       });
+      await refreshAuth();
       router.push('/');
     } catch {
       showMsg('error', 'Failed to logout');
@@ -493,7 +496,7 @@ body: JSON.stringify({
       {/* Welcome Modal */}
       {showWelcomeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="relative w-full max-w-md rounded-2xl border border-[#C9A227]/50 bg-gradient-to-br from-black-800/90 to-black-900/90 p-8 shadow-2xl flex flex-col items-center">
+          <div className="relative w-full max-w-md rounded-2xl border border-[#C9A227]/50 bg-black p-8 shadow-2xl flex flex-col items-center">
             <button
               onClick={() => setShowWelcomeModal(false)}
               className="absolute top-4 right-4 text-black-400 hover:text-white transition"
@@ -504,17 +507,17 @@ body: JSON.stringify({
             <div className="text-center space-y-4 w-full flex flex-col items-center">
               <img src="/tc-logo.svg" alt="TC Logo" className="w-24 h-24 mb-4" />
 
-              <h2 className="text-2xl font-bold text-white">Welcome!</h2>
-              
+              <h2 className="text-2xl font-bold text-white">Welcome to the Tech Club of DPSRPK!</h2>
+
               <p className="text-black-300">
                 Hey {user?.name || 'there'}, your account has been successfully created. Let's get you set up with a complete profile.
               </p>
 
               <div className="pt-4 space-y-2 w-full">
-                <p className="text-sm text-black-400">Complete these steps:</p>
-                <ul className="text-sm text-black-300 space-y-1">
+                <p className="text-sm text-black-400 text-left">Complete these steps:</p>
+                <ul className="text-sm text-black-300 space-y-1 text-left">
                   <li>✓ Upload a profile picture</li>
-                  <li>✓ Verify your email</li>
+                  <li>✓ Verify your email for a special surprise</li>
                   <li>✓ Check latest announcements</li>
                   <li>✓ Have a look around the website!</li>
                 </ul>
@@ -539,11 +542,10 @@ body: JSON.stringify({
         {/* Toast */}
         {message && (
           <div
-            className={`fixed top-8 right-4 rounded-lg border px-4 py-3 backdrop-blur-xl z-50 ${
-              message.type === 'success'
-                ? 'bg-green-500/20 border-green-500/50 text-green-200'
-                : 'bg-red-500/20 border-red-500/50 text-red-200'
-            }`}
+            className={`fixed top-8 right-4 rounded-lg border px-4 py-3 backdrop-blur-xl z-50 ${message.type === 'success'
+              ? 'bg-green-500/20 border-green-500/50 text-green-200'
+              : 'bg-red-500/20 border-red-500/50 text-red-200'
+              }`}
           >
             {message.text}
           </div>
@@ -553,11 +555,10 @@ body: JSON.stringify({
           {/* LEFT: Profile Card */}
           <section className="lg:col-span-1 space-y-6">
             <div
-              className={`rounded-2xl border bg-gradient-to-br p-6 shadow-xl backdrop-blur-xl ${
-                user.is_admin
-                  ? 'border-[#C9A227]/60 from-yellow-900/30 to-black-900/60 relative'
-                  : 'border-black-700/50 from-black-800/60 to-black-900/60'
-              }`}
+              className={`rounded-2xl border bg-gradient-to-br p-6 shadow-xl backdrop-blur-xl ${user.is_admin
+                ? 'border-[#C9A227]/60 from-yellow-900/30 to-black-900/60 relative'
+                : 'border-black-700/50 from-black-800/60 to-black-900/60'
+                }`}
             >
               {user.is_admin && (
                 <div
@@ -571,17 +572,16 @@ body: JSON.stringify({
               <div className="relative z-10 flex flex-col items-center text-center">
                 <div className="relative mb-4">
                   <div
-                    className={`flex h-24 w-24 items-center justify-center rounded-full shadow-lg ${
-                      user.is_admin
-                        ? 'bg-gradient-to-br from-[#C9A227] via-yellow-500 to-yellow-600'
-                        : 'bg-gradient-to-br from-[#C9A227] to-black-700'
-                    }`}
+                    className={`flex h-24 w-24 items-center justify-center rounded-full shadow-lg ${user.is_admin
+                      ? 'bg-gradient-to-br from-[#C9A227] via-yellow-500 to-yellow-600'
+                      : 'bg-gradient-to-br from-[#C9A227] to-black-700'
+                      }`}
                     style={
                       user.is_admin
                         ? {
-                            boxShadow:
-                              '0 0 30px rgba(201, 162, 39, 0.6), 0 0 60px rgba(201, 162, 39, 0.3)',
-                          }
+                          boxShadow:
+                            '0 0 30px rgba(201, 162, 39, 0.6), 0 0 60px rgba(201, 162, 39, 0.3)',
+                        }
                         : undefined
                     }
                   >
@@ -628,11 +628,10 @@ body: JSON.stringify({
 
                 <div className="mt-6 w-full space-y-3 border-t border-black-700/50 pt-6">
                   <div
-                    className={`inline-flex w-full items-center justify-center gap-2 rounded-full px-3 py-2 text-sm ${
-                      user.email_verified
-                        ? 'border border-green-500/30 bg-green-500/15 text-green-300'
-                        : 'border border-yellow-500/30 bg-yellow-500/15 text-yellow-300'
-                    }`}
+                    className={`inline-flex w-full items-center justify-center gap-2 rounded-full px-3 py-2 text-sm ${user.email_verified
+                      ? 'border border-green-500/30 bg-green-500/15 text-green-300'
+                      : 'border border-yellow-500/30 bg-yellow-500/15 text-yellow-300'
+                      }`}
                   >
                     {user.email_verified ? (
                       <>
@@ -702,11 +701,10 @@ body: JSON.stringify({
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition border-b-2 whitespace-nowrap ${
-                        activeTab === tab.id
-                          ? 'border-[#C9A227] text-[#C9A227]'
-                          : 'border-transparent text-black-400 hover:text-black-200 hover:border-black-600'
-                      }`}
+                      className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition border-b-2 whitespace-nowrap ${activeTab === tab.id
+                        ? 'border-[#C9A227] text-[#C9A227]'
+                        : 'border-transparent text-black-400 hover:text-black-200 hover:border-black-600'
+                        }`}
                     >
                       <Icon size={16} />
                       {tab.label}
@@ -718,198 +716,198 @@ body: JSON.stringify({
 
             {/* Tab Content */}
             <div>
-             {/* Profile Tab */}
-{activeTab === 'profile' && (
-  <div className="rounded-2xl border border-black-700/50 bg-gradient-to-br from-black-800/60 to-black-900/60 p-6 shadow-xl backdrop-blur-xl">
-    <h2 className="text-lg font-semibold text-white mb-6">Profile Settings</h2>
+              {/* Profile Tab */}
+              {activeTab === 'profile' && (
+                <div className="rounded-2xl border border-black-700/50 bg-gradient-to-br from-black-800/60 to-black-900/60 p-6 shadow-xl backdrop-blur-xl">
+                  <h2 className="text-lg font-semibold text-white mb-6">Profile Settings</h2>
 
-    <form onSubmit={handleSaveProfile} className="space-y-4">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <label className="block">
-          <span className="mb-2 block text-sm font-medium text-black-400">
-            Full Name
-          </span>
-          <input
-            type="text"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
-          />
-        </label>
-        <label className="block">
-          <span className="mb-2 block text-sm font-medium text-black-400">
-            Email
-          </span>
-          <input
-            type="email"
-            value={user.email}
-            disabled
-            className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-black-500 outline-none cursor-not-allowed"
-          />
-        </label>
-      </div>
+                  <form onSubmit={handleSaveProfile} className="space-y-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-medium text-black-400">
+                          Full Name
+                        </span>
+                        <input
+                          type="text"
+                          value={formData.name}
+                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-medium text-black-400">
+                          Email
+                        </span>
+                        <input
+                          type="email"
+                          value={user.email}
+                          disabled
+                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-black-500 outline-none cursor-not-allowed"
+                        />
+                      </label>
+                    </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <label className="block">
-          <span className="mb-2 block text-sm font-medium text-black-400">
-            Phone Number
-          </span>
-          <input
-            type="tel"
-            value={formData.phoneNumber}
-            onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-            placeholder="+91 98765 43210"
-            className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
-          />
-        </label>
-        <label className="block">
-          <span className="mb-2 block text-sm font-medium text-black-400">
-            Admission Number
-          </span>
-          <input
-            type="text"
-            value={formData.admissionNumber}
-            onChange={(e) => setFormData({ ...formData, admissionNumber: e.target.value })}
-            placeholder="e.g. 12345"
-            className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
-          />
-        </label>
-      </div>
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-medium text-black-400">
+                          Phone Number
+                        </span>
+                        <input
+                          type="tel"
+                          value={formData.phoneNumber}
+                          onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                          placeholder="+91 98765 43210"
+                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-medium text-black-400">
+                          Admission Number
+                        </span>
+                        <input
+                          type="text"
+                          value={formData.admissionNumber}
+                          onChange={(e) => setFormData({ ...formData, admissionNumber: e.target.value })}
+                          placeholder="e.g. 12345"
+                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+                        />
+                      </label>
+                    </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <label className="block">
-          <span className="mb-2 block text-sm font-medium text-black-400">
-            Class
-          </span>
-          <input
-            type="text"
-            value={formData.class}
-            onChange={(e) => setFormData({ ...formData, class: e.target.value })}
-            placeholder="e.g., 10, 11"
-            className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
-          />
-        </label>
-        <label className="block">
-          <span className="mb-2 block text-sm font-medium text-black-400">
-            Section
-          </span>
-          <input
-            type="text"
-            value={formData.section}
-            onChange={(e) => setFormData({ ...formData, section: e.target.value })}
-            placeholder="e.g., A, B"
-            className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
-          />
-        </label>
-      </div>
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-medium text-black-400">
+                          Class
+                        </span>
+                        <input
+                          type="text"
+                          value={formData.class}
+                          onChange={(e) => setFormData({ ...formData, class: e.target.value })}
+                          placeholder="e.g., 10, 11"
+                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-medium text-black-400">
+                          Section
+                        </span>
+                        <input
+                          type="text"
+                          value={formData.section}
+                          onChange={(e) => setFormData({ ...formData, section: e.target.value })}
+                          placeholder="e.g., A, B"
+                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+                        />
+                      </label>
+                    </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <label className="block">
-          <span className="mb-2 block text-sm font-medium text-black-400">
-            GitHub ID (Optional)
-          </span>
-          <input
-            type="text"
-            value={formData.githubId}
-            onChange={(e) => setFormData({ ...formData, githubId: e.target.value })}
-            placeholder="your-github-username"
-            className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
-          />
-        </label>
-        <label className="block">
-          <span className="mb-2 block text-sm font-medium text-black-400">
-            Discord ID (Optional)
-          </span>
-          <input
-            type="text"
-            value={formData.discordId}
-            onChange={(e) => setFormData({ ...formData, discordId: e.target.value })}
-            placeholder="username#1234"
-            className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
-          />
-        </label>
-      </div>
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-medium text-black-400">
+                          GitHub ID (Optional)
+                        </span>
+                        <input
+                          type="text"
+                          value={formData.githubId}
+                          onChange={(e) => setFormData({ ...formData, githubId: e.target.value })}
+                          placeholder="your-github-username"
+                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-medium text-black-400">
+                          Discord ID (Optional)
+                        </span>
+                        <input
+                          type="text"
+                          value={formData.discordId}
+                          onChange={(e) => setFormData({ ...formData, discordId: e.target.value })}
+                          placeholder="username#1234"
+                          className="w-full rounded-xl border border-black-700/50 bg-black-900/60 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-[#C9A227]/50"
+                        />
+                      </label>
+                    </div>
 
-      <div>
-        <label className="mb-3 block text-sm font-medium text-black-400">
-          Interested Niches (Select at least one)
-        </label>
-        <div className="grid grid-cols-2 gap-3">
-          {NICHES.map((niche) => (
-            <label key={niche} className="flex items-center space-x-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={formData.interestedNiches.includes(niche)}
-                onChange={() => handleNicheToggle(niche)}
-                className="h-4 w-4 rounded border-black-600 bg-black-700 accent-[#C9A227]"
-              />
-              <span className="text-sm text-black-300">{niche}</span>
-            </label>
-          ))}
-        </div>
-      </div>
+                    <div>
+                      <label className="mb-3 block text-sm font-medium text-black-400">
+                        Interested Niches (Select at least one)
+                      </label>
+                      <div className="grid grid-cols-2 gap-3">
+                        {NICHES.map((niche) => (
+                          <label key={niche} className="flex items-center space-x-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={formData.interestedNiches.includes(niche)}
+                              onChange={() => handleNicheToggle(niche)}
+                              className="h-4 w-4 rounded border-black-600 bg-black-700 accent-[#C9A227]"
+                            />
+                            <span className="text-sm text-black-300">{niche}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
 
-      {/* Application Responses (Read-only) */}
-      {(user.why_join_tech_club || user.skills_and_achievements || user.event_participation || user.projects) && (
-        <div className="mt-8 pt-8 border-t border-black-700/50 space-y-4">
-          <h3 className="text-md font-semibold text-white mb-4">Your Application Responses</h3>
-          
-          {user.why_join_tech_club && (
-            <div>
-              <label className="mb-2 block text-sm font-medium text-black-400">
-                Why you wanted to join Tech Club
-              </label>
-              <div className="rounded-xl border border-black-700/50 bg-black-900/30 px-4 py-3 text-sm text-black-300">
-                {user.why_join_tech_club}
-              </div>
-            </div>
-          )}
+                    {/* Application Responses (Read-only) */}
+                    {(user.why_join_tech_club || user.skills_and_achievements || user.event_participation || user.projects) && (
+                      <div className="mt-8 pt-8 border-t border-black-700/50 space-y-4">
+                        <h3 className="text-md font-semibold text-white mb-4">Your Application Responses</h3>
 
-          {user.skills_and_achievements && (
-            <div>
-              <label className="mb-2 block text-sm font-medium text-black-400">
-                Skills & Achievements
-              </label>
-              <div className="rounded-xl border border-black-700/50 bg-black-900/30 px-4 py-3 text-sm text-black-300">
-                {user.skills_and_achievements}
-              </div>
-            </div>
-          )}
+                        {user.why_join_tech_club && (
+                          <div>
+                            <label className="mb-2 block text-sm font-medium text-black-400">
+                              Why you wanted to join Tech Club
+                            </label>
+                            <div className="rounded-xl border border-black-700/50 bg-black-900/30 px-4 py-3 text-sm text-black-300">
+                              {user.why_join_tech_club}
+                            </div>
+                          </div>
+                        )}
 
-          {user.event_participation && (
-            <div>
-              <label className="mb-2 block text-sm font-medium text-black-400">
-                Event Participation Interests
-              </label>
-              <div className="rounded-xl border border-black-700/50 bg-black-900/30 px-4 py-3 text-sm text-black-300">
-                {user.event_participation}
-              </div>
-            </div>
-          )}
+                        {user.skills_and_achievements && (
+                          <div>
+                            <label className="mb-2 block text-sm font-medium text-black-400">
+                              Skills & Achievements
+                            </label>
+                            <div className="rounded-xl border border-black-700/50 bg-black-900/30 px-4 py-3 text-sm text-black-300">
+                              {user.skills_and_achievements}
+                            </div>
+                          </div>
+                        )}
 
-          {user.projects && (
-            <div>
-              <label className="mb-2 block text-sm font-medium text-black-400">
-                Projects
-              </label>
-              <div className="rounded-xl border border-black-700/50 bg-black-900/30 px-4 py-3 text-sm text-black-300 whitespace-pre-wrap">
-                {user.projects}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+                        {user.event_participation && (
+                          <div>
+                            <label className="mb-2 block text-sm font-medium text-black-400">
+                              Event Participation Interests
+                            </label>
+                            <div className="rounded-xl border border-black-700/50 bg-black-900/30 px-4 py-3 text-sm text-black-300">
+                              {user.event_participation}
+                            </div>
+                          </div>
+                        )}
 
-      <button
-        type="submit"
-        disabled={saving}
-        className="rounded-xl bg-[#C9A227] px-6 py-3 font-semibold text-black transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {saving ? 'Saving...' : 'Save Changes'}
-      </button>
-    </form>
-  </div>
-)}
+                        {user.projects && (
+                          <div>
+                            <label className="mb-2 block text-sm font-medium text-black-400">
+                              Projects
+                            </label>
+                            <div className="rounded-xl border border-black-700/50 bg-black-900/30 px-4 py-3 text-sm text-black-300 whitespace-pre-wrap">
+                              {user.projects}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={saving}
+                      className="rounded-xl bg-[#C9A227] px-6 py-3 font-semibold text-black transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {saving ? 'Saving...' : 'Save Changes'}
+                    </button>
+                  </form>
+                </div>
+              )}
 
               {/* Security Tab */}
               {activeTab === 'security' && (
@@ -1048,11 +1046,10 @@ body: JSON.stringify({
                       {sessions.map((session) => (
                         <li
                           key={session.id}
-                          className={`rounded-xl border px-4 py-4 ${
-                            session.is_current
-                              ? 'border-[#C9A227]/50 bg-[#C9A227]/10'
-                              : 'border-black-700/50 bg-black-900/30'
-                          }`}
+                          className={`rounded-xl border px-4 py-4 ${session.is_current
+                            ? 'border-[#C9A227]/50 bg-[#C9A227]/10'
+                            : 'border-black-700/50 bg-black-900/30'
+                            }`}
                         >
                           <div className="flex items-start justify-between gap-4">
                             <div className="flex-1 space-y-2">
@@ -1067,20 +1064,20 @@ body: JSON.stringify({
                                   </span>
                                 )}
                               </div>
-                              
+
                               <div className="text-sm text-black-400 space-y-1">
                                 <div className="flex items-center gap-2">
                                   <span className="font-mono">{session.browser}</span>
                                   <span>•</span>
                                   <span>{session.os}</span>
                                 </div>
-                                
+
                                 {session.city !== 'Unknown' && (
                                   <div>
                                     📍 {session.city}, {session.country}
                                   </div>
                                 )}
-                                
+
                                 <div className="flex items-center gap-4">
                                   <span>IP: {session.ip_address}</span>
                                   <span>
@@ -1088,7 +1085,7 @@ body: JSON.stringify({
                                     {new Date(session.last_active_at).toLocaleString()}
                                   </span>
                                 </div>
-                                
+
                                 <div className="text-xs text-black-500">
                                   Created: {new Date(session.created_at).toLocaleString()}
                                 </div>
@@ -1121,7 +1118,7 @@ body: JSON.stringify({
               {activeTab === 'danger' && (
                 <div className="rounded-2xl border border-red-500/30 bg-gradient-to-br from-black-800/60 to-black-900/60 p-6 shadow-xl backdrop-blur-xl">
                   <h2 className="text-lg font-semibold text-white mb-6">Danger Zone</h2>
-                  
+
                   <p className="text-sm text-black-400 mb-6">
                     These actions are irreversible. Please be certain before proceeding.
                   </p>
@@ -1157,7 +1154,7 @@ body: JSON.stringify({
 function AccountPageWithParams() {
   const searchParams = useSearchParams();
   const showWelcome = searchParams.get('newSignup') === 'true';
-  
+
   return <AccountPageContent showWelcome={showWelcome} />;
 }
 

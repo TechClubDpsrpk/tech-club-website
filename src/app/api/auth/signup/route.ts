@@ -5,6 +5,7 @@ import { createToken } from '@/lib/auth';
 import { sendWelcomeEmail, sendVerificationEmail } from '@/lib/email';
 import { supabase } from '@/lib/supabaseClient';
 import { UAParser } from 'ua-parser-js';
+import { isIPBanned } from '@/lib/rate-limit';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -14,7 +15,7 @@ function getClientIP(request: NextRequest): string {
   if (forwardedFor) {
     return forwardedFor.split(',')[0].trim();
   }
-  
+
   return (
     request.headers.get('x-real-ip') ||
     request.headers.get('cf-connecting-ip') ||
@@ -24,6 +25,15 @@ function getClientIP(request: NextRequest): string {
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIP(request);
+
+    if (await isIPBanned(ip)) {
+      return NextResponse.json(
+        { error: 'Access denied. This IP address has been banned.' },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const {
       email,
@@ -140,26 +150,26 @@ export async function POST(request: NextRequest) {
     const token = await createToken(user);
 
     // ========== SESSION TRACKING ==========
-    
+
     // Parse user agent for device/browser/OS info
     const userAgent = request.headers.get('user-agent') || '';
     const parser = new UAParser(userAgent);
     const device = parser.getResult();
 
     // Extract IP address
-    const ip = getClientIP(request);
+    // Used existing ip variable from above
 
     // Get geolocation from IP (optional)
     let city = 'Unknown';
     let country = 'Unknown';
-    
+
     if (ip !== 'unknown' && !ip.startsWith('192.168.') && !ip.startsWith('10.') && !ip.startsWith('172.') && ip !== '127.0.0.1') {
       try {
         const geoResponse = await fetch(`https://ipapi.co/${ip}/json/`, {
           headers: { 'User-Agent': 'tech-club-website' },
           signal: AbortSignal.timeout(2000), // 2 second timeout
         });
-        
+
         if (geoResponse.ok) {
           const geoData = await geoResponse.json();
           city = geoData.city || 'Unknown';

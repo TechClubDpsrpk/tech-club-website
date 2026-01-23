@@ -15,6 +15,7 @@ interface AuthContextType {
     emailVerified: boolean;
     isLoading: boolean;
     user: UserData | null;
+    refreshAuth: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -22,6 +23,7 @@ const AuthContext = createContext<AuthContextType>({
     emailVerified: false,
     isLoading: true,
     user: null,
+    refreshAuth: async () => { },
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -32,56 +34,59 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState<UserData | null>(null);
 
-    useEffect(() => {
-        const checkAuth = async () => {
-            try {
-                const response = await fetch('/api/auth/check', {
-                    credentials: 'include',
-                });
+    const checkAuth = async (showLoading = true) => {
+        if (showLoading) setIsLoading(true);
+        try {
+            const response = await fetch('/api/auth/check', {
+                credentials: 'include',
+            });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    setIsAuthenticated(data.isAuthenticated);
-                    setUser(data.user);
+            if (response.ok) {
+                const data = await response.json();
+                setIsAuthenticated(data.isAuthenticated);
+                setUser(data.user);
 
-                    // Fetch email_verified from Supabase
-                    if (data.isAuthenticated && data.user?.id) {
-                        const { data: userData } = await supabase
-                            .from('users')
-                            .select('email_verified')
-                            .eq('id', data.user.id)
-                            .single();
+                // Fetch email_verified from Supabase
+                if (data.isAuthenticated && data.user?.id) {
+                    const { data: userData } = await supabase
+                        .from('users')
+                        .select('email_verified')
+                        .eq('id', data.user.id)
+                        .single();
 
-                        setEmailVerified(userData?.email_verified || false);
-                    } else {
-                        setEmailVerified(false);
-                    }
+                    setEmailVerified(userData?.email_verified || false);
                 } else {
-                    setIsAuthenticated(false);
                     setEmailVerified(false);
-                    setUser(null);
                 }
-            } catch (error) {
-                console.error('Auth check failed:', error);
+            } else {
                 setIsAuthenticated(false);
                 setEmailVerified(false);
                 setUser(null);
-            } finally {
-                // Enforce a minimum loading time to prevent flickering if needed, 
-                // or just set loading to false immediately
-                setIsLoading(false);
             }
-        };
+        } catch (error) {
+            console.error('Auth check failed:', error);
+            setIsAuthenticated(false);
+            setEmailVerified(false);
+            setUser(null);
+        } finally {
+            if (showLoading) setIsLoading(false);
+        }
+    };
 
+    useEffect(() => {
         checkAuth();
     }, []);
+
+    const refreshAuth = async () => {
+        await checkAuth(false);
+    };
 
     if (isLoading) {
         return <Loading />;
     }
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, emailVerified, isLoading, user }}>
+        <AuthContext.Provider value={{ isAuthenticated, emailVerified, isLoading, user, refreshAuth }}>
             {children}
         </AuthContext.Provider>
     );

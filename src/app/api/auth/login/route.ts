@@ -4,6 +4,7 @@ import { verifyPassword } from '@/lib/password';
 import { createToken } from '@/lib/auth';
 import { supabase } from '@/lib/supabaseClient';
 import { UAParser } from 'ua-parser-js';
+import { isIPBanned, checkRateLimit, logLoginAttempt, evaluateBan } from '@/lib/rate-limit';
 
 // Helper function to extract IP address
 function getClientIP(request: NextRequest): string {
@@ -11,7 +12,7 @@ function getClientIP(request: NextRequest): string {
   if (forwardedFor) {
     return forwardedFor.split(',')[0].trim();
   }
-  
+
   return (
     request.headers.get('x-real-ip') ||
     request.headers.get('cf-connecting-ip') ||
@@ -23,6 +24,23 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { email, password } = body;
+    const userAgent = request.headers.get('user-agent') || 'unknown';
+    const ip = getClientIP(request);
+
+    if (await isIPBanned(ip)) {
+      return NextResponse.json(
+        { error: 'Access denied. This IP address has been banned.' },
+        { status: 403 }
+      );
+    }
+
+    const { allowed } = await checkRateLimit(ip, 'auth-login');
+    if (!allowed) {
+      return NextResponse.json(
+        { error: 'Too many attempts. Please try again in 15 minutes.' },
+        { status: 429 }
+      );
+    }
 
     if (!email || !password) {
       return NextResponse.json(
@@ -33,6 +51,8 @@ export async function POST(request: NextRequest) {
 
     const user = await findUserByEmail(email);
     if (!user) {
+      await logLoginAttempt(ip, 'auth-login', '***', false, userAgent);
+      await evaluateBan(ip);
       return NextResponse.json(
         { error: 'Invalid credentials' },
         { status: 401 }
@@ -40,7 +60,11 @@ export async function POST(request: NextRequest) {
     }
 
     const isPasswordValid = await verifyPassword(password, user.password);
+
+    await logLoginAttempt(ip, 'auth-login', '***', isPasswordValid, userAgent);
+
     if (!isPasswordValid) {
+      await evaluateBan(ip);
       return NextResponse.json(
         { error: 'Invalid credentials' },
         { status: 401 }
@@ -50,26 +74,26 @@ export async function POST(request: NextRequest) {
     const token = await createToken(user);
 
     // ========== SESSION TRACKING ==========
-    
+
     // Parse user agent for device/browser/OS info
-    const userAgent = request.headers.get('user-agent') || '';
+    // Parse user agent for device/browser/OS info
     const parser = new UAParser(userAgent);
     const device = parser.getResult();
 
     // Extract IP address
-    const ip = getClientIP(request);
+    // Used existing ip variable from above
 
     // Get geolocation from IP (optional)
     let city = 'Unknown';
     let country = 'Unknown';
-    
+
     if (ip !== 'unknown' && !ip.startsWith('192.168.') && !ip.startsWith('10.') && !ip.startsWith('172.') && ip !== '127.0.0.1') {
       try {
         const geoResponse = await fetch(`https://ipapi.co/${ip}/json/`, {
           headers: { 'User-Agent': 'tech-club-website' },
           signal: AbortSignal.timeout(2000), // 2 second timeout
         });
-        
+
         if (geoResponse.ok) {
           const geoData = await geoResponse.json();
           city = geoData.city || 'Unknown';

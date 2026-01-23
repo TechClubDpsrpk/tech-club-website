@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useAuth } from '@/components/providers/auth-provider';
 
 const NICHES = [
   'Robotics',
@@ -35,6 +36,7 @@ export default function SignupPage() {
     projects: '',
     interestedNiches: [] as string[],
   });
+  const { refreshAuth } = useAuth();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -95,6 +97,7 @@ export default function SignupPage() {
         return;
       }
 
+      await refreshAuth();
       router.push('/account?newSignup=true');
       router.refresh();
     } catch (err) {
@@ -177,11 +180,10 @@ export default function SignupPage() {
                   {CLASSES.map((cls) => (
                     <label
                       key={cls}
-                      className={`cursor-pointer rounded-md border px-3 py-2 text-center text-sm transition ${
-                        formData.class === cls
-                          ? 'border-[#C9A227] bg-[#C9A227]/20 text-[#C9A227]'
-                          : 'border-yellow-500/50 bg-gray-900 text-white hover:border-[#C9A227]'
-                      }`}
+                      className={`cursor-pointer rounded-md border px-3 py-2 text-center text-sm transition ${formData.class === cls
+                        ? 'border-[#C9A227] bg-[#C9A227]/20 text-[#C9A227]'
+                        : 'border-yellow-500/50 bg-gray-900 text-white hover:border-[#C9A227]'
+                        }`}
                     >
                       <input
                         type="radio"
