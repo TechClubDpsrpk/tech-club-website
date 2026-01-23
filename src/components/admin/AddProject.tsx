@@ -42,26 +42,38 @@ export default function AddProject() {
       return;
     }
 
-    const { error } = await supabase.from('projects').insert({
-      title,
-      description,
-      image_url: imageUrl || null,
-      total_points: parseInt(totalPoints),
-      niche,
-    });
+    try {
+      const response = await fetch('/api/projects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          image_url: imageUrl || null,
+          total_points: parseInt(totalPoints),
+          niche,
+        }),
+      });
 
-    if (error) {
-      alert(error.message);
-    } else {
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to create project');
+      }
+
       setTitle('');
       setDescription('');
       setImageUrl('');
       setTotalPoints('');
       setNiche('');
       alert('Project created successfully!');
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'An error occurred');
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (

@@ -99,24 +99,20 @@ export default function ProjectSubmissions() {
 
     setApproving(submissionId);
     try {
-      // Update submission status and points
-      const { error: updateError } = await supabase
-        .from('project_submissions')
-        .update({ status: 'approved', points_awarded: points })
-        .eq('id', submissionId);
+      const response = await fetch('/api/submissions/review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          submissionId,
+          status: 'approved',
+          points,
+          projectId,
+          userId
+        })
+      });
 
-      if (updateError) throw updateError;
-
-      // Add/update project activity (points record)
-      const { error: activityError } = await supabase
-        .from('project_activity')
-        .upsert({
-          user_id: userId,
-          project_id: projectId,
-          points: points,
-        });
-
-      if (activityError) throw activityError;
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error);
 
       // Update local state
       setSubmissions(
@@ -130,7 +126,7 @@ export default function ProjectSubmissions() {
       setPointsInput({ ...pointsInput, [submissionId]: '' });
       setExpandedId(null);
     } catch (err) {
-      setError('Failed to approve submission');
+      setError(err instanceof Error ? err.message : 'Failed to approve submission');
     } finally {
       setApproving(null);
     }
@@ -141,12 +137,17 @@ export default function ProjectSubmissions() {
 
     setRejecting(submissionId);
     try {
-      const { error } = await supabase
-        .from('project_submissions')
-        .update({ status: 'rejected' })
-        .eq('id', submissionId);
+      const response = await fetch('/api/submissions/review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          submissionId,
+          status: 'rejected'
+        })
+      });
 
-      if (error) throw error;
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error);
 
       setSubmissions(
         submissions.map((sub) =>
@@ -156,7 +157,7 @@ export default function ProjectSubmissions() {
 
       setExpandedId(null);
     } catch (err) {
-      setError('Failed to reject submission');
+      setError(err instanceof Error ? err.message : 'Failed to reject submission');
     } finally {
       setRejecting(null);
     }
@@ -220,13 +221,12 @@ export default function ProjectSubmissions() {
                       {submission.project.title}
                     </span>
                     <div
-                      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
-                        submission.status === 'pending'
+                      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${submission.status === 'pending'
                           ? 'bg-yellow-500/20 text-yellow-300'
                           : submission.status === 'approved'
                             ? 'bg-green-500/20 text-green-300'
                             : 'bg-red-500/20 text-red-300'
-                      }`}
+                        }`}
                     >
                       {submission.status === 'pending' ? (
                         <AlertCircle size={12} />
@@ -243,9 +243,8 @@ export default function ProjectSubmissions() {
                 </div>
                 <ChevronDown
                   size={20}
-                  className={`text-gray-400 transition ${
-                    expandedId === submission.id ? 'rotate-180' : ''
-                  }`}
+                  className={`text-gray-400 transition ${expandedId === submission.id ? 'rotate-180' : ''
+                    }`}
                 />
               </button>
 

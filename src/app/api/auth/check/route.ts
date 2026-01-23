@@ -21,6 +21,7 @@ export async function GET(_request: NextRequest) {
         emailVerified: user.email_verified,
         avatarUrl: user.avatar_url,
         createdAt: user.created_at,
+        roles: user.roles || [],
       },
     });
   } catch (error) {

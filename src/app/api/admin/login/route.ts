@@ -4,6 +4,8 @@ import { verifyAuth } from '@/lib/auth';
 import { createAdminSession } from '@/lib/supabase-admin';
 import { isIPBanned, checkRateLimit, logLoginAttempt, evaluateBan } from '@/lib/rate-limit';
 
+import { hasAccessToAdminPanel } from '@/lib/roles';
+
 export async function POST(req: NextRequest) {
   const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'unknown';
@@ -39,11 +41,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!user.is_admin) {
+    if (!hasAccessToAdminPanel(user.roles)) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Access Denied. You do not have admin privileges.'
+          error: 'Access Denied. You do not have valid staff permissions.'
         },
         { status: 403 }
       );

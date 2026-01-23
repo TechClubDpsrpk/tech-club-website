@@ -19,22 +19,34 @@ export default function AddAnnouncement() {
       return;
     }
 
-    const { error } = await supabase.from('announcements').insert({
-      heading,
-      description,
-      image_url: imageUrl || null,
-    });
+    try {
+      const response = await fetch('/api/announcements', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          heading,
+          description,
+          image_url: imageUrl || null,
+        }),
+      });
 
-    if (error) {
-      alert(error.message);
-    } else {
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to create announcement');
+      }
+
       setHeading('');
       setDescription('');
       setImageUrl('');
       alert('Announcement added successfully!');
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'An error occurred');
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (

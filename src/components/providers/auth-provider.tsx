@@ -7,6 +7,7 @@ import Loading from '@/app/loading';
 interface UserData {
     id: string;
     email?: string;
+    roles?: string[];
     [key: string]: any;
 }
 

@@ -1,31 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabaseClient';
-import { jwtVerify } from 'jose';
 import { sendUnbanEmail } from '@/lib/email';
-
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'your-secret-key'
-);
+import { verifyAuth } from '@/lib/auth';
+import { hasAccessToAdminPanel } from '@/lib/roles';
 
 export async function POST(request: NextRequest) {
   try {
-    // Verify admin
-    const token = request.cookies.get('auth')?.value;
-    if (!token) {
+    const { authenticated, user: adminUser } = await verifyAuth(request);
+
+    if (!authenticated || !adminUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { payload } = await jwtVerify(token, JWT_SECRET);
-    const adminId = payload.id as string;
-
-    // Check if admin
-    const { data: adminData } = await supabase
-      .from('users')
-      .select('is_admin')
-      .eq('id', adminId)
-      .single();
-
-    if (!adminData?.is_admin) {
+    if (!hasAccessToAdminPanel(adminUser.roles)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -60,7 +47,7 @@ export async function POST(request: NextRequest) {
     // Get unique IPs (remove duplicates and 'unknown')
     const uniqueIPs = sessionData
       ? [...new Set(sessionData.map(s => s.ip_address))]
-          .filter(ip => ip && ip !== 'unknown')
+        .filter(ip => ip && ip !== 'unknown')
       : [];
 
     // Unban user

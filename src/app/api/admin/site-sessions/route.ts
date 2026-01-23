@@ -3,10 +3,14 @@ import { verifyAuth } from '@/lib/auth';
 import { verifyAdminSession } from '@/lib/supabase-admin';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 
+import { canManageSiteAccess } from '@/lib/roles';
+
 // Protect this route with Double Lock
 async function checkAdmin(req: NextRequest) {
     const { authenticated, user } = await verifyAuth(req);
-    if (!authenticated || !user || !user.is_admin) return null;
+
+    // Check if user is authenticated and has permission
+    if (!authenticated || !user || !canManageSiteAccess(user.roles)) return null;
 
     const vaultCookie = req.cookies.get('admin_vault')?.value;
     if (!vaultCookie) return null;

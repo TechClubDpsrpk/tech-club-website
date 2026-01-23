@@ -20,6 +20,7 @@ interface CreateUserInput {
   eventParticipation: string;
   projects: string | null;
   interestedNiches: string[];
+  roles?: string[];
 }
 
 interface UpdateProfileInput {

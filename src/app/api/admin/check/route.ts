@@ -15,7 +15,9 @@ export async function GET(req: NextRequest) {
             });
         }
 
-        if (!user.is_admin) {
+        // Check if user is admin OR has any roles
+        const hasRoles = user.roles && user.roles.length > 0;
+        if (!user.is_admin && !hasRoles) {
             return NextResponse.json({
                 authenticated: true,
                 vaultUnlocked: false, // Technically authenticated, but not admin
@@ -57,7 +59,8 @@ export async function GET(req: NextRequest) {
             user: {
                 id: user.id,
                 name: user.name,
-                email: user.email
+                email: user.email,
+                roles: user.roles || []
             }
         });
 
