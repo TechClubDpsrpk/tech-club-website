@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { Trophy, Medal } from 'lucide-react';
 import Image from 'next/image';
+import { LoadingDots } from '@/components/ui/loading-dots';
 
 type LeaderboardEntry = {
   id: string;
@@ -163,11 +164,10 @@ export default function LeaderboardPage() {
               <button
                 key={niche}
                 onClick={() => setSelectedNiche(niche)}
-                className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-                  selectedNiche === niche
-                    ? 'bg-[#C9A227] text-black'
-                    : 'border border-gray-700 text-gray-300 hover:border-[#C9A227] hover:text-[#C9A227]'
-                }`}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition ${selectedNiche === niche
+                  ? 'bg-[#C9A227] text-black'
+                  : 'border border-gray-700 text-gray-300 hover:border-[#C9A227] hover:text-[#C9A227]'
+                  }`}
               >
                 {niche}
               </button>
@@ -177,8 +177,18 @@ export default function LeaderboardPage() {
 
         {/* Leaderboard */}
         {loading ? (
-          <div className="text-center py-12">
-            <p className="text-gray-400">Loading leaderboard…</p>
+          <div className="flex flex-col items-center justify-center py-20 space-y-4">
+            <div className="relative h-16 w-16 animate-spin-slow">
+              <Image
+                src="/tc-logo.svg"
+                alt="Loading"
+                fill
+                className="object-contain"
+              />
+            </div>
+            <p className="text-lg font-bold text-[#C9A227] tracking-wider uppercase flex items-center justify-center">
+              Calculating Ranks <LoadingDots />
+            </p>
           </div>
         ) : leaderboard.length === 0 ? (
           <div className="rounded-2xl border border-gray-700/50 bg-gradient-to-br from-black-800/60 to-black-900/60 p-12 text-center shadow-xl backdrop-blur-xl">
@@ -199,15 +209,14 @@ export default function LeaderboardPage() {
                     <div className="flex items-center gap-2 min-w-[60px]">
                       {getMedalIcon(entry.rank)}
                       <span
-                        className={`text-lg font-bold ${
-                          entry.rank === 1
-                            ? 'text-yellow-400'
-                            : entry.rank === 2
-                              ? 'text-gray-400'
-                              : entry.rank === 3
-                                ? 'text-orange-600'
-                                : 'text-white'
-                        }`}
+                        className={`text-lg font-bold ${entry.rank === 1
+                          ? 'text-yellow-400'
+                          : entry.rank === 2
+                            ? 'text-gray-400'
+                            : entry.rank === 3
+                              ? 'text-orange-600'
+                              : 'text-white'
+                          }`}
                       >
                         #{entry.rank}
                       </span>
@@ -216,11 +225,10 @@ export default function LeaderboardPage() {
                     {/* Avatar and Info */}
                     <div className="flex items-center gap-4 flex-1">
                       <div
-                        className={`flex h-12 w-12 items-center justify-center rounded-full ${
-                          entry.avatarUrl
-                            ? ''
-                            : 'bg-[#C9A227]/20 border border-[#C9A227]/50'
-                        }`}
+                        className={`flex h-12 w-12 items-center justify-center rounded-full ${entry.avatarUrl
+                          ? ''
+                          : 'bg-[#C9A227]/20 border border-[#C9A227]/50'
+                          }`}
                       >
                         {entry.avatarUrl ? (
                           <img
@@ -244,7 +252,7 @@ export default function LeaderboardPage() {
 
                   {/* Points Badge */}
                   <div className="flex items-center gap-2 rounded-full bg-black/30 border border-gray-700/50 px-4 py-2 ml-4">
-                 <Image src="/tc-logo.svg" alt="Logo" width={16} height={16} />
+                    <Image src="/tc-logo.svg" alt="Logo" width={16} height={16} />
                     <span className="font-bold text-white">{entry.total_points}</span>
                   </div>
                 </div>

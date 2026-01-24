@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { X, Github } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import Image from 'next/image';
+import { LoadingDots } from '@/components/ui/loading-dots';
 
 type Project = {
   id: string;
@@ -149,8 +150,23 @@ export default function ProjectDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black pt-24">
-        <p className="text-white">Loading project…</p>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-black space-y-6">
+        <div className="relative h-20 w-20 animate-spin-slow">
+          <Image
+            src="/tc-logo.svg"
+            alt="Loading"
+            fill
+            className="object-contain"
+          />
+        </div>
+        <div className="text-center space-y-2">
+          <p className="text-[#C9A227] font-bold tracking-[0.2em] uppercase flex items-center justify-center">
+            Decrypting Quest Details <LoadingDots />
+          </p>
+          <div className="h-1 w-48 bg-gray-800 rounded-full overflow-hidden mx-auto">
+            <div className="h-full bg-[#C9A227] animate-[loading_2s_infinite]" style={{ width: '30%' }}></div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -168,11 +184,10 @@ export default function ProjectDetailPage() {
       {/* Toast */}
       {message && (
         <div
-          className={`fixed top-8 right-4 rounded-lg border px-6 py-3 backdrop-blur-xl z-50 ${
-            message.type === 'success'
-              ? 'bg-green-500/20 border-green-500/50 text-green-200'
-              : 'bg-red-500/20 border-red-500/50 text-red-200'
-          }`}
+          className={`fixed top-8 right-4 rounded-lg border px-6 py-3 backdrop-blur-xl z-50 ${message.type === 'success'
+            ? 'bg-green-500/20 border-green-500/50 text-green-200'
+            : 'bg-red-500/20 border-red-500/50 text-red-200'
+            }`}
         >
           {message.text}
         </div>
@@ -193,7 +208,7 @@ export default function ProjectDetailPage() {
             <h1 className="text-4xl font-bold text-white mb-2">{project.title}</h1>
           </div>
           <div className="flex items-center gap-2 rounded-full bg-[#C9A227]/20 border border-[#C9A227]/50 px-4 py-2">
-          <Image src="/tc-logo.svg" alt="Logo" width={20} height={20} />
+            <Image src="/tc-logo.svg" alt="Logo" width={20} height={20} />
             <span className="text-lg font-semibold text-[#C9A227]">
               {project.total_points} pts
             </span>

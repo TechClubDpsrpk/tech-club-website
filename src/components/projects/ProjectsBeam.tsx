@@ -8,6 +8,7 @@ import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
 import { Trash, Trash2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { LoadingDots } from '@/components/ui/loading-dots';
 
 type Project = {
   id: string;
@@ -53,14 +54,14 @@ export function ProjectsBeam() {
       const response = await fetch('/api/auth/check', {
         credentials: 'include',
       });
-      
+
       if (!response.ok) {
         setIsAdmin(false);
         return;
       }
 
       const data = await response.json();
-      
+
       if (!data?.user?.id) {
         setIsAdmin(false);
         return;
@@ -117,7 +118,21 @@ export function ProjectsBeam() {
   };
 
   if (loading) {
-    return <p className="mt-10 text-center">Loading quests…</p>;
+    return (
+      <div className="flex flex-col items-center justify-center p-20 space-y-4">
+        <div className="relative h-16 w-16 animate-spin-slow">
+          <Image
+            src="/tc-logo.svg"
+            alt="Loading"
+            fill
+            className="object-contain"
+          />
+        </div>
+        <p className="text-xl font-bold text-[#C9A227] tracking-widest uppercase flex items-center justify-center">
+          Loading Quests <LoadingDots />
+        </p>
+      </div>
+    );
   }
 
   if (!projects.length) {
@@ -172,7 +187,7 @@ export function ProjectsBeam() {
                 </button>
               </Link>
 
-{isAdmin && (
+              {isAdmin && (
                 <button
                   onClick={() => handleDelete(project.id)}
                   disabled={deletingId === project.id}

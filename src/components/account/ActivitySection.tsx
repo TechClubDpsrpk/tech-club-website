@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { Trophy } from 'lucide-react';
 import Image from 'next/image';
+import { LoadingDots } from '@/components/ui/loading-dots';
 
 type ProjectActivity = {
   id: string;
@@ -74,7 +75,21 @@ export default function ActivitySection({ userId }: ActivitySectionProps) {
   }, [userId]);
 
   if (loading) {
-    return <p className="text-gray-400 text-center py-4">Loading activity…</p>;
+    return (
+      <div className="flex flex-col items-center justify-center py-12 space-y-4">
+        <div className="relative h-10 w-10 animate-spin-slow">
+          <Image
+            src="/tc-logo.svg"
+            alt="Loading"
+            fill
+            className="object-contain"
+          />
+        </div>
+        <p className="text-sm text-gray-500 font-medium flex items-center justify-center">
+          Loading your activity <LoadingDots />
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -114,7 +129,7 @@ export default function ActivitySection({ userId }: ActivitySectionProps) {
                 </p>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-green-500/20 border border-green-500/50 px-3 py-1">
-               <Image src="/tc-logo.svg" alt="Logo" width={14} height={14} />
+                <Image src="/tc-logo.svg" alt="Logo" width={14} height={14} />
                 <span className="font-bold text-green-300 text-sm">
                   {activity.points}
                 </span>

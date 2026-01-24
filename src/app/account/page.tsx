@@ -18,6 +18,8 @@ import {
 import { supabase } from '@/lib/supabaseClient';
 import { useAuth } from '@/components/providers/auth-provider';
 import ActivitySection from '@/components/account/ActivitySection';
+import Loading from '@/app/loading';
+import Image from 'next/image';
 
 const NICHES = [
   'Robotics',
@@ -475,11 +477,7 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
   };
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-black-900">
-        <p className="text-white">Loading…</p>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (!user) return null;
@@ -1034,8 +1032,18 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
                   </div>
 
                   {loadingSessions ? (
-                    <div className="text-center py-8 text-black-400">
-                      Loading sessions...
+                    <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                      <div className="relative h-12 w-12 animate-spin-slow">
+                        <Image
+                          src="/tc-logo.svg"
+                          alt="Loading sessions"
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                      <p className="text-sm text-black-400 font-medium tracking-wide">
+                        Syncing active sessions...
+                      </p>
                     </div>
                   ) : sessions.length === 0 ? (
                     <div className="text-center py-8 text-black-400">
@@ -1161,11 +1169,7 @@ function AccountPageWithParams() {
 // Export with Suspense boundary
 export default function AccountPage() {
   return (
-    <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center bg-black-900">
-        <p className="text-white">Loading…</p>
-      </div>
-    }>
+    <Suspense fallback={<Loading />}>
       <AccountPageWithParams />
     </Suspense>
   );

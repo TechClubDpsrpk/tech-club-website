@@ -9,6 +9,8 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
+import Image from 'next/image';
+import { LoadingDots } from '@/components/ui/loading-dots';
 
 type Submission = {
   id: string;
@@ -167,7 +169,21 @@ export default function ProjectSubmissions() {
   const approvedCount = submissions.filter((s) => s.status === 'approved').length;
 
   if (loading) {
-    return <p className="text-gray-400">Loading submissions…</p>;
+    return (
+      <div className="flex flex-col items-center justify-center p-12 space-y-4">
+        <div className="relative h-12 w-12 animate-spin-slow">
+          <Image
+            src="/tc-logo.svg"
+            alt="Loading"
+            fill
+            className="object-contain"
+          />
+        </div>
+        <p className="text-sm text-[#C9A227]/70 font-medium tracking-widest uppercase flex items-center justify-center">
+          Fetching Submissions <LoadingDots />
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -222,10 +238,10 @@ export default function ProjectSubmissions() {
                     </span>
                     <div
                       className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${submission.status === 'pending'
-                          ? 'bg-yellow-500/20 text-yellow-300'
-                          : submission.status === 'approved'
-                            ? 'bg-green-500/20 text-green-300'
-                            : 'bg-red-500/20 text-red-300'
+                        ? 'bg-yellow-500/20 text-yellow-300'
+                        : submission.status === 'approved'
+                          ? 'bg-green-500/20 text-green-300'
+                          : 'bg-red-500/20 text-red-300'
                         }`}
                     >
                       {submission.status === 'pending' ? (

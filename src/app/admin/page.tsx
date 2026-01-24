@@ -17,6 +17,7 @@ import AddAnnouncement from '@/components/admin/AddAnnouncement';
 import AddProject from '@/components/admin/AddProject';
 import ProjectSubmissions from '@/components/admin/ProjectSubmissions';
 import UsersTable from '@/app/admin/UsersTable';
+import Loading from '@/app/loading';
 import { ROLES, hasAnyRole, canCreateAnnouncements, canAssignQuests, canManageRoles, canManageSiteAccess, hasAccessToAdminPanel } from '@/lib/roles';
 
 type User = {
@@ -141,7 +142,7 @@ export default function AdminPage() {
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-black text-white flex items-center justify-center">Loading Admin Panel...</div>;
+    return <Loading isAdmin={true} customText="Checking Admin Status..." hideTips={true} />;
   }
 
   if (!isAdmin || !currentUser) {

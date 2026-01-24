@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/components/providers/auth-provider';
+import Image from 'next/image';
+import { LoadingDots } from '@/components/ui/loading-dots';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -102,7 +104,23 @@ export default function LoginPage() {
               disabled={loading}
               className="mt-2 w-full cursor-pointer rounded-lg bg-[#C9A227] px-3 py-2 text-sm font-semibold text-black transition hover:scale-[101%] hover:bg-[#d4b436] disabled:cursor-not-allowed disabled:opacity-50 md:mt-6 md:px-4 md:py-3 md:text-xl"
             >
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="relative h-5 w-5 animate-spin-slow md:h-6 md:w-6">
+                    <Image
+                      src="/tc-logo.svg"
+                      alt="Logging in"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                  <span className="flex items-center">
+                    LOGGING IN<LoadingDots />
+                  </span>
+                </div>
+              ) : (
+                'Login'
+              )}
             </button>
           </form>
 

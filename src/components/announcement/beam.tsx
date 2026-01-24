@@ -6,6 +6,8 @@ import { TracingBeam } from '@/components/ui/tracing-beam';
 import { twMerge } from 'tailwind-merge';
 import { Trash, Trash2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import Image from 'next/image';
+import { LoadingDots } from '@/components/ui/loading-dots';
 
 type Announcement = {
   id: string;
@@ -113,9 +115,19 @@ export function Beam() {
             </p>
           </div>
         </div>
-        <p className="mt-[20%] text-center text-xl md:mt-[10%] md:text-3xl">
-          Loading Announcements
-        </p>
+        <div className="flex flex-col items-center justify-center mt-[10%] space-y-4">
+          <div className="relative h-20 w-20 animate-spin-slow">
+            <Image
+              src="/tc-logo.svg"
+              alt="Loading"
+              fill
+              className="object-contain"
+            />
+          </div>
+          <p className="text-xl font-bold text-[#C9A227] tracking-widest uppercase flex items-center justify-center">
+            Broadcasting <LoadingDots />
+          </p>
+        </div>
       </div>
     );
   }

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { CheckCircle, AlertCircle } from 'lucide-react';
 import Image from 'next/image';
+import { LoadingDots } from '@/components/ui/loading-dots';
 
 export function VerifyEmailClient() {
   const router = useRouter();
@@ -61,7 +62,9 @@ export function VerifyEmailClient() {
                   priority
                 />
               </div>
-              <h1 className="mb-2 text-2xl font-bold text-white">Verifying email...</h1>
+              <h1 className="mb-2 text-2xl font-bold text-white flex items-center justify-center">
+                Verifying email <LoadingDots />
+              </h1>
               <p className="text-gray-400">Please wait while we verify your email address</p>
             </>
           )}

@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { ExternalLink, ArrowRight } from 'lucide-react';
 import { TracingBeam } from '@/components/ui/tracing-beam';
 import { twMerge } from 'tailwind-merge';
+import Image from 'next/image';
+import { LoadingDots } from '@/components/ui/loading-dots';
 
 interface BlogPost {
   title: string;
@@ -81,7 +83,7 @@ export default function Blogs() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black pt-24 pb-16">
+      <div className="min-h-screen bg-black pt-24 pb-16 flex flex-col">
         <div className="mx-auto mb-8 max-w-4xl px-4">
           <div>
             <h1 className="mb-2 text-center text-4xl font-bold text-white">Blogs</h1>
@@ -90,7 +92,21 @@ export default function Blogs() {
             </p>
           </div>
         </div>
-        <p className="mt-10 text-center text-2xl text-white md:text-3xl">Loading blog posts…</p>
+        <div className="flex flex-1 items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="relative h-16 w-16 animate-spin-slow">
+              <Image
+                src="/tc-logo.svg"
+                alt="Loading"
+                fill
+                className="object-contain"
+              />
+            </div>
+            <p className="text-xl font-medium text-[#C9A227] tracking-widest uppercase flex items-center justify-center">
+              Fetching Stories <LoadingDots />
+            </p>
+          </div>
+        </div>
       </div>
     );
   }

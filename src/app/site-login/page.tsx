@@ -4,6 +4,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { LoadingDots } from '@/components/ui/loading-dots';
 
 export default function SiteLogin() {
   const [password, setPassword] = useState('');
@@ -43,11 +45,11 @@ export default function SiteLogin() {
       {/* Background gradient effects */}
       <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 via-black to-yellow-600/5"></div>
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-yellow-500/10 via-transparent to-transparent"></div>
-      
+
       <div className="max-w-md w-full relative z-10">
         {/* Gold accent line */}
         <div className="h-1 w-20 bg-gradient-to-r from-yellow-400 to-yellow-600 mb-8 mx-auto"></div>
-        
+
         <div className="bg-gradient-to-br from-zinc-900 to-black rounded-xl shadow-2xl p-8 border border-yellow-500/20 backdrop-blur-sm">
           {/* Tech club branding */}
           <div className="text-center mb-8">
@@ -89,12 +91,18 @@ export default function SiteLogin() {
               className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-400 hover:to-yellow-500 disabled:from-gray-700 disabled:to-gray-800 text-black disabled:text-gray-400 font-bold py-3 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:ring-offset-black shadow-lg shadow-yellow-500/20"
             >
               {loading ? (
-                <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Verifying...
+                <span className="flex items-center justify-center gap-2">
+                  <div className="relative h-5 w-5 animate-spin-slow">
+                    <Image
+                      src="/tc-logo.svg"
+                      alt="Verifying"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                  <span className="flex items-center">
+                    VERIFYING<LoadingDots />
+                  </span>
                 </span>
               ) : (
                 'Access Site'

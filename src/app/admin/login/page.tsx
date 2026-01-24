@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, Lock, Shield, Fingerprint } from 'lucide-react';
+import Image from 'next/image';
+import { LoadingDots } from '@/components/ui/loading-dots';
 
 export default function AdminLogin() {
   const [password, setPassword] = useState('');
@@ -149,8 +151,17 @@ export default function AdminLogin() {
                 <span className="relative flex items-center justify-center gap-2">
                   {loading ? (
                     <>
-                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-slate-950/20 border-t-slate-950"></div>
-                      AUTHENTICATING...
+                      <div className="relative h-5 w-5 animate-spin-slow">
+                        <Image
+                          src="/tc-core.svg"
+                          alt="Authenticating"
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                      <span className="flex items-center">
+                        AUTHENTICATING<LoadingDots />
+                      </span>
                     </>
                   ) : (
                     <>Access Admin Panel</>

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { BanUserModal } from "@/app/admin/BanUserModal";
 import { ROLES, Role } from "@/lib/roles";
+import Image from 'next/image';
+import { LoadingDots } from '@/components/ui/loading-dots';
 import { useAuth } from "@/components/providers/auth-provider";
 import { canManageRoles } from "@/lib/roles";
 
@@ -128,7 +130,23 @@ export default function UsersTable() {
     fetchUsers();
   };
 
-  if (loading) return <div className="p-4 text-[#C9A227]/70">Loading users...</div>;
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center p-8 space-y-4">
+        <div className="relative h-10 w-10 animate-spin-slow">
+          <Image
+            src="/tc-logo.svg"
+            alt="Loading"
+            fill
+            className="object-contain"
+          />
+        </div>
+        <p className="text-sm text-[#C9A227]/70 font-medium flex items-center justify-center">
+          Fetching users <LoadingDots />
+        </p>
+      </div>
+    );
+  }
   if (error) return <div className="p-4 text-red-500">Error: {error}</div>;
 
   return (
