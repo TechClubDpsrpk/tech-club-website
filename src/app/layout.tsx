@@ -8,7 +8,7 @@ import ContactForm from '@/components/home/contactForm';
 import AuthProvider from '@/components/providers/auth-provider';
 import { JetBrains_Mono } from 'next/font/google';
 import { headers } from 'next/headers';
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from '@vercel/analytics/next';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -80,6 +80,7 @@ export default function RootLayout({
             <Footer />
           </AuthProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
