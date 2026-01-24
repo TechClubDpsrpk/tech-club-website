@@ -328,6 +328,9 @@ export default function AboutTechClub() {
               <h3 className="font-[family-name:var(--font-space-mono)] text-lg font-semibold text-white">
                 Agnihotra Nath
               </h3>
+              <p className="font-[family-name:var(--font-vt)] text-[15px] text-zinc-400 text-center">
+                Senior Member 2025-26
+              </p>
               <p className="mt-2 font-[family-name:var(--font-vt)] text-sm text-yellow-400">
                 Design
               </p>
@@ -355,6 +358,9 @@ export default function AboutTechClub() {
               <h3 className="font-[family-name:var(--font-space-mono)] text-lg font-semibold text-white">
                 Adiya Roy
               </h3>
+              <p className="font-[family-name:var(--font-vt)] text-[15px] text-zinc-400 text-center">
+                Creative Head 2025-26
+              </p>
               <p className="mt-2 font-[family-name:var(--font-vt)] text-sm text-yellow-400">
                 Design
               </p>
@@ -382,6 +388,9 @@ export default function AboutTechClub() {
               <h3 className="font-[family-name:var(--font-space-mono)] text-lg font-semibold text-white">
                 Naitik Chattaraj
               </h3>
+              <p className="font-[family-name:var(--font-vt)] text-[15px] text-center text-zinc-400">
+                Executive 2025-26
+              </p>
               <p className="mt-2 font-[family-name:var(--font-vt)] text-sm text-yellow-400">
                 Backend
               </p>
@@ -409,12 +418,15 @@ export default function AboutTechClub() {
               <h3 className="font-[family-name:var(--font-space-mono)] text-lg font-semibold text-white">
                 Rishabh Das
               </h3>
+              <p className="font-[family-name:var(--font-vt)] text-[15px] text-center text-zinc-400">
+                Executive 2025-26
+              </p>
               <p className="mt-2 font-[family-name:var(--font-vt)] text-sm text-yellow-400">
                 Frontend
               </p>
             </motion.div>
 
-            {/* Biraja Ghosh */}
+            {/* Biraja */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -436,6 +448,9 @@ export default function AboutTechClub() {
               <h3 className="font-[family-name:var(--font-space-mono)] text-lg font-semibold text-white">
                 Biraja Prasad Pradhan
               </h3>
+              <p className="font-[family-name:var(--font-vt)] text-[15px] text-center text-zinc-400">
+                Senior Member 2025-26
+              </p>
               <p className="mt-2 font-[family-name:var(--font-vt)] text-sm text-yellow-400">
                 Basic Framework
               </p>
