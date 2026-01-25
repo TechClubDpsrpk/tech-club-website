@@ -50,7 +50,13 @@ export class VJudgeClient {
 
             return response.data;
         } catch (error: any) {
-            console.error(`VJudge Fetch Contest Data Error (${error.response?.status || error.message})`);
+            console.error(`VJudge Fetch Contest Data Error:`, {
+                message: error.message,
+                status: error.response?.status,
+                statusText: error.response?.statusText,
+                headers: error.response?.headers,
+                data: error.response?.data
+            });
 
             // FALLBACK: Try to get info from the rank endpoint if meta fails
             try {
@@ -60,7 +66,8 @@ export class VJudgeClient {
                     problems: this.generateProblems(problemCount, problemTitles),
                     id: contestId
                 };
-            } catch (innerError) {
+            } catch (innerError: any) {
+                console.error('VJudge Fallback Error:', innerError.message);
                 throw error;
             }
         }
