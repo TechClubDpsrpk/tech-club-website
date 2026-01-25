@@ -1,0 +1,309 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  (function () {
+    try {
+      const theme = localStorage.getItem('theme') || 'auto';
+      if (theme === 'dark' || theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.classList.add('dark-mode');
+        document.documentElement.style.setProperty('color-scheme', 'dark');
+      }
+    } catch (e) {
+    }
+  })();
+</script>
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-374JLX1715"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-374JLX1715', {
+    
+  });
+</script>
+
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9098591903020457" crossorigin="anonymous"></script>
+
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="Online Judge, vjudge, OJ, Virtual Judge, ICPC, OnlineJudge"/>
+<meta name="robots" content="index, follow"/>
+
+    <title>CP Contest - Virtual Judge</title>
+
+    <meta property="og:url" content="https://vjudge.net/contest/784080"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="CP Contest - Virtual Judge"/>
+    <meta property="og:description"
+          content="Contest [CP Contest] in Virtual Judge"/>
+<script defer src="/static/bundle/5ca5384fb31fb64bf472.js"></script><script defer src="/static/bundle/04d341b53d0cf4aa4a73.js"></script><script defer src="/static/bundle/6224635df042364cbd1c.js"></script><script defer src="/static/bundle/22620f84fe2027d56fc8.js"></script><script defer src="/static/bundle/9816ff5eadc83a6c08c0.js"></script><script defer src="/static/bundle/98f6c0dcb45727415a86.js"></script><script defer src="/static/bundle/d976a2db989331c6755f.js"></script><script defer src="/static/bundle/2338a3ab11a114f2c10b.js"></script><script defer src="/static/bundle/ee6d2202b4ce3767f854.js"></script><script defer src="/static/bundle/d943e08fda2c8ea27b13.js"></script><link href="/static/bundle/5612edd389d0794b16c0.css" rel="stylesheet"><link href="/static/bundle/2bf4d788b45c62d6732e.css" rel="stylesheet"><link href="/static/bundle/d604aa07a05a2e51f32e.css" rel="stylesheet"><link href="/static/bundle/eee0738f2aa9b90e86e4.css" rel="stylesheet"></head>
+
+<body>
+<head><script defer src="/static/bundle/31d6cfe0d16ae931b73c.js"></script></head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-dark bg-inverse prod" id="top-nav">
+    <button class="navbar-toggler hidden-md-up" type="button" data-toggle="collapse"
+            data-target="#navbarResponsive"></button>
+    <div class="collapse navbar-toggleable-sm" id="navbarResponsive">
+        <a class="navbar-brand" href="/">
+            <img src="/static/bundle/11b24ab2156955d8f3fa.ico" height="30"/>
+            <span data-i18n="top.nav.home"></span>
+        </a>
+        <ul class="nav navbar-nav">
+            <li class="nav-item" id="nav-problem">
+                <a class="nav-link" href="/problem" data-i18n="top.nav.problem"></a>
+            </li>
+            <li class="nav-item" id="nav-status">
+                <a class="nav-link" href="/status" data-i18n="top.nav.status"></a>
+            </li>
+            <li class="nav-item" id="nav-contest">
+                <a class="nav-link" href="/contest" data-i18n="top.nav.contest"></a>
+            </li>
+            <li class="nav-item" id="nav-workbook">
+                <a class="nav-link" href="/workbook" data-i18n="top.nav.workbook"></a>
+            </li>
+            <li class="nav-item" id="nav-user">
+                <a class="nav-link" href="/user" data-i18n="top.nav.user"></a>
+            </li>
+            <li class="nav-item" id="nav-group">
+                <a class="nav-link" href="/group" data-i18n="top.nav.group"></a>
+            </li>
+            <li class="nav-item" id="nav-comment">
+                <a class="nav-link" href="/comment" data-i18n="top.nav.forum"></a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="helpDropdown" data-toggle="dropdown" data-i18n="top.nav.help"></a>
+                <div class="dropdown-menu dropdown-menu-left">
+                    <a class="dropdown-item" href="/article/2771">
+                        <i class="fa fa-question-circle-o"></i>
+                        <span data-i18n="top.nav.faq"></span>
+                    </a>
+                    <a class="dropdown-item" href="/article/97">
+                        <i class="fa fa-bug"></i>
+                        <span data-i18n="top.nav.bf"></span>
+                    </a>
+                    <a class="dropdown-item" href="/article/96">
+                        <i class="fa fa-lightbulb-o"></i>
+                        <span data-i18n="top.nav.suggestions"></span>
+                    </a>
+                    <a class="dropdown-item" href="javascript:void(0)" id="contact-us">
+                        <i class="fa fa-headphones"></i>
+                        <span data-i18n="top.nav.contact"></span>
+                    </a>
+                </div>
+            </li>
+            
+            
+                
+                
+                    <li class="nav-item float-xs-right">
+                        <a class="nav-link register" href="javascript:void(0)" data-toggle="modal" data-target="#registerModal" data-i18n="top.nav.register"></a>
+                    </li>
+                    <li class="nav-item float-xs-right">
+                        <a class="nav-link login" href="javascript:void(0)" data-i18n="top.nav.login"></a>
+                    </li>
+                
+            
+            <li class="nav-item dropdown float-xs-right">
+                <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="switchLocale" data-toggle="dropdown" data-i18n="top.nav.locale"></a>
+                <div class="dropdown-menu dropdown-menu-right switch-locale-dropdown">
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="en">English</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="zh-Hans">简体中文</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="zh-Hant">繁體中文</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="ja">日本語</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="ko">한국어</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="ar">اَلْعَرَبِيَّةُ</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="bn">বাংলা</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="hi">हिन्दी</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="vi">Tiếng Việt</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="es">Español</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="pt">português</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="ru">русский язык</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown float-xs-right">
+                <a class="nav-link" href="javascript:void(0)" id="switchTheme"></a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<div class="container" style="margin-top: 30px;">
+    
+
+    <div class="row card" id="time-info">
+        <div class="row">
+            <div class="col-xs-3 text-xs-left">
+                <b>
+                    <i18n>contest.view.begin</i18n>
+                    :
+                </b>
+                <span class="timestamp">1769336220000</span>
+            </div>
+            <div class="col-xs-6 text-xs-center">
+                <h3>
+                    <i id="btn-favorite"></i>
+                    
+                    
+                    CP Contest
+                </h3>
+            </div>
+            <div class="col-xs-3 text-xs-right">
+                <b>
+                    <i18n>contest.view.end</i18n>
+                    :
+                </b>
+                <span class="timestamp">1769354220000</span>
+            </div>
+        </div>
+        <div class="row" id="contest-time-slider-container">
+            <input id="contest-time"
+                   type="text"
+                   data-slider-id='contest-time-slider'
+                   style="display: none;"/>
+        </div>
+        <div class="row">
+            <div class="col-xs-3 text-xs-left" id="info-elapsed">
+                <b>
+                    <i18n>contest.view.elapsed</i18n>
+                    :</b>
+                <span class="elapsed" id="span-elapsed"></span>
+            </div>
+            <div class="col-xs-6 text-xs-center">
+                <span id="info-running"></span>
+            </div>
+            <div class="col-xs-3 text-xs-right" id="info-remaining">
+                <b>
+                    <i18n>contest.view.remaining</i18n>
+                    :</b>
+                <span class="remaining" id="span-remaining"></span>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+        <form id="contest-login-form">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-footer">
+                        <div class="alert alert-danger" role="alert" id="contest-login-alert">
+                            
+                                <i18n>msg.24</i18n>
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    
+
+</div>
+
+<textarea style="display: none" name="dataJson">{"id":784080,"title":"CP Contest","type":0,"openness":2,"authStatus":0,"begin":1769336220000,"end":1769354220000,"createTime":1769336042000,"version":"194","started":true,"ended":false,"managerId":0,"fav":false,"enableTimeMachine":false,"sumTime":true,"penalty":0,"partialScore":false,"oneShot":false,"customizedWeight":false,"showPeers":false,"clonedFromId":0}</textarea>
+<head><script defer src="/static/bundle/31d6cfe0d16ae931b73c.js"></script></head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="body-footer">
+    <div style="margin-bottom: 8px">
+        <a href="/cdn-cgi/l/email-protection#cda4bee3b8a38dbcbce3aea2a0" target="_blank">
+            <img src="/static/bundle/a7b7e5c7e94c918596f2.svg"/>
+        </a>
+        <img src="/static/bundle/fdbb90aaddd32a5ab4ad.png" class="qq" data-toggle="popover" data-placement="top"/>
+        <a href="https://weibo.com/u/5340553087" target="_blank">
+            <img src="/static/bundle/aae271671b3d18e15b40.svg"/>
+        </a>
+        <a href="https://space.bilibili.com/3056509/channel/collectiondetail?sid=3909505" target="_blank">
+            <img src="/static/bundle/ad1d62977bf56d0e0010.png"/>
+        </a>
+        <a href="https://t.me/joinchat/Erw7nRGwXN3iSCoKguVW3w" target="_blank">
+            <img src="/static/bundle/7182da66feaf3e99632a.svg"/>
+        </a>
+        <a href="https://www.facebook.com/virtualjudge/" target="_blank">
+            <img src="/static/bundle/c2687d1cf1f3e06984eb.svg"/>
+        </a>
+    </div>
+    <div id="footer-info">
+        All Copyright Reserved © 2010-2026<br/>
+        <span data-i18n="bottom.server_time"></span>: <span class="currentTimeTZ"></span>
+    </div>
+</div>
+
+
+<input name="systemVersion" type="hidden" value="1769581438373"/>
+<input name="gaId" type="hidden" value="G-374JLX1715"/>
+
+
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="text/javascript">basePath = "";</script>
+
+
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c3778d89f729cbc',t:'MTc2OTM0MDk3OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

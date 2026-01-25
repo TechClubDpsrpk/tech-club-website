@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ProjectsBeam } from '@/components/projects/ProjectsBeam';
+import CPContestsSection from '@/components/projects/CPContestsSection';
 import { Trophy } from 'lucide-react';
 
 export default function ProjectsPage() {
@@ -21,7 +22,10 @@ export default function ProjectsPage() {
           </Link>
         </div>
       </div>
-      <ProjectsBeam />
+      <div className="mt-12">
+        <ProjectsBeam />
+      </div>
+      <CPContestsSection />
     </div>
   );
 }
