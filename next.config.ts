@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
     // Warning only, don’t fail the build
     ignoreDuringBuilds: true,
   },
+  serverExternalPackages: ['@sparticuz/chromium'],
 };
 
 export default nextConfig;
