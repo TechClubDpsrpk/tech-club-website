@@ -11,10 +11,12 @@ import {
   LayoutDashboard,
   FolderKanban,
   Globe,
+  Trophy,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import AddAnnouncement from '@/components/admin/AddAnnouncement';
 import AddProject from '@/components/admin/AddProject';
+import VJudgeSettings from '@/components/admin/VJudgeSettings';
 import ProjectSubmissions from '@/components/admin/ProjectSubmissions';
 import UsersTable from '@/app/admin/UsersTable';
 import Loading from '@/app/loading';
@@ -29,7 +31,7 @@ type User = {
   [key: string]: any;
 };
 
-type Tab = 'dashboard' | 'projects' | 'announcements' | 'submissions' | 'users' | 'site-access';
+type Tab = 'dashboard' | 'projects' | 'announcements' | 'submissions' | 'users' | 'site-access' | 'vjudge';
 
 export default function AdminPage() {
   const router = useRouter();
@@ -157,7 +159,7 @@ export default function AdminPage() {
     { id: 'announcements' as Tab, label: 'Announcements', icon: Megaphone, show: canAnnounce(roles) },
     { id: 'users' as Tab, label: 'Users', icon: Users, show: canViewUsers(roles) },
     { id: 'site-access' as Tab, label: 'Site Access', icon: Globe, show: canViewSiteAccess(roles) },
-    // Projects submissions?
+    { id: 'vjudge' as Tab, label: 'CP Contests', icon: Trophy, show: canAssignQuests(roles) },
   ].filter(t => t.show);
 
   return (
@@ -270,6 +272,12 @@ export default function AdminPage() {
                   </tbody>
                 </table>
               </div>
+            </div>
+          )}
+
+          {activeTab === 'vjudge' && (
+            <div className="rounded-2xl border border-[#C9A227]/30 bg-black p-8 shadow-xl">
+              <VJudgeSettings />
             </div>
           )}
         </div>

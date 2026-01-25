@@ -1,0 +1,326 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  (function () {
+    try {
+      const theme = localStorage.getItem('theme') || 'auto';
+      if (theme === 'dark' || theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.classList.add('dark-mode');
+        document.documentElement.style.setProperty('color-scheme', 'dark');
+      }
+    } catch (e) {
+    }
+  })();
+</script>
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-374JLX1715"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-374JLX1715', {
+    
+  });
+</script>
+
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9098591903020457" crossorigin="anonymous"></script>
+
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="Online Judge, vjudge, OJ, Virtual Judge, ICPC, OnlineJudge"/>
+<meta name="robots" content="index, follow"/>
+
+    <title>Contests - Virtual Judge</title>
+<script defer src="/static/bundle/5ca5384fb31fb64bf472.js"></script><script defer src="/static/bundle/04d341b53d0cf4aa4a73.js"></script><script defer src="/static/bundle/6224635df042364cbd1c.js"></script><script defer src="/static/bundle/22620f84fe2027d56fc8.js"></script><script defer src="/static/bundle/98f6c0dcb45727415a86.js"></script><script defer src="/static/bundle/d976a2db989331c6755f.js"></script><script defer src="/static/bundle/2338a3ab11a114f2c10b.js"></script><script defer src="/static/bundle/35fa814bac89064ccede.js"></script><link href="/static/bundle/5612edd389d0794b16c0.css" rel="stylesheet"><link href="/static/bundle/2bf4d788b45c62d6732e.css" rel="stylesheet"><link href="/static/bundle/d604aa07a05a2e51f32e.css" rel="stylesheet"><link href="/static/bundle/44293b1bb269f03bc670.css" rel="stylesheet"></head>
+
+<body>
+<head><script defer src="/static/bundle/31d6cfe0d16ae931b73c.js"></script></head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-dark bg-inverse prod" id="top-nav">
+    <button class="navbar-toggler hidden-md-up" type="button" data-toggle="collapse"
+            data-target="#navbarResponsive"></button>
+    <div class="collapse navbar-toggleable-sm" id="navbarResponsive">
+        <a class="navbar-brand" href="/">
+            <img src="/static/bundle/11b24ab2156955d8f3fa.ico" height="30"/>
+            <span data-i18n="top.nav.home"></span>
+        </a>
+        <ul class="nav navbar-nav">
+            <li class="nav-item" id="nav-problem">
+                <a class="nav-link" href="/problem" data-i18n="top.nav.problem"></a>
+            </li>
+            <li class="nav-item" id="nav-status">
+                <a class="nav-link" href="/status" data-i18n="top.nav.status"></a>
+            </li>
+            <li class="nav-item" id="nav-contest">
+                <a class="nav-link" href="/contest" data-i18n="top.nav.contest"></a>
+            </li>
+            <li class="nav-item" id="nav-workbook">
+                <a class="nav-link" href="/workbook" data-i18n="top.nav.workbook"></a>
+            </li>
+            <li class="nav-item" id="nav-user">
+                <a class="nav-link" href="/user" data-i18n="top.nav.user"></a>
+            </li>
+            <li class="nav-item" id="nav-group">
+                <a class="nav-link" href="/group" data-i18n="top.nav.group"></a>
+            </li>
+            <li class="nav-item" id="nav-comment">
+                <a class="nav-link" href="/comment" data-i18n="top.nav.forum"></a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="helpDropdown" data-toggle="dropdown" data-i18n="top.nav.help"></a>
+                <div class="dropdown-menu dropdown-menu-left">
+                    <a class="dropdown-item" href="/article/2771">
+                        <i class="fa fa-question-circle-o"></i>
+                        <span data-i18n="top.nav.faq"></span>
+                    </a>
+                    <a class="dropdown-item" href="/article/97">
+                        <i class="fa fa-bug"></i>
+                        <span data-i18n="top.nav.bf"></span>
+                    </a>
+                    <a class="dropdown-item" href="/article/96">
+                        <i class="fa fa-lightbulb-o"></i>
+                        <span data-i18n="top.nav.suggestions"></span>
+                    </a>
+                    <a class="dropdown-item" href="javascript:void(0)" id="contact-us">
+                        <i class="fa fa-headphones"></i>
+                        <span data-i18n="top.nav.contact"></span>
+                    </a>
+                </div>
+            </li>
+            
+            
+                
+                
+                    <li class="nav-item float-xs-right">
+                        <a class="nav-link register" href="javascript:void(0)" data-toggle="modal" data-target="#registerModal" data-i18n="top.nav.register"></a>
+                    </li>
+                    <li class="nav-item float-xs-right">
+                        <a class="nav-link login" href="javascript:void(0)" data-i18n="top.nav.login"></a>
+                    </li>
+                
+            
+            <li class="nav-item dropdown float-xs-right">
+                <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="switchLocale" data-toggle="dropdown" data-i18n="top.nav.locale"></a>
+                <div class="dropdown-menu dropdown-menu-right switch-locale-dropdown">
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="en">English</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="zh-Hans">简体中文</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="zh-Hant">繁體中文</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="ja">日本語</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="ko">한국어</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="ar">اَلْعَرَبِيَّةُ</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="bn">বাংলা</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="hi">हिन्दी</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="vi">Tiếng Việt</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="es">Español</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="pt">português</a>
+                    <a class="dropdown-item" href="javascript:void(0)" data-locale="ru">русский язык</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown float-xs-right">
+                <a class="nav-link" href="javascript:void(0)" id="switchTheme"></a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<div class="container-fluid" style="width: 100%; margin-top: 30px;">
+    <div class="row">
+        <div class="col-xs-12 col-lg-2" style="padding-right: 0">
+            <div class="contest-running list-group col-xs-4 col-lg-12" style="padding-right:0; margin: 0 0 10px 0">
+                <a href="javascript:void(0)" class="list-group-item" data-running="0" data-i18n="all"></a>
+                <a href="javascript:void(0)" class="list-group-item list-group-item-info" data-running="1" data-i18n="contest.scheduled"></a>
+                <a href="javascript:void(0)" class="list-group-item list-group-item-danger" data-running="2" data-i18n="contest.running"></a>
+                <a href="javascript:void(0)" class="list-group-item list-group-item-success" data-running="3" data-i18n="contest.ended"></a>
+                <input type="hidden" name="running"/>
+            </div>
+
+            <div class="list-group contest-category col-xs-4 col-lg-12"
+                 style="padding-right:0; margin: 0 0 10px 0;"
+                 id="my-contest-panel">
+                <a href="javascript:void(0)" class="list-group-item" data-category="all" data-i18n="contest.list.all_contests"></a>
+                <a href="javascript:void(0)" class="list-group-item" data-category="public" data-i18n="contest.list.public_contests"></a>
+                <a href="javascript:void(0)" class="list-group-item my-contest-item" data-category="mine" data-i18n="contest.list.my.contests"></a>
+                <a href="javascript:void(0)" class="list-group-item my-contest-item hidden-sm-down" data-category="participation">
+                    &nbsp;&nbsp;&nbsp;<i18n>contest.list.my.participation</i18n>
+                </a>
+                <a href="javascript:void(0)" class="list-group-item my-contest-item hidden-sm-down" data-category="arrangement">
+                    &nbsp;&nbsp;&nbsp;<i18n>contest.list.my.arrangement</i18n>
+                </a>
+                <a href="javascript:void(0)" class="list-group-item my-contest-item hidden-sm-down" data-category="mygroup">
+                    &nbsp;&nbsp;&nbsp;<i18n>contest.list.my.group</i18n>
+                </a>
+                <a href="javascript:void(0)" class="list-group-item my-contest-item hidden-sm-down" data-category="favorites">
+                    &nbsp;&nbsp;&nbsp;<i18n>contest.list.my.favorites</i18n>
+                </a>
+                <a href="javascript:void(0)" class="list-group-item my-contest-item hidden-sm-down" data-category="follow">
+                    &nbsp;&nbsp;&nbsp;<i18n>contest.list.my.follow</i18n>
+                </a>
+            </div>
+
+            <div class="list-group contest-category col-xs-4 col-lg-12" style="padding-right:0; margin: 0 0 10px 0">
+                <a href="javascript:void(0)" class="list-group-item " data-category="classical">
+                    <img src="/static/bundle/4aa72fde8ec2dee94cb4.gif">
+                    <i18n>contest.type.classical</i18n>
+                </a>
+                <a href="javascript:void(0)" class="list-group-item " data-category="group">
+                    <img src="/static/bundle/bf2b66129c2d2acc0cc3.png">
+                    <i18n>contest.type.group</i18n>
+                </a>
+                <a href="javascript:void(0)" class="list-group-item " data-category="replay">
+                    <img src="/static/bundle/24d8ec9c029098277348.png">
+                    <i18n>contest.type.replay</i18n>
+                </a>
+            </div>
+
+            <input type="hidden" name="category" value=""/>
+
+            <div class="hidden-md-down" style="margin-top: 20px;">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-9098591903020457"
+                     data-ad-slot="5496840117"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                  (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+        </div>
+        <div class="col-xs-12 col-lg-10">
+            
+            <input type="button" class="btn btn-secondary btn-md" id="filter" data-i18n="button.filter" />
+            <input type="button" class="btn btn-secondary btn-md" id="reset" data-i18n="button.reset" />
+            <input type="button" class="btn btn-outline-primary" id="btn-create" data-i18n="contest.create_contest" style="display: none"/>
+            <table id="listContest" cellspacing="0" width="100%"
+                   class="table table-striped table-bordered table-responsive">
+                <thead>
+                <tr>
+                    <th class="contest-id">ID</th>
+                    <th class="fav"></th>
+                    <th class="title">
+                        <span data-i18n="contest.title"></span>
+                        <i class="fa fa-info-circle"
+                           data-i18n-title="msg.5"
+                           data-html="true"
+                           data-toggle="tooltip"></i>
+                        <input type="text" name="title" class="search_text" style="width:95%"/>
+                    </th>
+                    <th class="contestants"></th>
+                    <th class="date"><span data-i18n="contest.begin_time"></span></th>
+                    <th class="length"><span data-i18n="contest.length"></span></th>
+                    <th class="owner">
+                        <span data-i18n="contest.owner"></span><br/>
+                        <input type="text" name="owner" class="search_text" style="width:95%"/>
+                    </th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <a href="/contest/statistic"
+               class="btn btn-secondary"
+               id="btn-statistic"
+               data-i18n="contest.statistic"
+               style="display: none"></a>
+        </div>
+    </div>
+</div>
+
+<head><script defer src="/static/bundle/31d6cfe0d16ae931b73c.js"></script></head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="body-footer">
+    <div style="margin-bottom: 8px">
+        <a href="mailto:is.un@qq.com" target="_blank">
+            <img src="/static/bundle/a7b7e5c7e94c918596f2.svg"/>
+        </a>
+        <img src="/static/bundle/fdbb90aaddd32a5ab4ad.png" class="qq" data-toggle="popover" data-placement="top"/>
+        <a href="https://weibo.com/u/5340553087" target="_blank">
+            <img src="/static/bundle/aae271671b3d18e15b40.svg"/>
+        </a>
+        <a href="https://space.bilibili.com/3056509/channel/collectiondetail?sid=3909505" target="_blank">
+            <img src="/static/bundle/ad1d62977bf56d0e0010.png"/>
+        </a>
+        <a href="https://t.me/joinchat/Erw7nRGwXN3iSCoKguVW3w" target="_blank">
+            <img src="/static/bundle/7182da66feaf3e99632a.svg"/>
+        </a>
+        <a href="https://www.facebook.com/virtualjudge/" target="_blank">
+            <img src="/static/bundle/c2687d1cf1f3e06984eb.svg"/>
+        </a>
+    </div>
+    <div id="footer-info">
+        All Copyright Reserved © 2010-2026<br/>
+        <span data-i18n="bottom.server_time"></span>: <span class="currentTimeTZ"></span>
+    </div>
+</div>
+
+
+<input name="systemVersion" type="hidden" value="1769581438373"/>
+<input name="gaId" type="hidden" value="G-374JLX1715"/>
+
+
+
+<script type="text/javascript">basePath = "";</script>
+
+</body>
+</html>
