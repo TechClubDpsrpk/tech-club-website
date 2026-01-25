@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
     // Warning only, don’t fail the build
     ignoreDuringBuilds: true,
   },
-  serverExternalPackages: ['@sparticuz/chromium'],
+  serverExternalPackages: ['@sparticuz/chromium', 'puppeteer-core'],
 };
 
 export default nextConfig;

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
+    "@sparticuz/chromium": "^143.0.4",
     "@supabase/supabase-js": "^2.89.0",
     "@vercel/analytics": "^1.6.1",
     "axios": "^1.13.2",
@@ -32,6 +33,7 @@
     "next-themes": "^0.4.6",
     "nodemailer": "^7.0.12",
     "pnpm": "^10.13.1",
+    "puppeteer-core": "^24.36.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^9.1.0",
