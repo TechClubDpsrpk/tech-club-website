@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { VJudgeClient } from '@/lib/vjudge';
+import { VJudgeBrowser } from '@/lib/vjudge-browser';
+// import { VJudgeClient } from '@/lib/vjudge';
 
 let leaderboardCache: { data: any; timestamp: number } | null = null;
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
@@ -31,7 +32,8 @@ export async function GET() {
             return NextResponse.json({ error: 'VJudge session cookies not provided' }, { status: 400 });
         }
 
-        const client = new VJudgeClient(settings.session_cookies);
+        // Use Browser Client for Cloudflare Bypass
+        const client = new VJudgeBrowser(settings.session_cookies);
         const rankData = await client.getRankData(settings.contest_id, settings.contest_password);
 
         leaderboardCache = { data: rankData, timestamp: now };

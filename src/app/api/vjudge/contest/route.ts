@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { VJudgeClient } from '@/lib/vjudge';
+import { VJudgeBrowser } from '@/lib/vjudge-browser';
+// import { VJudgeClient } from '@/lib/vjudge';
 
 let contestCache: { data: any; timestamp: number } | null = null;
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
@@ -31,17 +32,32 @@ export async function GET() {
             return NextResponse.json({ error: 'VJudge session cookies not provided' }, { status: 400 });
         }
 
-        const client = new VJudgeClient(settings.session_cookies);
+        const client = new VJudgeBrowser(settings.session_cookies);
+        // Note: browser client contest data fetching inside, we parse title/problems
         const contestData = await client.getContestData(
             settings.contest_id,
-            settings.contest_password,
-            settings.problem_count || 10,
-            settings.problem_titles
+            settings.contest_password
         );
+
+        // Reconstruct problems array if not present (vjudge-browser logic pending full replacement)
+        // If contestData came effectively from ajaxData, it should have the structure.
+        // If we need formatting, we do it here.
+
+        let problems: any[] = [];
+        if (contestData.problems) {
+            problems = contestData.problems;
+        } else if (settings.problem_titles || settings.problem_count) {
+            const count = settings.problem_count || 10;
+            const titles = settings.problem_titles ? settings.problem_titles.split(',').map((t: string) => t.trim()) : [];
+            for (let i = 0; i < count; i++) {
+                const letter = String.fromCharCode(65 + i);
+                problems.push({ num: letter, title: titles[i] || letter });
+            }
+        }
 
         const result = {
             title: contestData.title,
-            problems: contestData.problems,
+            problems: problems,
             id: settings.contest_id,
             password: settings.contest_password
         };
