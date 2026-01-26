@@ -23,11 +23,17 @@ export class VJudgeBrowser {
                 (isLocal ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' : undefined);
 
             browser = await puppeteer.launch({
-                args: isLocal ? puppeteer.defaultArgs() : chromium.args,
-                defaultViewport: chromium.defaultViewport,
+                args: isLocal ? puppeteer.defaultArgs().concat('--ignore-certificate-errors') : chromium.args.concat('--ignore-certificate-errors'),
+                defaultViewport: {
+                    width: 1280,
+                    height: 720,
+                    deviceScaleFactor: 1,
+                    isMobile: false,
+                    hasTouch: false,
+                    isLandscape: false,
+                },
                 executablePath: executablePath,
-                headless: isLocal ? false : chromium.headless, // Run headed locally for debug if needed, or headless
-                ignoreHTTPSErrors: true,
+                headless: isLocal ? false : true, // Run headed locally for debug if needed, or headless
             });
 
             const page = await browser.newPage();
@@ -123,11 +129,17 @@ export class VJudgeBrowser {
                 (isLocal ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' : undefined);
 
             browser = await puppeteer.launch({
-                args: isLocal ? puppeteer.defaultArgs() : chromium.args,
-                defaultViewport: chromium.defaultViewport,
+                args: isLocal ? puppeteer.defaultArgs().concat('--ignore-certificate-errors') : chromium.args.concat('--ignore-certificate-errors'),
+                defaultViewport: {
+                    width: 1280,
+                    height: 720,
+                    deviceScaleFactor: 1,
+                    isMobile: false,
+                    hasTouch: false,
+                    isLandscape: false,
+                },
                 executablePath: executablePath,
-                headless: isLocal ? false : chromium.headless,
-                ignoreHTTPSErrors: true,
+                headless: isLocal ? false : true,
             });
 
             const page = await browser.newPage();

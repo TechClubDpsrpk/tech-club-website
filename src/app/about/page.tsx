@@ -46,14 +46,13 @@ const MemberCard = ({
     className="flex flex-col items-center"
   >
     <div className="relative h-16 w-16 overflow-hidden rounded-full border-2 border-yellow-400 bg-gray-800 sm:h-20 sm:w-20 sm:border-3 lg:h-24 lg:w-24 lg:border-4">
-      <img
+      <Image
         src={member.image}
         alt={member.name}
+        width={96}
+        height={96}
         className="h-full w-full object-cover"
-        onError={(e) => {
-          (e.target as HTMLImageElement).src =
-            `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=fbbf24&color=000&size=96`;
-        }}
+        unoptimized
       />
     </div>
     <div className="mt-1 max-w-[80px] text-center sm:mt-2 sm:max-w-[100px]">
@@ -315,14 +314,13 @@ export default function AboutTechClub() {
               className="flex flex-col items-center rounded-2xl border-2 border-yellow-400 bg-gray-900/50 p-6 backdrop-blur-sm transition-all hover:scale-105 hover:border-yellow-300 hover:shadow-xl hover:shadow-yellow-400/20"
             >
               <div className="relative mb-4 h-32 w-32 overflow-hidden rounded-full border-4 border-yellow-400">
-                <img
+                <Image
                   src="/team/agnihotra.png"
                   alt="Agnihotra Nath"
+                  width={128}
+                  height={128}
                   className="h-full w-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src =
-                      'https://ui-avatars.com/api/?name=Agnihotra+Nath&background=fbbf24&color=000&size=128';
-                  }}
+                  unoptimized
                 />
               </div>
               <h3 className="font-[family-name:var(--font-space-mono)] text-lg font-semibold text-white">
@@ -345,14 +343,13 @@ export default function AboutTechClub() {
               className="flex flex-col items-center rounded-2xl border-2 border-yellow-400 bg-gray-900/50 p-6 backdrop-blur-sm transition-all hover:scale-105 hover:border-yellow-300 hover:shadow-xl hover:shadow-yellow-400/20"
             >
               <div className="relative mb-4 h-32 w-32 overflow-hidden rounded-full border-4 border-yellow-400">
-                <img
+                <Image
                   src="/team/adiya.jpeg"
                   alt="Adiya Roy"
+                  width={128}
+                  height={128}
                   className="h-full w-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src =
-                      'https://ui-avatars.com/api/?name=Adiya+Roy&background=fbbf24&color=000&size=128';
-                  }}
+                  unoptimized
                 />
               </div>
               <h3 className="font-[family-name:var(--font-space-mono)] text-lg font-semibold text-white">
@@ -375,14 +372,13 @@ export default function AboutTechClub() {
               className="flex flex-col items-center rounded-2xl border-2 border-yellow-400 bg-gray-900/50 p-6 backdrop-blur-sm transition-all hover:scale-105 hover:border-yellow-300 hover:shadow-xl hover:shadow-yellow-400/20"
             >
               <div className="relative mb-4 h-32 w-32 overflow-hidden rounded-full border-4 border-yellow-400">
-                <img
+                <Image
                   src="/team/naitik.jpeg"
                   alt="Naitik Chattaraj"
+                  width={128}
+                  height={128}
                   className="h-full w-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src =
-                      'https://ui-avatars.com/api/?name=Naitik+Chattaraj&background=fbbf24&color=000&size=128';
-                  }}
+                  unoptimized
                 />
               </div>
               <h3 className="font-[family-name:var(--font-space-mono)] text-lg font-semibold text-white">
@@ -405,14 +401,13 @@ export default function AboutTechClub() {
               className="flex flex-col items-center rounded-2xl border-2 border-yellow-400 bg-gray-900/50 p-6 backdrop-blur-sm transition-all hover:scale-105 hover:border-yellow-300 hover:shadow-xl hover:shadow-yellow-400/20"
             >
               <div className="relative mb-4 h-32 w-32 overflow-hidden rounded-full border-4 border-yellow-400">
-                <img
+                <Image
                   src="/team/rishabh.jpeg"
                   alt="Rishabh Das"
+                  width={128}
+                  height={128}
                   className="h-full w-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src =
-                      'https://ui-avatars.com/api/?name=Rishabh+Das&background=fbbf24&color=000&size=128';
-                  }}
+                  unoptimized
                 />
               </div>
               <h3 className="font-[family-name:var(--font-space-mono)] text-lg font-semibold text-white">
@@ -435,14 +430,13 @@ export default function AboutTechClub() {
               className="flex flex-col items-center rounded-2xl border-2 border-yellow-400 bg-gray-900/50 p-6 backdrop-blur-sm transition-all hover:scale-105 hover:border-yellow-300 hover:shadow-xl hover:shadow-yellow-400/20"
             >
               <div className="relative mb-4 h-32 w-32 overflow-hidden rounded-full border-4 border-yellow-400">
-                <img
+                <Image
                   src="/team/biraja.jpeg"
                   alt="Biraja Prasad Pradhan"
+                  width={128}
+                  height={128}
                   className="h-full w-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src =
-                      'https://ui-avatars.com/api/?name=Biraja+Prasad+Pradhan&background=fbbf24&color=000&size=128';
-                  }}
+                  unoptimized
                 />
               </div>
               <h3 className="font-[family-name:var(--font-space-mono)] text-lg font-semibold text-white">
