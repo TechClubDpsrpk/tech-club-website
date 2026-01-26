@@ -49,8 +49,12 @@ export class VJudgeBrowser {
                     '--disable-setuid-sandbox',
                     '--disable-features=FirstPartySets', // Mitigate EBUSY/resource lock
                     '--disable-dev-shm-usage',
+                    '--disable-blink-features=AutomationControlled', // Stealth
                 ])
-                : chromium.args.concat(['--ignore-certificate-errors']);
+                : chromium.args.concat([
+                    '--ignore-certificate-errors',
+                    '--disable-blink-features=AutomationControlled',
+                ]);
 
             browser = await puppeteer.launch({
                 args,
@@ -67,6 +71,7 @@ export class VJudgeBrowser {
             });
 
             const page = await browser.newPage();
+            await this.applyStealth(page);
 
             // Set session cookies if provided
             if (this.cookies) {
@@ -195,8 +200,12 @@ export class VJudgeBrowser {
                     '--disable-setuid-sandbox',
                     '--disable-features=FirstPartySets',
                     '--disable-dev-shm-usage',
+                    '--disable-blink-features=AutomationControlled',
                 ])
-                : chromium.args.concat(['--ignore-certificate-errors']);
+                : chromium.args.concat([
+                    '--ignore-certificate-errors',
+                    '--disable-blink-features=AutomationControlled',
+                ]);
 
             browser = await puppeteer.launch({
                 args,
@@ -213,6 +222,7 @@ export class VJudgeBrowser {
             });
 
             const page = await browser.newPage();
+            await this.applyStealth(page);
             if (this.cookies) {
                 const cookieList = this.cookies.split(';').map(c => {
                     const [name, value] = c.trim().split('=');
@@ -260,5 +270,35 @@ export class VJudgeBrowser {
         } finally {
             if (browser) await browser.close();
         }
+    }
+
+    private async applyStealth(page: any) {
+        const REAL_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36';
+
+        // Reveal Puppeteer: mask navigator.webdriver
+        await page.evaluateOnNewDocument(() => {
+            Object.defineProperty(navigator, 'webdriver', {
+                get: () => undefined,
+            });
+        });
+
+        // Set a realistic User-Agent
+        await page.setUserAgent(REAL_USER_AGENT);
+
+        // Overcome some fingerprinting
+        await page.evaluateOnNewDocument(() => {
+            // @ts-ignore
+            window.chrome = {
+                runtime: {},
+            };
+            // @ts-ignore
+            const originalQuery = window.navigator.permissions.query;
+            // @ts-ignore
+            window.navigator.permissions.query = (parameters: any) => (
+                parameters.name === 'notifications' ?
+                    Promise.resolve({ state: (Notification as any).permission }) :
+                    originalQuery(parameters)
+            );
+        });
     }
 }
