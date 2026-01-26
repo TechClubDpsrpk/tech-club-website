@@ -17,13 +17,43 @@ export class VJudgeBrowser {
             chromium.setGraphicsMode = false;
 
             const isLocal = process.env.NODE_ENV === 'development';
+            let executablePath: string | undefined;
 
-            // For local development, we might need a local chrome path or just fail gracefully
-            const executablePath = await chromium.executablePath() ||
-                (isLocal ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' : undefined);
+            if (isLocal) {
+                // Common local Chrome paths on Windows
+                const localPaths = [
+                    'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+                    'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+                    process.env.CHROME_PATH // Optional env override
+                ];
+
+                for (const path of localPaths) {
+                    if (path && require('fs').existsSync(path)) {
+                        executablePath = path;
+                        break;
+                    }
+                }
+
+                if (!executablePath) {
+                    console.warn('Local Chrome not found! Falling back to chromium.executablePath()');
+                    executablePath = await chromium.executablePath();
+                }
+            } else {
+                executablePath = await chromium.executablePath();
+            }
+
+            const args = isLocal
+                ? puppeteer.defaultArgs().concat([
+                    '--ignore-certificate-errors',
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-features=FirstPartySets', // Mitigate EBUSY/resource lock
+                    '--disable-dev-shm-usage',
+                ])
+                : chromium.args.concat(['--ignore-certificate-errors']);
 
             browser = await puppeteer.launch({
-                args: isLocal ? puppeteer.defaultArgs().concat('--ignore-certificate-errors') : chromium.args.concat('--ignore-certificate-errors'),
+                args,
                 defaultViewport: {
                     width: 1280,
                     height: 720,
@@ -33,7 +63,7 @@ export class VJudgeBrowser {
                     isLandscape: false,
                 },
                 executablePath: executablePath,
-                headless: isLocal ? false : true, // Run headed locally for debug if needed, or headless
+                headless: isLocal ? false : true,
             });
 
             const page = await browser.newPage();
@@ -57,11 +87,18 @@ export class VJudgeBrowser {
             console.log(`Navigating to contest ${contestId}...`);
             const targetUrl = `https://vjudge.net/contest/${contestId}`;
 
-            // Navigate and wait for network idle to ensure Cloudflare challenge is passed
+            // Increase timeout and use 'load' to be less strict about background resources
             await page.goto(targetUrl, {
-                waitUntil: 'networkidle0',
-                timeout: 30000
+                waitUntil: 'load',
+                timeout: 60000
             });
+
+            // Wait for a realistic element to confirm we are past any initial loading/challenges
+            try {
+                await page.waitForSelector('.contest-title', { timeout: 10000 });
+            } catch (e) {
+                console.warn('Wait for .contest-title timed out, checking Cloudflare status...');
+            }
 
             // If there's a password, we might need to enter it?
             // Usually if we have the cookie we are already logged in or authorized?
@@ -93,7 +130,17 @@ export class VJudgeBrowser {
                         },
                         body: params.toString()
                     });
-                    return await response.json();
+
+                    const text = await response.text();
+                    try {
+                        return JSON.parse(text);
+                    } catch (parseError) {
+                        return {
+                            error: 'Failed to parse JSON response',
+                            contentSnippet: text.substring(0, 200),
+                            status: response.status
+                        };
+                    }
                 } catch (e: any) {
                     return { error: e.toString() };
                 }
@@ -121,15 +168,38 @@ export class VJudgeBrowser {
     async getRankData(contestId: string, contestPassword?: string) {
         let browser = null;
         try {
-            console.log('Launching browser for VJudge Rank Data...');
             const isLocal = process.env.NODE_ENV === 'development';
+            let executablePath: string | undefined;
 
-            chromium.setGraphicsMode = false;
-            const executablePath = await chromium.executablePath() ||
-                (isLocal ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' : undefined);
+            if (isLocal) {
+                const localPaths = [
+                    'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+                    'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+                    process.env.CHROME_PATH
+                ];
+                for (const path of localPaths) {
+                    if (path && require('fs').existsSync(path)) {
+                        executablePath = path;
+                        break;
+                    }
+                }
+                if (!executablePath) executablePath = await chromium.executablePath();
+            } else {
+                executablePath = await chromium.executablePath();
+            }
+
+            const args = isLocal
+                ? puppeteer.defaultArgs().concat([
+                    '--ignore-certificate-errors',
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-features=FirstPartySets',
+                    '--disable-dev-shm-usage',
+                ])
+                : chromium.args.concat(['--ignore-certificate-errors']);
 
             browser = await puppeteer.launch({
-                args: isLocal ? puppeteer.defaultArgs().concat('--ignore-certificate-errors') : chromium.args.concat('--ignore-certificate-errors'),
+                args,
                 defaultViewport: {
                     width: 1280,
                     height: 720,
@@ -152,14 +222,30 @@ export class VJudgeBrowser {
             }
 
             const targetUrl = `https://vjudge.net/contest/${contestId}`;
-            await page.goto(targetUrl, { waitUntil: 'networkidle0', timeout: 30000 });
+            await page.goto(targetUrl, {
+                waitUntil: 'load',
+                timeout: 60000
+            });
+
+            try {
+                await page.waitForSelector('.contest-title', { timeout: 10000 });
+            } catch (e) { }
 
             // Fetch rank data
             const rankData = await page.evaluate(async (cId: string, cPwd?: string) => {
                 const url = `/contest/rank/single/${cId}${cPwd ? `?password=${cPwd}` : ''}`;
                 try {
                     const response = await fetch(url);
-                    return await response.json();
+                    const text = await response.text();
+                    try {
+                        return JSON.parse(text);
+                    } catch (parseError) {
+                        return {
+                            error: 'Failed to parse JSON response',
+                            contentSnippet: text.substring(0, 200),
+                            status: response.status
+                        };
+                    }
                 } catch (e: any) {
                     return { error: e.toString() };
                 }
