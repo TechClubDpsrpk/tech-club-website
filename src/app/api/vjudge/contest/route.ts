@@ -24,8 +24,8 @@ export async function GET() {
             .limit(1)
             .single();
 
-        if (settingsError || !settings) {
-            return NextResponse.json({ error: 'VJudge settings not configured' }, { status: 400 });
+        if (settingsError || !settings || !settings.contest_id) {
+            return NextResponse.json({ live: false });
         }
 
         if (!settings.session_cookies) {
@@ -33,16 +33,23 @@ export async function GET() {
         }
 
         const client = new VJudgeBrowser(settings.session_cookies);
-        // Note: browser client contest data fetching inside, we parse title/problems
-        const contestData = await client.getContestData(
+        const { contestData, pageTitle } = await client.getContestData(
             settings.contest_id,
             settings.contest_password
         );
 
-        // Reconstruct problems array if not present (vjudge-browser logic pending full replacement)
-        // If contestData came effectively from ajaxData, it should have the structure.
-        // If we need formatting, we do it here.
+        // Extract contest name from page title: "[Name of Contest] - Virtual Judge"
+        let displayTitle = contestData.title;
+        if (pageTitle && pageTitle.includes(' - Virtual Judge')) {
+            const matches = pageTitle.match(/\[(.*?)\]/);
+            if (matches && matches[1]) {
+                displayTitle = matches[1];
+            } else {
+                displayTitle = pageTitle.replace(' - Virtual Judge', '').trim();
+            }
+        }
 
+        // Reconstruct problems array if not present
         let problems: any[] = [];
         if (contestData.problems) {
             problems = contestData.problems;
@@ -56,7 +63,8 @@ export async function GET() {
         }
 
         const result = {
-            title: contestData.title,
+            live: true,
+            title: displayTitle,
             problems: problems,
             id: settings.contest_id,
             password: settings.contest_password

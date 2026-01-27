@@ -19,7 +19,7 @@ type RankEntry = {
 
 export default function CPContestsSection() {
     const [loading, setLoading] = useState(false);
-    const [contest, setContest] = useState<{ title: string; problems: Problem[]; id: string; password?: string } | null>(null);
+    const [contest, setContest] = useState<{ live?: boolean; title: string; problems: Problem[]; id: string; password?: string } | null>(null);
     const [leaderboard, setLeaderboard] = useState<any[]>([]);
     const [showLeaderboard, setShowLeaderboard] = useState(false);
     const [error, setError] = useState('');
@@ -36,7 +36,9 @@ export default function CPContestsSection() {
             if (res.ok) {
                 const data = await res.json();
                 setContest(data);
-                fetchLeaderboard();
+                if (data.live !== false) {
+                    fetchLeaderboard();
+                }
             } else {
                 setError('Failed to fetch contest data. Ensure organiser account is valid.');
             }
@@ -77,14 +79,16 @@ export default function CPContestsSection() {
         }
     };
 
+    const isNoLiveContest = contest?.live === false;
+
     return (
         <div className="mx-auto max-w-4xl px-4 mt-12">
             <div className="relative overflow-hidden rounded-3xl border border-[#C9A227]/30 bg-black/50 p-6 md:p-8 shadow-2xl backdrop-blur-xl">
                 <div className="mb-8">
                     <h2 className="text-2xl font-bold text-white">
-                        {loading ? 'Fetching Contest...' : contest?.title || 'CP Contest'}
+                        {loading ? 'Fetching Contest...' : (isNoLiveContest ? 'CP Contests' : (contest?.title || 'CP Contest'))}
                     </h2>
-                    {contest?.password && (
+                    {contest?.password && !isNoLiveContest && (
                         <p className="text-gray-400 text-sm mt-2">
                             Password: <span className="text-[#C9A227] font-mono">{contest.password}</span>
                         </p>
@@ -117,6 +121,14 @@ export default function CPContestsSection() {
                                 <span className="animate-pulse-dot animation-delay-200">.</span>
                                 <span className="animate-pulse-dot animation-delay-400">.</span>
                             </span>
+                        </p>
+                    </div>
+                ) : isNoLiveContest ? (
+                    <div className="text-center py-16 border border-white/5 rounded-2xl bg-white/5">
+                        <Trophy size={48} className="text-[#C9A227]/20 mx-auto mb-4" />
+                        <h3 className="text-xl font-bold text-white mb-2">No active contests</h3>
+                        <p className="text-gray-400 max-w-sm mx-auto">
+                            There are no contests live right now. Check back later or join our discord for announcements.
                         </p>
                     </div>
                 ) : (
