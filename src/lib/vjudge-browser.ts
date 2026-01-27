@@ -158,7 +158,10 @@ export class VJudgeBrowser {
             // Fallback: if ajaxData fails, scrape the page directly
             // ... (keep minimal fallback or rely on fetch)
 
-            return contestData;
+            return {
+                contestData,
+                pageTitle: title
+            };
 
         } catch (error) {
             console.error('VJudge Browser Error:', error);

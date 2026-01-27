@@ -34,10 +34,22 @@ export async function GET() {
 
         const client = new VJudgeBrowser(settings.session_cookies);
         // Note: browser client contest data fetching inside, we parse title/problems
-        const contestData = await client.getContestData(
+        const { contestData, pageTitle } = await client.getContestData(
             settings.contest_id,
             settings.contest_password
         );
+
+        // Extract contest name from page title: "[Name of Contest] - Virtual Judge"
+        let displayTitle = contestData.title;
+        if (pageTitle && pageTitle.includes(' - Virtual Judge')) {
+            const matches = pageTitle.match(/\[(.*?)\]/);
+            if (matches && matches[1]) {
+                displayTitle = matches[1];
+            } else {
+                // Fallback: just strip the suffix if the bracket matching fails for some reason
+                displayTitle = pageTitle.replace(' - Virtual Judge', '').trim();
+            }
+        }
 
         // Reconstruct problems array if not present (vjudge-browser logic pending full replacement)
         // If contestData came effectively from ajaxData, it should have the structure.
@@ -56,7 +68,7 @@ export async function GET() {
         }
 
         const result = {
-            title: contestData.title,
+            title: displayTitle,
             problems: problems,
             id: settings.contest_id,
             password: settings.contest_password
