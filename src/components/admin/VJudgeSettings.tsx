@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Save, ExternalLink, AlertTriangle, CheckCircle2, Trash2 } from 'lucide-react';
+import Image from 'next/image';
 
 export default function VJudgeSettings() {
     const [loading, setLoading] = useState(true);
@@ -105,7 +106,27 @@ export default function VJudgeSettings() {
         }
     };
 
-    if (loading) return <div className="text-[#C9A227] animate-pulse">Loading settings...</div>;
+    if (loading) {
+        return (
+            <div className="flex flex-col items-center justify-center py-20 space-y-4">
+                <Image
+                    src="/tc-logo_circle.svg"
+                    alt="Loading"
+                    width={60}
+                    height={60}
+                    className="animate-spin"
+                />
+                <p className="text-gray-400">
+                    Fetching settings
+                    <span className="inline-flex ml-1">
+                        <span className="animate-pulse-dot">.</span>
+                        <span className="animate-pulse-dot animation-delay-200">.</span>
+                        <span className="animate-pulse-dot animation-delay-400">.</span>
+                    </span>
+                </p>
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-2xl">
