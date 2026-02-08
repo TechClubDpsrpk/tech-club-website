@@ -30,4 +30,4 @@ jobs:
       - name: Notify Vercel
         uses: vercel/repository-dispatch/actions/status@v1
         with:
-          name: Vercel - tech-club-website: lint
+          name: "Vercel - tech-club-website: lint"
