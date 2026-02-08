@@ -31,6 +31,7 @@ jobs:
         env:
           NEXT_PUBLIC_SUPABASE_URL: "https://placeholder.supabase.co"
           NEXT_PUBLIC_SUPABASE_ANON_KEY: "placeholder"
+          SUPABASE_SERVICE_ROLE_KEY: "placeholder"
 
       - name: Notify Vercel
         uses: vercel/repository-dispatch/actions/status@v1
