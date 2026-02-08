@@ -51,7 +51,7 @@ const Hero = ({ className, ...props }: HeroProps) => {
       tl.fromTo(
         [circleLeft.current, circleRight.current],
         { opacity: 0, scale: 0.8 },
-        { opacity: 1, scale: 1, duration: 1, ease: 'power2.out' }
+        { opacity: 1, scale: 1, duration: 0.7, ease: 'power2.out' }
       );
 
       // Make top tag container visible but chars hidden (handled by render helper)
@@ -68,7 +68,7 @@ const Hero = ({ className, ...props }: HeroProps) => {
         tl.fromTo(
           topChars,
           { opacity: 0 },
-          { opacity: 1, stagger: 0.15, duration: 0.1, ease: 'none' },
+          { opacity: 1, stagger: 0.1, duration: 0.1, ease: 'none' },
           mainTextStart
         );
       }
@@ -76,7 +76,7 @@ const Hero = ({ className, ...props }: HeroProps) => {
       tl.fromTo(
         turningRef.current,
         { x: -50, autoAlpha: 0 },
-        { x: 0, autoAlpha: 1, duration: 0.8, ease: 'power2.out' },
+        { x: 0, autoAlpha: 1, duration: 0.6, ease: 'power2.out' },
         mainTextStart
       );
 
@@ -88,17 +88,17 @@ const Hero = ({ className, ...props }: HeroProps) => {
         {
           x: 0,
           autoAlpha: 1,
-          duration: 1,
-          ease: 'back.out(1.7)', // This creates the bump/overshoot effect
+          duration: 0.7,
+          ease: 'back.out(1.7)',
         },
-        '>-0.4' // Overlap slightly
+        '>-0.3' // Overlap slightly
       );
 
       // 4. "Into" from Left (after ideas completes)
       tl.fromTo(
         intoRef.current,
         { x: -50, autoAlpha: 0 },
-        { x: 0, autoAlpha: 1, duration: 0.8, ease: 'power2.out' },
+        { x: 0, autoAlpha: 1, duration: 0.6, ease: 'power2.out' },
         '>' // reduce delay after ideas
       );
 
@@ -109,10 +109,10 @@ const Hero = ({ className, ...props }: HeroProps) => {
         {
           x: 0,
           autoAlpha: 1,
-          duration: 1,
+          duration: 0.7,
           ease: 'back.out(1.7)',
         },
-        '>-0.4'
+        '>-0.3'
       );
 
       // 6. Description Typewriter (Letter by Letter)
@@ -127,8 +127,8 @@ const Hero = ({ className, ...props }: HeroProps) => {
         tl.fromTo(
           chars,
           { opacity: 0 },
-          { opacity: 1, stagger: 0.02, duration: 0.1, ease: 'none' }, // Fast typing
-          '>+0.3'
+          { opacity: 1, stagger: 0.01, duration: 0.1, ease: 'none' }, // Fast typing
+          '>+0.2'
         );
       }
 
@@ -136,7 +136,7 @@ const Hero = ({ className, ...props }: HeroProps) => {
       tl.fromTo(
         buttonsRef.current,
         { y: 20, autoAlpha: 0 },
-        { y: 0, autoAlpha: 1, duration: 0.8, ease: 'power2.out' },
+        { y: 0, autoAlpha: 1, duration: 0.6, ease: 'power2.out' },
         '>+0.2'
       );
     },

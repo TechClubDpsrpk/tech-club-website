@@ -68,7 +68,7 @@ const GitHubStatsCard = ({ githubId }: { githubId: string }) => {
         <h3 className="text-sm font-semibold text-white">GitHub Stats</h3>
       </div>
 
-      <div className="space-y-3">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* GitHub Overall Stats Card */}
         <div className="rounded-lg overflow-hidden bg-black-900/30">
           {!statsError ? (
@@ -116,16 +116,16 @@ const GitHubStatsCard = ({ githubId }: { githubId: string }) => {
             </div>
           )}
         </div>
-
-        <a
-          href={`https://github.com/${githubId}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block text-center text-sm text-[#C9A227] hover:text-[#B8901E] transition mt-2"
-        >
-          View Full GitHub Profile →
-        </a>
       </div>
+
+      <a
+        href={`https://github.com/${githubId}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block text-center text-sm text-[#C9A227] hover:text-[#B8901E] transition mt-4"
+      >
+        View Full GitHub Profile →
+      </a>
     </div>
   );
 };
@@ -681,15 +681,16 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
               </div>
             </div>
 
+
+          </section>
+
+          {/* RIGHT: Tabbed Settings */}
+          <section className="lg:col-span-3 space-y-6">
+            <ActivitySection userId={user.id} />
             {/* GitHub Stats */}
             {user.github_id && (
               <GitHubStatsCard githubId={user.github_id} />
             )}
-          </section>
-
-          {/* RIGHT: Tabbed Settings */}
-          <section className="lg:col-span-3">
-            <ActivitySection userId={user.id} />
             {/* Tab Navigation */}
             <div className="mb-6 border-b border-black-700/50">
               <div className="flex gap-6 overflow-x-auto">
