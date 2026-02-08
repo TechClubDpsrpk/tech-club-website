@@ -1,4 +1,4 @@
-name: NodeJS with Webpack
+name: NodeJS Build
 
 on:
   push:
@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        node-version: [20.x]
 
     steps:
       - uses: actions/checkout@v4
@@ -21,11 +21,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
 
       - name: Build
-        run: |
-          npm install
-          npx webpack
+        run: npm run build
 
       - name: Notify Vercel
         uses: vercel/repository-dispatch/actions/status@v1
