@@ -69,9 +69,9 @@ export async function verifyAuth(req: NextRequest): Promise<{
 
     // Check if session exists in database
     const supabase = getSupabaseClient();
-    
+
     console.log('Checking session in DB for userId:', userId);
-    
+
     const { data: sessions, error, count } = await supabase
       .from('sessions')
       .select('*', { count: 'exact' })
@@ -112,10 +112,10 @@ export async function verifyAuth(req: NextRequest): Promise<{
       return { authenticated: false, userId: null };
     }
 
-    return { 
-      authenticated: true, 
+    return {
+      authenticated: true,
       userId: user.id,
-      user 
+      user
     };
   } catch (error) {
     console.error('Unexpected error in verifyAuth:', error);
@@ -135,6 +135,19 @@ export async function getCurrentUser() {
     if (!decoded) return null;
 
     const userId = decoded.id as string;
+
+    // Check if session exists in database and is valid
+    const supabase = getSupabaseClient();
+    const { data: session } = await supabase
+      .from('sessions')
+      .select('expires_at')
+      .eq('session_token', token) // The token itself is the session identifier in DB based on verifyAuth
+      .eq('user_id', userId)
+      .single();
+
+    if (!session) return null;
+    if (new Date(session.expires_at) < new Date()) return null;
+
     const user = await getUserById(userId);
 
     return user;
@@ -154,12 +167,12 @@ export async function uploadAvatar(userId: string, file: File) {
     await supabase.storage
       .from('avatars')
       .remove([fileName])
-      .catch(() => {});
+      .catch(() => { });
 
     // Upload new avatar
     const { error: uploadError, data } = await supabase.storage
       .from('avatars')
-      .upload(fileName, file, { 
+      .upload(fileName, file, {
         upsert: true,
         contentType: file.type
       });

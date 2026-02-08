@@ -298,10 +298,10 @@ export async function sendBanEmail(
                 <div class="divider"></div>
                 
                 <p class="text">
-                  <span class="accent-text">Ban Duration:</span> Until ${expiryDate.toLocaleString('en-US', { 
-                    dateStyle: 'full', 
-                    timeStyle: 'short' 
-                  })}
+                  <span class="accent-text">Ban Duration:</span> Until ${expiryDate.toLocaleString('en-US', {
+        dateStyle: 'full',
+        timeStyle: 'short'
+      })}
                 </p>
                 
                 <p class="text">
@@ -408,6 +408,69 @@ export async function sendUnbanEmail(email: string, username: string) {
     console.log('✅ Unban email sent to:', email);
   } catch (error) {
     console.error('❌ Failed to send unban email:', error);
+    throw error;
+  }
+}
+
+export async function sendPasswordResetEmail(email: string, name: string, otp: string) {
+  try {
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM_EMAIL,
+      to: email,
+      subject: 'Reset Your Password | Tech Club DPSRPK',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>${emailStyles}</head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <img src="https://techclubdpsrpk.vercel.app/tc-logo.png" 
+                   alt="Tech Club Logo" 
+                   style="max-width: 140px; height: auto; margin-bottom: 15px; display: block; margin-left: auto; margin-right: auto;">
+              <div class="logo-accent">Security Request</div>
+            </div>
+            
+            <div class="content">
+              <div class="greeting">Reset Password</div>
+              
+              <p class="text">
+                Hi <span class="accent-text">${name}</span>,
+              </p>
+              
+              <p class="text">
+                We received a request to reset your password. Use the Code below to proceed:
+              </p>
+              
+              <div class="code-block" style="text-align: center; font-size: 24px; letter-spacing: 5px; font-weight: bold; color: #C9A227;">
+                ${otp}
+              </div>
+              
+              <p class="text" style="font-size: 12px; color: #999; text-align: center;">
+                This code will expire in 15 minutes.
+              </p>
+              
+              <div class="divider"></div>
+              
+              <p class="text" style="font-size: 12px; color: #666; margin-top: 20px;">
+                If you didn't request a password reset, please ignore this email or contact support if you have concerns.
+              </p>
+            </div>
+            
+            <div class="footer">
+              <p>Tech Club | DPS Ruby Park</p>
+              <p style="margin-top: 8px; color: #555;">
+                This is an automated message, please don't reply.
+              </p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+    });
+    console.log('✅ Password reset email sent to:', email);
+  } catch (error) {
+    console.error('❌ Failed to send password reset email:', error);
     throw error;
   }
 }
