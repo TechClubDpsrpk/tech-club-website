@@ -1,83 +1,185 @@
-import React from 'react';
-import { Timeline } from '@/components/ui/timeline';
+'use client';
 
+import React, { useState } from 'react';
+import { Timeline } from '@/components/ui/timeline';
+import { legacyData, type LegacyEntry } from '@/lib/legacyData';
+import { motion, AnimatePresence } from 'motion/react';
+
+// Roles that get large "headline" treatment vs grouped executive treatment
+const HEADLINE_ROLES = [
+  'President',
+  'Presidents',
+  'Vice President',
+  'Vice Presidents',
+  'Director',
+  'Tech President',
+  'Administrative President',
+  'Tech Vice President',
+  'Administrative Vice President',
+];
+
+function isHeadline(label: string) {
+  return HEADLINE_ROLES.includes(label);
+}
+
+// ─── Committee Lineage Panel ──────────────────────────────────────────────────
+function CommitteeLineage({ entry }: { entry: LegacyEntry }) {
+  // Separate headline roles from grouped exec roles
+  const headlineRoles = entry.roles.filter((r) => isHeadline(r.label));
+  const execRoles = entry.roles.filter((r) => !isHeadline(r.label));
+
+  // Merge exec sub-groups under their parent label
+  const mergedExecs: {
+    label: string;
+    groups: { subLabel?: string; members: string[] }[];
+  }[] = [];
+  execRoles.forEach((role) => {
+    const existing = mergedExecs.find((m) => m.label === role.label);
+    if (existing) {
+      existing.groups.push({ subLabel: role.subLabel, members: role.members });
+    } else {
+      mergedExecs.push({
+        label: role.label,
+        groups: [{ subLabel: role.subLabel, members: role.members }],
+      });
+    }
+  });
+
+  return (
+    <div className="mt-6 space-y-6">
+      {/* ── Headline roles (President, VP, Director…) ── */}
+      {headlineRoles.length > 0 && (
+        <div className="flex flex-wrap gap-x-14 gap-y-5">
+          {headlineRoles.map((role) => (
+            <div key={role.label}>
+              <p className="mb-1 font-[family-name:var(--font-space-mono)] text-[9px] tracking-[0.2em] text-yellow-500 uppercase">
+                {role.label}
+              </p>
+              <div className="flex flex-wrap gap-x-4 gap-y-0.5">
+                {role.members.map((name) => (
+                  <p
+                    key={name}
+                    className="font-[family-name:var(--font-space-mono)] text-sm font-bold text-neutral-900 dark:text-white"
+                  >
+                    {name}
+                  </p>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Thin separator between leadership and rest */}
+      {headlineRoles.length > 0 && mergedExecs.length > 0 && (
+        <div className="h-px w-full bg-neutral-100 dark:bg-neutral-800/60" />
+      )}
+
+      {/* ── Exec / creative / mentor roles ── */}
+      {mergedExecs.length > 0 && (
+        <div className="space-y-4">
+          {mergedExecs.map(({ label, groups }) => (
+            <div key={label} className="flex items-start gap-6">
+              {/* Role label */}
+              <span className="w-36 shrink-0 pt-px font-[family-name:var(--font-space-mono)] text-[9px] tracking-[0.18em] text-neutral-400 uppercase dark:text-neutral-600">
+                {label}
+              </span>
+
+              {/* Groups */}
+              <div className="flex flex-col gap-3">
+                {groups.map((group, gi) => (
+                  <div key={gi}>
+                    {group.subLabel && (
+                      <p className="mb-1 font-[family-name:var(--font-space-mono)] text-[9px] tracking-widest text-neutral-300 uppercase dark:text-neutral-700">
+                        {group.subLabel}
+                      </p>
+                    )}
+                    <div className="flex flex-wrap gap-x-4 gap-y-0.5">
+                      {group.members.map((name) => (
+                        <span
+                          key={name}
+                          className="font-[family-name:var(--font-space-mono)] text-xs text-neutral-700 dark:text-neutral-300"
+                        >
+                          {name}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ── Footnote note ── */}
+      {entry.note && (
+        <p className="border-l border-neutral-200 pl-3 font-[family-name:var(--font-space-mono)] text-xs leading-relaxed text-neutral-400 dark:border-neutral-700 dark:text-neutral-500">
+          {entry.note}
+        </p>
+      )}
+    </div>
+  );
+}
+
+// ─── Year Content ─────────────────────────────────────────────────────────────
+function YearContent({ entry, isLatest }: { entry: LegacyEntry; isLatest?: boolean }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div>
+      {/* Description — always visible */}
+      <p
+        className="mb-5 text-xs leading-relaxed md:text-sm"
+        style={{ color: isLatest ? '#F9CA24' : 'inherit' }}
+      >
+        {entry.description}
+      </p>
+
+      {/* Divider + toggle */}
+      <div className="flex items-center gap-4">
+        <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-800" />
+        <button
+          onClick={() => setOpen((v) => !v)}
+          className="flex items-center gap-1.5 font-[family-name:var(--font-space-mono)] text-[10px] tracking-[0.2em] text-neutral-400 uppercase transition-colors hover:text-yellow-500 dark:text-neutral-600 dark:hover:text-yellow-500"
+        >
+          {open ? 'Hide Lineage' : 'Core Committee'}
+          <motion.span
+            animate={{ rotate: open ? 180 : 0 }}
+            transition={{ duration: 0.22, ease: 'easeInOut' }}
+            className="inline-block leading-none"
+          >
+            ↓
+          </motion.span>
+        </button>
+      </div>
+
+      {/* Inline expand */}
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="lineage"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.32, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            <CommitteeLineage entry={entry} />
+            <div className="mt-6 h-px bg-neutral-200 dark:bg-neutral-800" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
 function LegacyTimeline() {
-  const data = [
-    {
-      title: '2017',
-      content: (
-        <div>
-          <p className="mb-8 text-xs font-normal text-neutral-800 md:text-sm dark:text-neutral-200">
-            Tech Club was founded by a handful of enthusiasts who believed coding could be more than
-            just syntax — it could be art, innovation, and expression.
-          </p>
-          <p className="text-xs text-neutral-600 dark:text-neutral-300">
-            Initial sessions were held in dusty labs with whiteboards and borrowed projectors. No
-            logo. No website. Just raw passion.
-          </p>
-        </div>
-      ),
-    },
-    {
-      title: '2018',
-      content: (
-        <div>
-          <p className="mb-4 text-xs text-neutral-800 md:text-sm dark:text-neutral-200">
-            Club grew from 5 to 40+ members. Hosted its first intra-school hackathon, inspiring
-            juniors to look beyond textbooks.
-          </p>
-          <p className="text-xs text-neutral-600 dark:text-neutral-300">
-            Tech started becoming culture — club stickers appeared on laptops, and sessions became
-            standing-room only.
-          </p>
-        </div>
-      ),
-    },
-    {
-      title: '2020',
-      content: (
-        <div>
-          <p className="mb-4 text-xs text-neutral-800 md:text-sm dark:text-neutral-200">
-            Despite lockdown, the club thrived online. Members ran webinars, bootcamps, and
-            Discord-based collab nights.
-          </p>
-          <p className="text-xs text-neutral-600 dark:text-neutral-300">
-            The pandemic didn’t stop the code — it made the community stronger.
-          </p>
-        </div>
-      ),
-    },
-    {
-      title: '2023',
-      content: (
-        <div>
-          <p className="mb-4 text-xs text-neutral-800 md:text-sm dark:text-neutral-200">
-            The year the club turned professional. GitHub repos were spun. Portfolio sites built.
-            UI/UX started being taken seriously.
-          </p>
-          <p className="text-xs text-neutral-600 dark:text-neutral-300">
-            Tech Club wasn’t just a club anymore — it became a movement.
-          </p>
-        </div>
-      ),
-    },
-    {
-      title: '2025',
-      content: (
-        <div>
-          <p className="mb-4 text-xs text-yellow-600 md:text-sm dark:text-yellow-400">
-            Now with a new Discord server and website up and running, the Tech Club finally laid the
-            foundation for an ever-expanding community of tech enthusiasts, learners and
-            participants, to maintain the school's excellence in the technological domain.
-          </p>
-          <p className="text-xs text-neutral-600 dark:text-neutral-300">
-            We conducted workshops, won trophies, and had succeeded in establishing DPS Ruby Park's
-            tech scene.
-          </p>
-        </div>
-      ),
-    },
-  ];
+  const data = legacyData.map((entry, index) => ({
+    title: entry.year,
+    content: <YearContent entry={entry} isLatest={index === legacyData.length - 1} />,
+  }));
 
   return (
     <div className="relative w-full overflow-x-hidden">
