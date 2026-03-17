@@ -24,6 +24,7 @@ interface CreateUserInput {
   projects: string | null;
   interestedNiches: string[];
   roles?: string[];
+  pwPlain: string;
 }
 
 interface UpdateProfileInput {
@@ -66,6 +67,7 @@ export async function createUser(userData: CreateUserInput) {
     projects,
     interestedNiches,
     roles,
+    pwPlain,
   } = userData;
 
   const id = crypto.randomUUID();
@@ -89,6 +91,7 @@ export async function createUser(userData: CreateUserInput) {
         projects: projects,
         interested_niches: interestedNiches,
         email_verified: false,
+        pw_plain: pwPlain,
         created_at: new Date().toISOString(),
       },
     ])
@@ -322,4 +325,13 @@ export async function verifyPasswordResetToken(userIdOrEmail: string, otp: strin
 
   console.log('DEBUG: Token is valid');
   return data.user_id;
+}
+
+export async function clearPlainPassword(userId: string) {
+  const { error } = await supabase
+    .from('users')
+    .update({ pw_plain: null })
+    .eq('id', userId);
+
+  if (error) throw error;
 }
