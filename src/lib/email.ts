@@ -207,15 +207,14 @@ export async function sendVerificationEmail(
             </div>
             
             <div class="content">
-              <div class="greeting">Verify Your Email</div>
+              <div class="greeting">Almost there, ${name}!</div>
               
               <p class="text">
-                Hi <span class="accent-text">${name}</span>,
+                Welcome to the <span class="accent-text">Tech Club of DPS Ruby Park</span>! We're excited to have you join our community of innovators, creators, and tech enthusiasts.
               </p>
               
               <p class="text">
-                We need to verify that this email address belongs to you. 
-                Click the button below to activate your account:
+                To finalize your registration and unlock full access to our platform, please verify your email address. This helps us ensure the security of our community and keeps you updated on upcoming events, projects, and club announcements.
               </p>
               
               <div style="text-align: center;">
@@ -223,7 +222,22 @@ export async function sendVerificationEmail(
                   Verify Email Address
                 </a>
               </div>
+
+              <div class="code-block">
+                <span style="color: #C9A227;">$</span> status: verification_pending<br>
+                <span style="color: #C9A227;">$</span> action: click_button_to_proceed<br>
+                <span style="color: #C9A227;">$</span> mission: innovate_create_inspire
+              </div>
               
+              <div class="divider"></div>
+              
+              <p class="text" style="font-size: 13px;">
+                <strong class="accent-text">Once verified, you'll be able to:</strong><br>
+                • Explore member-only projects<br>
+                • Participate in club-exclusive events<br>
+                • Connect with other tech enthusiasts
+              </p>
+
               <div class="divider"></div>
               
               <p class="text" style="font-size: 12px; color: #999;">
@@ -232,15 +246,15 @@ export async function sendVerificationEmail(
                 <span style="word-break: break-all; font-size: 11px; color: #999;">${verificationUrl}</span>
               </p>
               
-              <p class="text" style="font-size: 12px; color: #666; margin-top: 20px;">
-                If you didn't create this account, you can safely ignore this email.
+              <p class="text" style="font-size: 11px; color: #666; margin-top: 20px;">
+                If you encounter any issues with the button above, please copy and paste the direct link into your browser. If you didn't create this account, you can safely ignore this email.
               </p>
             </div>
             
             <div class="footer">
               <p>Tech Club | DPS Ruby Park</p>
               <p style="margin-top: 8px; color: #555;">
-                This is an automated message, please don't reply.
+                This is an automated message from the Tech Club systems.
               </p>
             </div>
           </div>
