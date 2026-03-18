@@ -124,7 +124,6 @@ export async function POST(request: NextRequest) {
       eventParticipation,
       projects: projects || null,
       interestedNiches,
-      pwPlain: password,
     });
 
     console.log('✅ User created:', user.id, user.email);

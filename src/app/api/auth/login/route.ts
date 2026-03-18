@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { findUserByEmail, clearPlainPassword } from '@/lib/db';
+import { findUserByEmail } from '@/lib/db';
 import { verifyPassword } from '@/lib/password';
 import { createToken } from '@/lib/auth';
 import { supabase } from '@/lib/supabaseClient';
@@ -71,14 +71,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Clear plain text password on first successful login
-    if (user.pw_plain) {
-      try {
-        await clearPlainPassword(user.id);
-      } catch (err) {
-        console.error('Failed to clear pw_plain:', err);
-      }
-    }
 
     const token = await createToken(user);
 
