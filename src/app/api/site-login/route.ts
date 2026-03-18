@@ -4,7 +4,7 @@ import { createSiteSession } from '@/lib/supabase-admin';
 import { isIPBanned, checkRateLimit, logLoginAttempt, evaluateBan } from '@/lib/rate-limit';
 
 export async function POST(req: NextRequest) {
-  const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
+  const SITE_PASSWORD_HASH = process.env.SITE_PASSWORD_HASH;
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'unknown';
   const userAgent = req.headers.get('user-agent') || 'unknown';
 
@@ -26,14 +26,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!ADMIN_PASSWORD_HASH) {
+    if (!SITE_PASSWORD_HASH) {
       return NextResponse.json(
         { success: false, error: 'Site access not configured' },
         { status: 500 }
       );
     }
 
-    const isValid = await bcrypt.compare(password, ADMIN_PASSWORD_HASH);
+    const isValid = await bcrypt.compare(password, SITE_PASSWORD_HASH);
 
     await logLoginAttempt(ip, 'site', password, isValid, userAgent);
 
