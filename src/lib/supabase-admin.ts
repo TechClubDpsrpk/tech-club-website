@@ -118,3 +118,45 @@ export async function verifySiteSession(sessionId: string): Promise<boolean> {
 
     return true;
 }
+
+// ========== SITE SETTINGS MANAGEMENT ==========
+
+export async function getSiteSetting(key: string) {
+    if (!supabaseAdmin) {
+        console.warn('getSiteSetting: Missing Service Key');
+        return null;
+    }
+
+    const { data, error } = await supabaseAdmin
+        .from('site_settings')
+        .select('value')
+        .eq('key', key)
+        .single();
+
+    if (error) {
+        if (error.code === 'PGRST116' || error.code === '42P01') return null; // Not found or table missing
+        console.error(`Error fetching site setting ${key}:`, error);
+        return null;
+    }
+
+    return data.value;
+}
+
+export async function updateSiteSetting(key: string, value: any) {
+    if (!supabaseAdmin) {
+        throw new Error('Server misconfiguration: Missing SUPABASE_SERVICE_ROLE_KEY');
+    }
+
+    const { data, error } = await supabaseAdmin
+        .from('site_settings')
+        .upsert({ key, value, updated_at: new Date().toISOString() })
+        .select()
+        .single();
+
+    if (error) {
+        console.error(`Error updating site setting ${key}:`, error);
+        throw error;
+    }
+
+    return data;
+}

@@ -42,6 +42,8 @@ export default function AdminPage() {
   const [siteSessions, setSiteSessions] = useState<any[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(false);
   const [error, setError] = useState('');
+  const [maintenanceMode, setMaintenanceMode] = useState<boolean>(true);
+  const [updatingMode, setUpdatingMode] = useState(false);
 
   // Tab availability handlers
   const canViewProjects = (roles: string[]) => hasAccessToAdminPanel(roles); // Everyone in staff can see projects? Or maybe limiting?
@@ -136,8 +138,49 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    if (activeTab === 'site-access') fetchSiteSessions();
+    if (activeTab === 'site-access') {
+      fetchSiteSessions();
+      fetchMaintenanceMode();
+    }
   }, [activeTab]);
+
+  const fetchMaintenanceMode = async () => {
+    try {
+      const res = await fetch('/api/admin/site-settings');
+      if (res.ok) {
+        const data = await res.json();
+        setMaintenanceMode(data.maintenance_mode?.enabled ?? true);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleToggleMaintenance = async () => {
+    const newValue = !maintenanceMode;
+    setUpdatingMode(true);
+    try {
+      const res = await fetch('/api/admin/site-settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          key: 'maintenance_mode',
+          value: { enabled: newValue }
+        })
+      });
+
+      if (res.ok) {
+        setMaintenanceMode(newValue);
+      } else {
+        alert('Failed to update maintenance mode');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Error updating maintenance mode');
+    } finally {
+      setUpdatingMode(false);
+    }
+  };
 
   const handleLogout = () => {
     router.replace('/admin/login');
@@ -242,8 +285,37 @@ export default function AdminPage() {
           )}
 
           {activeTab === 'site-access' && (
-            <div className="rounded-2xl border border-[#C9A227]/30 bg-black p-8 shadow-xl">
-              <div className="flex justify-between items-center mb-6">
+            <div className="space-y-6">
+              <div className="rounded-2xl border border-[#C9A227]/30 bg-black p-8 shadow-xl">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold text-white mb-1">Coming Soon Mode</h2>
+                    <p className="text-[#C9A227]/70 text-sm">
+                      When enabled, the site redirects unauthorized visitors to the Coming Soon page.
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleToggleMaintenance}
+                    disabled={updatingMode}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${maintenanceMode ? 'bg-[#C9A227]' : 'bg-gray-700'
+                      } ${updatingMode ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${maintenanceMode ? 'translate-x-6' : 'translate-x-1'
+                        }`}
+                    />
+                  </button>
+                </div>
+                {maintenanceMode && (
+                  <div className="mt-4 p-3 bg-[#C9A227]/10 border border-[#C9A227]/20 rounded-xl flex items-center gap-3 text-[#C9A227] text-sm">
+                    <AlertCircle size={18} />
+                    <span>Site is currently in "Coming Soon" lockdown mode.</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="rounded-2xl border border-[#C9A227]/30 bg-black p-8 shadow-xl">
+                <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-white">Site Visitors</h2>
                 <button onClick={fetchSiteSessions} className="text-xs text-[#C9A227] hover:underline">Refresh</button>
               </div>
@@ -273,6 +345,7 @@ export default function AdminPage() {
                 </table>
               </div>
             </div>
+          </div>
           )}
 
           {activeTab === 'vjudge' && (

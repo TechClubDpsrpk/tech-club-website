@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifySiteSession } from '@/lib/supabase-admin';
+import { verifySiteSession, getSiteSetting } from '@/lib/supabase-admin';
 
 
 export async function middleware(request: NextRequest) {
@@ -25,6 +25,20 @@ export async function middleware(request: NextRequest) {
   if (isPublicRoute) {
     console.log('Public route, allowing access');
     return NextResponse.next();
+  }
+
+  // Check Maintenance Mode (Coming Soon)
+  try {
+    const maintenanceMode = await getSiteSetting('maintenance_mode');
+    const isEnabled = maintenanceMode?.enabled ?? true; // Default to lockdown if not found
+
+    if (!isEnabled) {
+      console.log('Coming soon mode is OFF, allowing public access');
+      return NextResponse.next();
+    }
+  } catch (err) {
+    console.error('Error fetching maintenance mode:', err);
+    // Continue with lockdown if check fails for safety
   }
 
   // Check for site access token
