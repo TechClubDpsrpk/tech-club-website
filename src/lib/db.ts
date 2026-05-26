@@ -323,3 +323,49 @@ export async function verifyPasswordResetToken(userIdOrEmail: string, otp: strin
   console.log('DEBUG: Token is valid');
   return data.user_id;
 }
+
+export async function getSummerCampRegistration(userId: string) {
+  const { data, error } = await supabase
+    .from('summer_camp_registrations')
+    .select('*')
+    .eq('user_id', userId)
+    .single();
+
+  if (error && error.code !== 'PGRST116') throw error;
+  return data || null;
+}
+
+export async function createSummerCampRegistration(registrationData: {
+  userId: string;
+  name: string;
+  email: string;
+  phoneNumber: string;
+  class: string;
+  section: string;
+  admissionNumber: string;
+  interestedNiche: string;
+  motivation: string;
+}) {
+  const { data, error } = await supabase
+    .from('summer_camp_registrations')
+    .insert([
+      {
+        user_id: registrationData.userId,
+        name: registrationData.name,
+        email: registrationData.email,
+        phone_number: registrationData.phoneNumber,
+        class: registrationData.class,
+        section: registrationData.section,
+        admission_number: registrationData.admissionNumber,
+        interested_niche: registrationData.interestedNiche,
+        motivation: registrationData.motivation,
+        created_at: new Date().toISOString(),
+      },
+    ])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+

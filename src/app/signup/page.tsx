@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/components/providers/auth-provider';
 import Image from 'next/image';
@@ -19,8 +19,11 @@ const NICHES = [
 const CLASSES = ['9', '10', '11', '12'];
 const SECTIONS = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i)); // A to Z
 
-export default function SignupPage() {
+function SignupForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get('redirect');
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -100,7 +103,11 @@ export default function SignupPage() {
       }
 
       await refreshAuth();
-      router.push('/account?newSignup=true');
+      if (redirect) {
+        router.push(redirect);
+      } else {
+        router.push('/account?newSignup=true');
+      }
       router.refresh();
     } catch (err) {
       setError('An error occurred. Please try again.');
@@ -422,12 +429,31 @@ export default function SignupPage() {
 
           <p className="mt-4 text-center text-sm text-gray-400 md:mt-6 md:text-base">
             Already have an account?{' '}
-            <Link href="/login" className="text-xl text-[#ab8e30] transition hover:text-[#C9A227]">
+            <Link
+              href={redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : '/login'}
+              className="text-xl text-[#ab8e30] transition hover:text-[#C9A227]"
+            >
               Login here
             </Link>
           </p>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-black p-4">
+          <div className="relative h-12 w-12 animate-spin-slow">
+            <Image src="/tc-logo.svg" alt="Loading..." fill className="object-contain" />
+          </div>
+        </div>
+      }
+    >
+      <SignupForm />
+    </Suspense>
   );
 }

@@ -1,14 +1,17 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/components/providers/auth-provider';
 import Image from 'next/image';
 import { LoadingDots } from '@/components/ui/loading-dots';
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get('redirect');
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -46,7 +49,11 @@ export default function LoginPage() {
       }
 
       await refreshAuth();
-      router.push('/');
+      if (redirect) {
+        router.push(redirect);
+      } else {
+        router.push('/');
+      }
       router.refresh();
     } catch {
       setError('An error occurred. Please try again.');
@@ -134,12 +141,31 @@ export default function LoginPage() {
 
           <p className="mt-6 text-center text-sm text-gray-400 md:text-base">
             Don't have an account yet?{' '}
-            <Link href="/signup" className="text-xl text-[#ab8e30] transition hover:text-[#C9A227]">
+            <Link
+              href={redirect ? `/signup?redirect=${encodeURIComponent(redirect)}` : '/signup'}
+              className="text-xl text-[#ab8e30] transition hover:text-[#C9A227]"
+            >
               Sign up here
             </Link>
           </p>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-black p-4">
+          <div className="relative h-12 w-12 animate-spin-slow">
+            <Image src="/tc-logo.svg" alt="Loading..." fill className="object-contain" />
+          </div>
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }
