@@ -12,6 +12,7 @@ import {
   FolderKanban,
   Globe,
   Trophy,
+  Crown,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import AddAnnouncement from '@/components/admin/AddAnnouncement';
@@ -20,7 +21,15 @@ import VJudgeSettings from '@/components/admin/VJudgeSettings';
 import ProjectSubmissions from '@/components/admin/ProjectSubmissions';
 import UsersTable from '@/app/admin/UsersTable';
 import Loading from '@/app/loading';
-import { ROLES, hasAnyRole, canCreateAnnouncements, canAssignQuests, canManageRoles, canManageSiteAccess, hasAccessToAdminPanel } from '@/lib/roles';
+import {
+  ROLES,
+  hasAnyRole,
+  canCreateAnnouncements,
+  canAssignQuests,
+  canManageRoles,
+  canManageSiteAccess,
+  hasAccessToAdminPanel,
+} from '@/lib/roles';
 
 type User = {
   id: string;
@@ -31,7 +40,14 @@ type User = {
   [key: string]: any;
 };
 
-type Tab = 'dashboard' | 'projects' | 'announcements' | 'submissions' | 'users' | 'site-access' | 'vjudge';
+type Tab =
+  | 'dashboard'
+  | 'projects'
+  | 'announcements'
+  | 'submissions'
+  | 'users'
+  | 'site-access'
+  | 'vjudge';
 
 export default function AdminPage() {
   const router = useRouter();
@@ -46,8 +62,8 @@ export default function AdminPage() {
   const [updatingMode, setUpdatingMode] = useState(false);
 
   // Tab availability handlers
-  const canViewProjects = (roles: string[]) => hasAccessToAdminPanel(roles); // Everyone in staff can see projects? Or maybe limiting?
-  const canViewUsers = (roles: string[]) => canManageRoles(roles); // Only Dev/Pres/VP
+  const canViewProjects = (roles: string[]) => hasAccessToAdminPanel(roles);
+  const canViewUsers = (roles: string[]) => canManageRoles(roles);
   const canViewSiteAccess = (roles: string[]) => canManageSiteAccess(roles);
   const canAnnounce = (roles: string[]) => canCreateAnnouncements(roles);
 
@@ -67,11 +83,6 @@ export default function AdminPage() {
           return;
         }
 
-        // We need to fetch the fresh user to get roles if the check API doesn't return them fully or trusted
-        // The check API (which we updated) returns roles.
-        // But verifying via supabase client is also good.
-
-        // Let's rely on data.user.roles from the API we updated.
         const userRoles = data.user.roles || [];
 
         if (!hasAccessToAdminPanel(userRoles)) {
@@ -88,17 +99,20 @@ export default function AdminPage() {
         setIsAdmin(true);
         setCurrentUser({ ...data.user, roles: userRoles });
 
-        // Fetch metrics
-        const { count: userCount } = await supabase.from('users').select('*', { count: 'exact', head: true });
-        // Approximate admin count (users with roles)
-        const { count: adminCount } = await supabase.from('users').select('*', { count: 'exact', head: true }).not('roles', 'is', null).not('roles', 'eq', '{}');
+        const { count: userCount } = await supabase
+          .from('users')
+          .select('*', { count: 'exact', head: true });
+        const { count: adminCount } = await supabase
+          .from('users')
+          .select('*', { count: 'exact', head: true })
+          .not('roles', 'is', null)
+          .not('roles', 'eq', '{}');
 
         setMetrics({ totalUsers: userCount || 0, admins: adminCount || 0 });
 
         setLoading(false);
-
       } catch (e) {
-        console.error("Admin check failed", e);
+        console.error('Admin check failed', e);
         router.push('/admin/login');
       }
     };
@@ -122,15 +136,15 @@ export default function AdminPage() {
   };
 
   const handleRevokeSiteSession = async (sessionId: string) => {
-    if (!confirm('Are you sure you want to revoke this visitor\'s access?')) return;
+    if (!confirm("Are you sure you want to revoke this visitor's access?")) return;
     try {
       const res = await fetch('/api/admin/site-sessions', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId })
+        body: JSON.stringify({ sessionId }),
       });
       if (res.ok) {
-        setSiteSessions(prev => prev.filter(s => s.id !== sessionId));
+        setSiteSessions((prev) => prev.filter((s) => s.id !== sessionId));
       }
     } catch (e) {
       console.error(e);
@@ -165,8 +179,8 @@ export default function AdminPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           key: 'maintenance_mode',
-          value: { enabled: newValue }
-        })
+          value: { enabled: newValue },
+        }),
       });
 
       if (res.ok) {
@@ -191,168 +205,283 @@ export default function AdminPage() {
   }
 
   if (!isAdmin || !currentUser) {
-    return <div className="min-h-screen bg-black text-white flex items-center justify-center">Access Denied</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-black">
+        <p className="font-[family-name:var(--font-space-mono)] text-sm tracking-widest text-red-400 uppercase">
+          Access Denied
+        </p>
+      </div>
+    );
   }
 
-  // Calculate available tabs
   const roles = currentUser.roles || [];
   const tabs = [
     { id: 'dashboard' as Tab, label: 'Dashboard', icon: LayoutDashboard, show: true },
     { id: 'projects' as Tab, label: 'Projects', icon: FolderKanban, show: canAssignQuests(roles) },
-    { id: 'announcements' as Tab, label: 'Announcements', icon: Megaphone, show: canAnnounce(roles) },
+    {
+      id: 'announcements' as Tab,
+      label: 'Announcements',
+      icon: Megaphone,
+      show: canAnnounce(roles),
+    },
     { id: 'users' as Tab, label: 'Users', icon: Users, show: canViewUsers(roles) },
     { id: 'site-access' as Tab, label: 'Site Access', icon: Globe, show: canViewSiteAccess(roles) },
     { id: 'vjudge' as Tab, label: 'CP Contests', icon: Trophy, show: canAssignQuests(roles) },
-  ].filter(t => t.show);
+  ].filter((t) => t.show);
 
   return (
-    <div className="min-h-screen bg-black px-4 pt-24 pb-16">
+    <div className="min-h-screen bg-black px-4 pt-28 pb-20 text-white">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-8 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="rounded-full bg-[#C9A227]/20 p-3">
-              <Shield size={28} className="text-[#C9A227]" />
-            </div>
-            <div>
-              <h1 className="text-4xl font-bold text-white">Admin Panel</h1>
-              <p className="text-[#C9A227]/70">
-                Logged in as: <span className="text-white font-medium">{currentUser.name}</span>
-                <span className="ml-2 text-xs bg-gray-800 px-2 py-1 rounded">{roles.join(', ') || 'Staff'}</span>
-              </p>
-            </div>
+        {/* ── Page header ─────────────────────────────────────────── */}
+        <div className="mb-12 flex items-end justify-between border-b border-zinc-800 pb-6">
+          <div>
+            <p className="mb-2 font-[family-name:var(--font-space-mono)] text-xs tracking-[0.15em] text-zinc-400 uppercase">
+              Tech Club · DPSRPK
+            </p>
+            <h1 className="text-3xl font-bold uppercase md:text-4xl">Admin Panel</h1>
           </div>
-          <button onClick={handleLogout} className="flex items-center gap-2 rounded-xl border border-[#C9A227] px-4 py-2 text-[#C9A227] hover:bg-[#C9A227] hover:text-black transition">
-            <LogOut size={18} /> Logout
-          </button>
+          <div className="flex items-center gap-3">
+            {/* Role pill */}
+            <div className="flex items-center gap-2 rounded-sm border border-[#fac71e]/20 bg-[#fac71e]/[0.06] px-3 py-1.5">
+              <Crown size={11} className="text-[#fac71e]" />
+              <span className="font-[family-name:var(--font-space-mono)] text-[10px] tracking-widest text-[#fac71e] uppercase">
+                {roles.join(', ') || 'Staff'}
+              </span>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 rounded-sm border border-zinc-800 px-4 py-2 font-[family-name:var(--font-space-mono)] text-xs text-zinc-300 uppercase transition-colors hover:border-zinc-500 hover:text-white"
+            >
+              <LogOut size={12} /> Sign Out
+            </button>
+          </div>
         </div>
 
-        {/* Tabs */}
-        <div className="mb-8 border-b border-[#C9A227]/20">
-          <div className="flex gap-1 overflow-x-auto">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-3 font-medium transition whitespace-nowrap ${activeTab === tab.id ? 'text-[#C9A227] border-b-2 border-[#C9A227]' : 'text-[#C9A227]/50 hover:text-[#C9A227]/80'
-                    }`}
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-4">
+          {/* ── Sidebar ─────────────────────────────────────────────── */}
+          <aside className="space-y-8 lg:col-span-1">
+            {/* Admin identity */}
+            <div className="space-y-4 border-t border-zinc-800 pt-6">
+              <div className="flex items-center gap-3">
+                <div
+                  className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#fac71e] bg-[#fac71e]/[0.08]"
+                  style={{ boxShadow: '0 0 20px rgba(250,199,30,0.1)' }}
                 >
-                  <Icon size={18} /> {tab.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="space-y-8">
-          {activeTab === 'dashboard' && (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              <div className="rounded-2xl border border-[#C9A227]/30 bg-black p-6 shadow-xl">
-                <p className="text-sm text-[#C9A227]/70">Total Users</p>
-                <p className="mt-2 text-3xl font-bold text-white">{metrics.totalUsers}</p>
-              </div>
-              <div className="rounded-2xl border border-[#C9A227]/30 bg-black p-6 shadow-xl">
-                <p className="text-sm text-[#C9A227]/70">Staff Members</p>
-                <p className="mt-2 text-3xl font-bold text-white">{metrics.admins}</p>
-              </div>
-              {/* Add more metrics or widgets */}
-              <div className="col-span-1 md:col-span-3">
-                <ProjectSubmissions />
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'projects' && (
-            <div className="rounded-2xl border border-[#C9A227]/30 bg-black p-8 shadow-xl">
-              <h2 className="mb-6 text-2xl font-bold text-white">Create Project</h2>
-              <AddProject />
-            </div>
-          )}
-
-          {activeTab === 'announcements' && (
-            <div className="rounded-2xl border border-[#C9A227]/30 bg-black p-8 shadow-xl">
-              <h2 className="mb-6 text-2xl font-bold text-white">Create Announcement</h2>
-              <AddAnnouncement />
-            </div>
-          )}
-
-          {activeTab === 'users' && (
-            <div className="rounded-2xl border border-[#C9A227]/30 bg-black p-8 shadow-xl">
-              <UsersTable />
-            </div>
-          )}
-
-          {activeTab === 'site-access' && (
-            <div className="space-y-6">
-              <div className="rounded-2xl border border-[#C9A227]/30 bg-black p-8 shadow-xl">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-2xl font-bold text-white mb-1">Coming Soon Mode</h2>
-                    <p className="text-[#C9A227]/70 text-sm">
-                      When enabled, the site redirects unauthorized visitors to the Coming Soon page.
-                    </p>
-                  </div>
-                  <button
-                    onClick={handleToggleMaintenance}
-                    disabled={updatingMode}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${maintenanceMode ? 'bg-[#C9A227]' : 'bg-gray-700'
-                      } ${updatingMode ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-                  >
-                    <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${maintenanceMode ? 'translate-x-6' : 'translate-x-1'
-                        }`}
-                    />
-                  </button>
+                  <Shield size={16} className="text-[#fac71e]" />
                 </div>
-                {maintenanceMode && (
-                  <div className="mt-4 p-3 bg-[#C9A227]/10 border border-[#C9A227]/20 rounded-xl flex items-center gap-3 text-[#C9A227] text-sm">
-                    <AlertCircle size={18} />
-                    <span>Site is currently in "Coming Soon" lockdown mode.</span>
+                <div>
+                  <p className="text-sm font-medium text-white">{currentUser.name}</p>
+                  <p className="font-[family-name:var(--font-space-mono)] text-[10px] text-zinc-500 uppercase">
+                    Administrator
+                  </p>
+                </div>
+              </div>
+              <div className="flex justify-between gap-4">
+                <span className="font-[family-name:var(--font-space-mono)] text-xs text-zinc-400 uppercase">
+                  Email
+                </span>
+                <span className="text-right text-sm break-all text-zinc-200">
+                  {currentUser.email}
+                </span>
+              </div>
+            </div>
+
+            {/* Tab navigation */}
+            <div className="space-y-0.5 border-t border-zinc-800 pt-4">
+              <p className="mb-3 font-[family-name:var(--font-space-mono)] text-xs text-zinc-500 uppercase">
+                Navigation
+              </p>
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex w-full items-center gap-3 rounded-sm px-3 py-2.5 text-left text-sm transition-all ${
+                      isActive
+                        ? 'border-l-2 border-[#fac71e] bg-[#fac71e]/[0.08] text-white'
+                        : 'border-l-2 border-transparent text-zinc-400 hover:bg-zinc-900 hover:text-white'
+                    }`}
+                  >
+                    <Icon size={14} className={isActive ? 'text-[#fac71e]' : 'text-zinc-400'} />
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </aside>
+
+          {/* ── Main content ─────────────────────────────────────────── */}
+          <main className="space-y-12 lg:col-span-3">
+            {/* Dashboard */}
+            {activeTab === 'dashboard' && (
+              <div className="space-y-10">
+                {/* Stats */}
+                <div className="border-t border-zinc-800 pt-8">
+                  <p className="mb-6 font-[family-name:var(--font-space-mono)] text-xs tracking-[0.15em] text-zinc-400 uppercase">
+                    Overview
+                  </p>
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div className="rounded-sm border border-zinc-800 p-5">
+                      <p className="mb-1 font-[family-name:var(--font-space-mono)] text-[10px] tracking-widest text-zinc-500 uppercase">
+                        Total Users
+                      </p>
+                      <p className="text-3xl font-bold text-white">{metrics.totalUsers}</p>
+                    </div>
+                    <div className="rounded-sm border border-zinc-800 p-5">
+                      <p className="mb-1 font-[family-name:var(--font-space-mono)] text-[10px] tracking-widest text-zinc-500 uppercase">
+                        Staff Members
+                      </p>
+                      <p className="text-3xl font-bold text-white">{metrics.admins}</p>
+                    </div>
                   </div>
-                )}
-              </div>
+                </div>
 
-              <div className="rounded-2xl border border-[#C9A227]/30 bg-black p-8 shadow-xl">
-                <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-white">Site Visitors</h2>
-                <button onClick={fetchSiteSessions} className="text-xs text-[#C9A227] hover:underline">Refresh</button>
+                {/* Submissions preview */}
+                <div className="border-t border-zinc-800 pt-8">
+                  <p className="mb-6 font-[family-name:var(--font-space-mono)] text-xs tracking-[0.15em] text-zinc-400 uppercase">
+                    Project Submissions
+                  </p>
+                  <ProjectSubmissions />
+                </div>
               </div>
-              {/* Reuse table logic or move to component */}
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead>
-                    <tr className="border-b border-[#C9A227]/20 text-xs text-[#C9A227]/50 uppercase">
-                      <th className="px-4 py-3">IP Address</th>
-                      <th className="px-4 py-3">Location</th>
-                      <th className="px-4 py-3">Device</th>
-                      <th className="px-4 py-3">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#C9A227]/10">
-                    {siteSessions.map(session => (
-                      <tr key={session.id} className="text-sm text-white/90">
-                        <td className="px-4 py-4 font-mono">{session.ip_address}</td>
-                        <td className="px-4 py-4">{session.city}, {session.country}</td>
-                        <td className="px-4 py-4 max-w-xs truncate">{session.user_agent}</td>
-                        <td className="px-4 py-4">
-                          <button onClick={() => handleRevokeSiteSession(session.id)} className="text-red-400 text-xs border border-red-400/30 px-2 py-1 rounded hover:bg-red-400/10">Revoke</button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          )}
+            )}
 
-          {activeTab === 'vjudge' && (
-            <div className="rounded-2xl border border-[#C9A227]/30 bg-black p-8 shadow-xl">
-              <VJudgeSettings />
-            </div>
-          )}
+            {/* Projects */}
+            {activeTab === 'projects' && (
+              <div className="border-t border-zinc-800 pt-8">
+                <p className="mb-8 font-[family-name:var(--font-space-mono)] text-xs tracking-[0.15em] text-zinc-400 uppercase">
+                  Create Project
+                </p>
+                <AddProject />
+              </div>
+            )}
+
+            {/* Announcements */}
+            {activeTab === 'announcements' && (
+              <div className="border-t border-zinc-800 pt-8">
+                <p className="mb-8 font-[family-name:var(--font-space-mono)] text-xs tracking-[0.15em] text-zinc-400 uppercase">
+                  Create Announcement
+                </p>
+                <AddAnnouncement />
+              </div>
+            )}
+
+            {/* Users */}
+            {activeTab === 'users' && (
+              <div className="border-t border-zinc-800 pt-8">
+                <p className="mb-8 font-[family-name:var(--font-space-mono)] text-xs tracking-[0.15em] text-zinc-400 uppercase">
+                  All Users
+                </p>
+                <UsersTable />
+              </div>
+            )}
+
+            {/* Site Access */}
+            {activeTab === 'site-access' && (
+              <div className="space-y-10">
+                {/* Coming soon toggle */}
+                <div className="border-t border-zinc-800 pt-8">
+                  <p className="mb-6 font-[family-name:var(--font-space-mono)] text-xs tracking-[0.15em] text-zinc-400 uppercase">
+                    Coming Soon Mode
+                  </p>
+                  <div className="rounded-sm border border-zinc-800 p-5">
+                    <div className="flex items-center justify-between gap-6">
+                      <div>
+                        <p className="mb-1 text-sm font-medium text-white">Site Lockdown</p>
+                        <p className="text-sm text-zinc-400">
+                          When enabled, unauthorized visitors are redirected to the Coming Soon
+                          page.
+                        </p>
+                      </div>
+                      {/* Toggle */}
+                      <button
+                        onClick={handleToggleMaintenance}
+                        disabled={updatingMode}
+                        className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${
+                          maintenanceMode ? 'bg-[#fac71e]' : 'bg-zinc-700'
+                        }`}
+                      >
+                        <span
+                          className={`inline-block h-4 w-4 transform rounded-full bg-black transition-transform ${
+                            maintenanceMode ? 'translate-x-6' : 'translate-x-1'
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    {maintenanceMode && (
+                      <div className="mt-5 flex items-center gap-3 border-t border-zinc-800 pt-4">
+                        <AlertCircle size={13} className="shrink-0 text-[#fac71e]" />
+                        <p className="text-sm text-zinc-300">
+                          Site is currently in Coming Soon lockdown mode.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Site visitors */}
+                <div className="border-t border-zinc-800 pt-8">
+                  <div className="mb-6 flex items-center justify-between">
+                    <p className="font-[family-name:var(--font-space-mono)] text-xs tracking-[0.15em] text-zinc-400 uppercase">
+                      Site Visitors
+                    </p>
+                    <button
+                      onClick={fetchSiteSessions}
+                      className="font-[family-name:var(--font-space-mono)] text-[10px] tracking-widest text-[#fac71e] uppercase transition-opacity hover:opacity-70"
+                    >
+                      Refresh
+                    </button>
+                  </div>
+
+                  {loadingSessions ? (
+                    <p className="text-sm text-zinc-500">Loading sessions…</p>
+                  ) : siteSessions.length === 0 ? (
+                    <p className="text-sm text-zinc-500">No active visitor sessions.</p>
+                  ) : (
+                    <ul className="divide-y divide-zinc-900">
+                      {siteSessions.map((session) => (
+                        <li
+                          key={session.id}
+                          className="flex items-center justify-between gap-6 py-4"
+                        >
+                          <div className="space-y-1">
+                            <p className="font-[family-name:var(--font-space-mono)] text-xs text-zinc-300">
+                              {session.ip_address}
+                            </p>
+                            <p className="text-sm text-zinc-400">
+                              {session.city}, {session.country}
+                            </p>
+                            <p className="max-w-xs truncate text-xs text-zinc-600">
+                              {session.user_agent}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => handleRevokeSiteSession(session.id)}
+                            className="shrink-0 rounded-sm border border-red-500/30 px-4 py-2 font-[family-name:var(--font-space-mono)] text-xs text-red-400 transition-colors hover:bg-red-500/10"
+                          >
+                            Revoke
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* VJudge / CP Contests */}
+            {activeTab === 'vjudge' && (
+              <div className="border-t border-zinc-800 pt-8">
+                <p className="mb-8 font-[family-name:var(--font-space-mono)] text-xs tracking-[0.15em] text-zinc-400 uppercase">
+                  CP Contests
+                </p>
+                <VJudgeSettings />
+              </div>
+            )}
+          </main>
         </div>
       </div>
     </div>
