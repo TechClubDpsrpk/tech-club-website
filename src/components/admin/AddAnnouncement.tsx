@@ -3,6 +3,34 @@
 import { useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 
+// ── shared input style matching account page ──────────────────────────────────
+const inputClass =
+  'w-full rounded-sm border border-zinc-800 bg-transparent px-4 py-3 text-sm text-white outline-none transition-colors placeholder:text-zinc-600 focus:border-[#fac71e] disabled:cursor-not-allowed disabled:text-zinc-700';
+
+const Field = ({
+  label,
+  optional,
+  children,
+}: {
+  label: string;
+  optional?: boolean;
+  children: React.ReactNode;
+}) => (
+  <div>
+    <div className="mb-2 flex items-center gap-2">
+      <span className="font-[family-name:var(--font-space-mono)] text-xs tracking-[0.12em] text-zinc-400 uppercase">
+        {label}
+      </span>
+      {optional && (
+        <span className="font-[family-name:var(--font-space-mono)] text-xs text-zinc-600">
+          optional
+        </span>
+      )}
+    </div>
+    {children}
+  </div>
+);
+
 export default function AddAnnouncement() {
   const [heading, setHeading] = useState('');
   const [description, setDescription] = useState('');
@@ -50,39 +78,45 @@ export default function AddAnnouncement() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <input
-        type="text"
-        placeholder="Announcement Heading"
-        value={heading}
-        onChange={(e) => setHeading(e.target.value)}
-        className="w-full border border-gray-700 bg-gray-900/60 p-3 rounded-lg text-white placeholder-gray-400 focus:border-[#C9A227] focus:outline-none transition"
-        required
-      />
+    <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
+      <Field label="Heading">
+        <input
+          type="text"
+          placeholder="Announcement title"
+          value={heading}
+          onChange={(e) => setHeading(e.target.value)}
+          className={inputClass}
+          required
+        />
+      </Field>
 
-      <textarea
-        placeholder="Description (Markdown supported: **bold**, *italic*, [links](url), etc.)"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        className="w-full border border-gray-700 bg-gray-900/60 p-3 rounded-lg text-white placeholder-gray-400 focus:border-[#C9A227] focus:outline-none transition"
-        required
-        rows={6}
-      />
+      <Field label="Description">
+        <textarea
+          placeholder="Markdown supported: **bold**, *italic*, [links](url)…"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className={`${inputClass} resize-none`}
+          required
+          rows={6}
+        />
+      </Field>
 
-      <input
-        type="url"
-        placeholder="Image URL (optional)"
-        value={imageUrl}
-        onChange={(e) => setImageUrl(e.target.value)}
-        className="w-full border border-gray-700 bg-gray-900/60 p-3 rounded-lg text-white placeholder-gray-400 focus:border-[#C9A227] focus:outline-none transition"
-      />
+      <Field label="Image URL" optional>
+        <input
+          type="url"
+          placeholder="https://…"
+          value={imageUrl}
+          onChange={(e) => setImageUrl(e.target.value)}
+          className={inputClass}
+        />
+      </Field>
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-[#C9A227] cursor-pointer text-black px-4 py-3 rounded-lg hover:bg-[#B8901E] focus:outline-none focus:ring-2 focus:ring-[#C9A227] focus:ring-offset-2 disabled:opacity-50 transition font-semibold"
+        className="rounded-sm bg-[#fac71e] px-8 py-3 font-[family-name:var(--font-space-mono)] text-xs font-bold tracking-widest text-black uppercase transition-opacity hover:opacity-80 disabled:opacity-40"
       >
-        {loading ? 'Adding...' : 'Add Announcement'}
+        {loading ? 'Publishing…' : 'Publish Announcement'}
       </button>
     </form>
   );
