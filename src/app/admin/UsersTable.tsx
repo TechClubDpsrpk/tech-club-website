@@ -22,6 +22,7 @@ type User = {
   is_admin: boolean;
   roles: string[];
   email_verified: boolean;
+  is_approved: boolean;
   created_at: string;
 };
 
@@ -134,6 +135,29 @@ export default function UsersTable() {
     fetchUsers();
   };
 
+  const handleApproveUser = async (userId: string) => {
+    setUpdatingUser(userId);
+    try {
+      const response = await fetch('/api/admin/approve-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Failed to approve user');
+
+      setUsers(
+        users.map((u) =>
+          u.id === userId ? { ...u, is_approved: true } : u
+        )
+      );
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setUpdatingUser(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center gap-4 py-10">
@@ -188,8 +212,17 @@ export default function UsersTable() {
                     <p className="text-sm font-medium text-white">{user.name}</p>
                     <p className="mt-0.5 text-xs text-zinc-500">{user.email}</p>
                     {user.email_verified && (
-                      <span className="mt-1 inline-block font-[family-name:var(--font-space-mono)] text-[10px] tracking-wide text-emerald-400">
+                      <span className="mt-1 mr-2 inline-block font-[family-name:var(--font-space-mono)] text-[10px] tracking-wide text-emerald-400">
                         Verified
+                      </span>
+                    )}
+                    {user.is_approved ? (
+                      <span className="mt-1 inline-block font-[family-name:var(--font-space-mono)] text-[10px] tracking-wide text-emerald-400">
+                        Approved
+                      </span>
+                    ) : (
+                      <span className="mt-1 inline-block font-[family-name:var(--font-space-mono)] text-[10px] tracking-wide text-amber-500">
+                        Pending Approval
                       </span>
                     )}
                   </td>
@@ -255,6 +288,15 @@ export default function UsersTable() {
                           className="rounded-sm border border-zinc-700 px-3 py-1.5 font-[family-name:var(--font-space-mono)] text-[10px] tracking-widest text-zinc-300 uppercase transition-colors hover:border-[#fac71e] hover:text-[#fac71e] disabled:opacity-40"
                         >
                           Edit Roles
+                        </button>
+                      )}
+                      {!user.is_approved && (
+                        <button
+                          onClick={() => handleApproveUser(user.id)}
+                          disabled={updatingUser === user.id}
+                          className="rounded-sm border border-emerald-500/30 px-3 py-1.5 font-[family-name:var(--font-space-mono)] text-[10px] tracking-widest text-emerald-400 uppercase transition-colors hover:bg-emerald-500/10 disabled:opacity-40"
+                        >
+                          {updatingUser === user.id ? 'Approving...' : 'Approve'}
                         </button>
                       )}
                       <button

@@ -8,12 +8,14 @@ interface UserData {
     id: string;
     email?: string;
     roles?: string[];
+    isApproved?: boolean;
     [key: string]: any;
 }
 
 interface AuthContextType {
     isAuthenticated: boolean;
     emailVerified: boolean;
+    isApproved: boolean;
     isLoading: boolean;
     user: UserData | null;
     refreshAuth: () => Promise<void>;
@@ -22,6 +24,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({
     isAuthenticated: false,
     emailVerified: false,
+    isApproved: false,
     isLoading: true,
     user: null,
     refreshAuth: async () => { },
@@ -32,6 +35,7 @@ export const useAuth = () => useContext(AuthContext);
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [emailVerified, setEmailVerified] = useState(false);
+    const [isApproved, setIsApproved] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState<UserData | null>(null);
 
@@ -46,6 +50,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
                 const data = await response.json();
                 setIsAuthenticated(data.isAuthenticated);
                 setUser(data.user);
+                setIsApproved(data.user?.isApproved || false);
 
                 // Fetch email_verified from Supabase
                 if (data.isAuthenticated && data.user?.id) {
@@ -62,12 +67,14 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
             } else {
                 setIsAuthenticated(false);
                 setEmailVerified(false);
+                setIsApproved(false);
                 setUser(null);
             }
         } catch (error) {
             console.error('Auth check failed:', error);
             setIsAuthenticated(false);
             setEmailVerified(false);
+            setIsApproved(false);
             setUser(null);
         } finally {
             if (showLoading) setIsLoading(false);
@@ -87,7 +94,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     }
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, emailVerified, isLoading, user, refreshAuth }}>
+        <AuthContext.Provider value={{ isAuthenticated, emailVerified, isApproved, isLoading, user, refreshAuth }}>
             {children}
         </AuthContext.Provider>
     );

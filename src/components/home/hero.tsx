@@ -12,7 +12,7 @@ import './hero/home.css';
 type HeroProps = React.HTMLAttributes<HTMLElement>;
 
 const Hero = ({ className, ...props }: HeroProps) => {
-  const { isAuthenticated, emailVerified, isLoading: loading } = useAuth();
+  const { isAuthenticated, emailVerified, isApproved, isLoading: loading } = useAuth();
   const container = useRef<HTMLElement>(null);
   const circleLeft = useRef<HTMLDivElement>(null);
   const circleRight = useRef<HTMLDivElement>(null);
@@ -214,31 +214,33 @@ const Hero = ({ className, ...props }: HeroProps) => {
 
             {!loading && (
               <div ref={buttonsRef} className="button-group opacity-0">
-                {/* Discord Button - only shows actual link if verified */}
-                {emailVerified ? (
-                  <a
-                    href={DISCORD_SERVER_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-1"
-                  >
-                    Join The Discord
-                  </a>
+                {!isAuthenticated ? (
+                  <>
+                    <Link href="/signup" className="btn-1">
+                      Join The Discord
+                    </Link>
+                    <Link href="/signup" className="btn-2">
+                      Sign Up
+                    </Link>
+                  </>
+                ) : !isApproved ? (
+                  <button disabled className="btn-2 opacity-70 cursor-not-allowed">
+                    Application Under Review
+                  </button>
                 ) : (
-                  <Link href="/signup" className="btn-1">
-                    Join The Discord
-                  </Link>
-                )}
-
-                {/* Sign Up / Dashboard Button */}
-                {isAuthenticated ? (
-                  <Link href="/account" className="btn-2">
-                    Dashboard
-                  </Link>
-                ) : (
-                  <Link href="/signup" className="btn-2">
-                    Sign Up
-                  </Link>
+                  <>
+                    <a
+                      href={DISCORD_SERVER_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-1"
+                    >
+                      Join The Discord
+                    </a>
+                    <Link href="/account" className="btn-2">
+                      Dashboard
+                    </Link>
+                  </>
                 )}
               </div>
             )}

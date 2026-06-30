@@ -89,6 +89,7 @@ export async function createUser(userData: CreateUserInput) {
         projects: projects,
         interested_niches: interestedNiches,
         email_verified: false,
+        is_approved: false,
         created_at: new Date().toISOString(),
       },
     ])

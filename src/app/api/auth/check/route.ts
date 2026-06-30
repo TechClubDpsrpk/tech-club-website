@@ -22,6 +22,7 @@ export async function GET(_request: NextRequest) {
         avatarUrl: user.avatar_url,
         createdAt: user.created_at,
         roles: user.roles || [],
+        isApproved: user.is_approved,
       },
     });
   } catch (error) {

@@ -49,6 +49,7 @@ type User = {
   email_verified?: boolean;
   createdAt?: string;
   is_admin?: boolean;
+  is_approved?: boolean;
 };
 
 type TabType = 'profile' | 'security' | 'sessions' | 'danger';
@@ -205,7 +206,7 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
         .eq('id', data.user.id)
         .single();
       if (error) console.error('Error fetching user data:', error);
-      const mergedUser = { ...data.user, ...userData, is_admin: userData?.is_admin || false };
+      const mergedUser = { ...data.user, ...userData, is_admin: userData?.is_admin || false, is_approved: userData?.is_approved || false };
       setUser(mergedUser);
       setFormData({
         name: mergedUser.name || '',
@@ -415,6 +416,26 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
 
   if (loading) return <Loading />;
   if (!user) return null;
+
+  if (!user.is_approved) {
+    return (
+      <div className="min-h-screen bg-black px-4 pt-28 pb-20 text-white flex flex-col items-center justify-center text-center">
+        <div className="max-w-md w-full p-8 border border-zinc-800 rounded-md bg-zinc-950/50">
+          <AlertTriangle className="h-12 w-12 text-[#fac71e] mx-auto mb-6" />
+          <h2 className="text-2xl font-bold mb-4 uppercase font-[family-name:var(--font-space-mono)] tracking-wider">Application Under Review</h2>
+          <p className="text-zinc-400 mb-8 leading-relaxed">
+            Your application to join the Tech Club is currently being reviewed by our team. We'll send you an email once you've been approved!
+          </p>
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center gap-2 rounded-sm border border-zinc-800 px-4 py-3 font-[family-name:var(--font-space-mono)] text-xs text-zinc-300 uppercase transition-colors hover:border-zinc-500 hover:text-white"
+          >
+            <LogOut size={14} /> Sign Out
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const tabs = [
     { id: 'profile' as TabType, label: 'Profile', icon: User },
