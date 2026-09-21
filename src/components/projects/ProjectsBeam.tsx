@@ -153,13 +153,18 @@ export function ProjectsBeam() {
 
             {/* Heading with points */}
             <div className="flex items-start justify-between mb-4">
-              <p
+              <div
                 className={twMerge(
-                  'font-[family-name:var(--font-space-mono)] text-xl flex-1'
+                  'font-[family-name:var(--font-space-mono)] text-xl flex-1 [&>p]:inline'
                 )}
               >
-                {project.title}
-              </p>
+                <ReactMarkdown
+                  remarkPlugins={[remarkMath]}
+                  rehypePlugins={[rehypeKatex]}
+                >
+                  {project.title}
+                </ReactMarkdown>
+              </div>
               <div className="ml-4 flex items-center gap-1 rounded-full bg-[#C9A227]/20 border border-[#C9A227]/50 px-3 py-1 flex-shrink-0">
                 <Image src="/tc-logo.svg" alt="Logo" width={16} height={16} />
                 <span className="text-sm font-semibold text-[#C9A227]">
