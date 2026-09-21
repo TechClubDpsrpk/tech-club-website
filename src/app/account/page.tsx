@@ -21,14 +21,9 @@ import ActivitySection from '@/components/account/ActivitySection';
 import Loading from '@/app/loading';
 import Image from 'next/image';
 
-const NICHES = [
-  'Robotics',
-  'Development',
-  'Competitive Programming',
-  'AI',
-  'Videography',
-  'Graphics Designing',
-];
+import { DEFAULT_NICHES } from '@/lib/constants';
+
+const NICHES = DEFAULT_NICHES;
 
 type User = {
   id: string;

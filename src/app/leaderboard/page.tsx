@@ -17,15 +17,9 @@ type LeaderboardEntry = {
   rank: number;
 };
 
-const NICHES = [
-  'All',
-  'Robotics',
-  'Development',
-  'Competitive Programming',
-  'AI',
-  'Videography',
-  'Graphics Designing',
-];
+import { DEFAULT_NICHES } from '@/lib/constants';
+
+const NICHES = ['All', ...DEFAULT_NICHES];
 
 export default function LeaderboardPage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
