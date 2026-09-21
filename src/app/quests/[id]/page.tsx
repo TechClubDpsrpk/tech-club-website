@@ -5,6 +5,8 @@ import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { X, Github } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 import Image from 'next/image';
 import { LoadingDots } from '@/components/ui/loading-dots';
 
@@ -225,8 +227,22 @@ export default function ProjectDetailPage() {
         )}
 
         {/* Description */}
-        <div className="prose prose-sm dark:prose-invert max-w-none mb-8">
-          <ReactMarkdown>{project.description}</ReactMarkdown>
+        <div className="prose prose-sm dark:prose-invert max-w-none mb-8 text-zinc-300 leading-relaxed overflow-x-auto">
+          <ReactMarkdown
+            remarkPlugins={[remarkMath]}
+            rehypePlugins={[rehypeKatex]}
+            components={{
+              img: ({ node, ...props }) => (
+                <img
+                  {...props}
+                  className="my-4 rounded-lg object-cover max-w-full h-auto shadow-md border border-zinc-800"
+                  alt={props.alt || 'Project media'}
+                />
+              ),
+            }}
+          >
+            {project.description}
+          </ReactMarkdown>
         </div>
 
         {/* Participate button */}
