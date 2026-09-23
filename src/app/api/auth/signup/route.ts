@@ -3,7 +3,7 @@ import { createUser, findUserByEmail, createVerificationToken } from '@/lib/db';
 import { hashPassword } from '@/lib/password';
 import { createToken } from '@/lib/auth';
 import { sendWelcomeEmail, sendVerificationEmail } from '@/lib/email';
-import { supabase } from '@/lib/supabaseClient';
+import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
 import { UAParser } from 'ua-parser-js';
 import { isIPBanned } from '@/lib/rate-limit';
 
@@ -195,25 +195,26 @@ export async function POST(request: NextRequest) {
 
     // Create session record
     try {
-      const now = new Date();
-      const expiresAt = new Date();
-      expiresAt.setDate(expiresAt.getDate() + 7); // 7 days from now
+      if (supabase) {
+        const now = new Date();
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + 7); // 7 days from now
 
-      await supabase.from('sessions').insert({
-        user_id: user.id,
-        session_token: token,
-        device_info: deviceInfo,
-        browser: browserInfo,
-        os: osInfo,
-        ip_address: ip,
-        city,
-        country,
-        last_active_at: now.toISOString(),
-        expires_at: expiresAt.toISOString(),
-      });
+        await supabase.from('tc_sec_sess_8e17').insert({
+          user_id: user.id,
+          session_token: token,
+          device_info: deviceInfo,
+          browser: browserInfo,
+          os: osInfo,
+          ip_address: ip,
+          city,
+          country,
+          last_active_at: now.toISOString(),
+          expires_at: expiresAt.toISOString(),
+        });
 
-      console.log('✅ Session created for new user:', user.email);
-
+        console.log('✅ Session created for new user:', user.email);
+      }
     } catch (sessionError) {
       // Log but don't fail signup if session tracking fails
       console.error('Failed to create session record:', sessionError);

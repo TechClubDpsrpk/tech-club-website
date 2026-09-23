@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
 
 export default function AnnouncementsList() {
   const [announcements, setAnnouncements] = useState<any[]>([]);
@@ -26,18 +25,14 @@ export default function AnnouncementsList() {
 
       const data = await response.json();
       
-      if (!data?.user?.id) {
+      if (!data?.user) {
         setIsAdmin(false);
         return;
       }
 
-      const { data: userData } = await supabase
-        .from("users")
-        .select("is_admin")
-        .eq("id", data.user.id)
-        .single();
-
-      setIsAdmin(userData?.is_admin || false);
+      const userRoles = data.user.roles || [];
+      const isUserAdmin = data.user.is_admin || userRoles.length > 0;
+      setIsAdmin(isUserAdmin);
     } catch (error) {
       console.error("Error checking admin:", error);
       setIsAdmin(false);
@@ -45,12 +40,15 @@ export default function AnnouncementsList() {
   };
 
   const fetchAnnouncements = async () => {
-    const { data } = await supabase
-      .from("announcements")
-      .select("*")
-      .order("created_at", { ascending: false });
-    
-    setAnnouncements(data || []);
+    try {
+      const res = await fetch('/api/announcements');
+      if (res.ok) {
+        const { announcements: data } = await res.json();
+        setAnnouncements(data || []);
+      }
+    } catch (e) {
+      console.error('Failed to fetch announcements:', e);
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -64,13 +62,11 @@ export default function AnnouncementsList() {
     }
 
     setDeleteId(id);
-    const { error } = await supabase
-      .from("announcements")
-      .delete()
-      .eq("id", id);
+    const res = await fetch(`/api/announcements?id=${id}`, { method: 'DELETE' });
+    const data = await res.json().catch(() => ({}));
 
-    if (error) {
-      alert("Error deleting announcement: " + error.message);
+    if (!res.ok) {
+      alert("Error deleting announcement: " + (data.error || "Failed to delete"));
     } else {
       setAnnouncements(announcements.filter((a) => a.id !== id));
     }

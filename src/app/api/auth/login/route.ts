@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { findUserByEmail } from '@/lib/db';
 import { verifyPassword } from '@/lib/password';
 import { createToken } from '@/lib/auth';
-import { supabase } from '@/lib/supabaseClient';
+import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
 import { UAParser } from 'ua-parser-js';
 import { isIPBanned, checkRateLimit, logLoginAttempt, evaluateBan } from '@/lib/rate-limit';
 
@@ -137,30 +137,31 @@ export async function POST(request: NextRequest) {
 
     // Create session record
     try {
-      const now = new Date();
-      const expiresAt = new Date();
-      expiresAt.setDate(expiresAt.getDate() + 7); // 7 days from now
+      if (supabase) {
+        const now = new Date();
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + 7); // 7 days from now
 
-      await supabase.from('sessions').insert({
-        user_id: user.id,
-        session_token: token,
-        device_info: deviceInfo,
-        browser: browserInfo,
-        os: osInfo,
-        ip_address: ip,
-        city,
-        country,
-        last_active_at: now.toISOString(),
-        expires_at: expiresAt.toISOString(),
-      });
+        await supabase.from('tc_sec_sess_8e17').insert({
+          user_id: user.id,
+          session_token: token,
+          device_info: deviceInfo,
+          browser: browserInfo,
+          os: osInfo,
+          ip_address: ip,
+          city,
+          country,
+          last_active_at: now.toISOString(),
+          expires_at: expiresAt.toISOString(),
+        });
 
-      // Clean up old expired sessions for this user
-      await supabase
-        .from('sessions')
-        .delete()
-        .eq('user_id', user.id)
-        .lt('expires_at', now.toISOString());
-
+        // Clean up old expired sessions for this user
+        await supabase
+          .from('tc_sec_sess_8e17')
+          .delete()
+          .eq('user_id', user.id)
+          .lt('expires_at', now.toISOString());
+      }
     } catch (sessionError) {
       // Log but don't fail login if session tracking fails
       console.error('Failed to create session record:', sessionError);

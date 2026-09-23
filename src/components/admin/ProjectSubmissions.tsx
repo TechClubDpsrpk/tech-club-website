@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { CheckCircle, XCircle, ChevronDown, ExternalLink, AlertCircle } from 'lucide-react';
-import { supabase } from '@/lib/supabaseClient';
 import Image from 'next/image';
 import { LoadingDots } from '@/components/ui/loading-dots';
 
@@ -43,35 +42,13 @@ export default function ProjectSubmissions() {
 
   const fetchSubmissions = async () => {
     try {
-      const { data, error } = await supabase
-        .from('project_submissions')
-        .select(
-          `id, user_id, project_id, github_link, drive_link, status, points_awarded, created_at,
-           users:user_id (name, email),
-           projects:project_id (title, total_points)`
-        )
-        .order('created_at', { ascending: false });
-
-      if (error) {
+      const res = await fetch('/api/submissions');
+      if (!res.ok) {
         setError('Failed to fetch submissions');
         return;
       }
-
-      const formattedData =
-        data?.map((sub: any) => ({
-          id: sub.id,
-          user_id: sub.user_id,
-          project_id: sub.project_id,
-          github_link: sub.github_link,
-          drive_link: sub.drive_link,
-          status: sub.status,
-          points_awarded: sub.points_awarded,
-          created_at: sub.created_at,
-          user: Array.isArray(sub.users) ? sub.users[0] : sub.users,
-          project: Array.isArray(sub.projects) ? sub.projects[0] : sub.projects,
-        })) || [];
-
-      setSubmissions(formattedData);
+      const { submissions: data } = await res.json();
+      setSubmissions(data || []);
     } catch (err) {
       setError('An error occurred while fetching submissions');
     } finally {

@@ -4,7 +4,7 @@ export async function isIPBanned(ip: string): Promise<boolean> {
     if (!supabaseAdmin) return false;
 
     const { data, error } = await supabaseAdmin
-        .from('banned_ips')
+        .from('tc_sec_blist_4a73')
         .select('id, ban_expires_at')
         .eq('ip_address', ip)
         .maybeSingle();
@@ -16,7 +16,7 @@ export async function isIPBanned(ip: string): Promise<boolean> {
         const expiresAt = new Date(data.ban_expires_at);
         if (expiresAt < new Date()) {
 
-            await supabaseAdmin.from('banned_ips').delete().eq('id', data.id);
+            await supabaseAdmin.from('tc_sec_blist_4a73').delete().eq('id', data.id);
             return false;
         }
     }
@@ -34,7 +34,7 @@ export async function checkRateLimit(ip: string, route: string): Promise<{
     const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
 
     const { count, error } = await supabaseAdmin
-        .from('login_attempts')
+        .from('tc_sec_audit_1e85')
         .select('*', { count: 'exact', head: true })
         .eq('ip_address', ip)
         .eq('route', route)
@@ -61,7 +61,7 @@ export async function logLoginAttempt(
 ) {
     if (!supabaseAdmin) return;
 
-    await supabaseAdmin.from('login_attempts').insert({
+    await supabaseAdmin.from('tc_sec_audit_1e85').insert({
         ip_address: ip,
         route,
         password_attempted: passwordAttempted,
@@ -75,7 +75,7 @@ export async function evaluateBan(ip: string) {
     if (!supabaseAdmin) return;
 
     const { count, error } = await supabaseAdmin
-        .from('login_attempts')
+        .from('tc_sec_audit_1e85')
         .select('*', { count: 'exact', head: true })
         .eq('ip_address', ip)
         .eq('success', false);
@@ -83,7 +83,7 @@ export async function evaluateBan(ip: string) {
     if (count && count >= 30) {
         const alreadyBanned = await isIPBanned(ip);
         if (!alreadyBanned) {
-            await supabaseAdmin.from('banned_ips').insert({
+            await supabaseAdmin.from('tc_sec_blist_4a73').insert({
                 ip_address: ip,
                 reason: 'Automated ban: Exceeded 30 failed login attempts',
                 banned_by: 'system'

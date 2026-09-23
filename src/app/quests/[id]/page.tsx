@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabaseClient';
 import { X, Github } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import Image from 'next/image';
@@ -56,30 +55,32 @@ export default function ProjectDetailPage() {
       }
 
       // Fetch project
-      const { data: projectData, error } = await supabase
-        .from('projects')
-        .select('*')
-        .eq('id', projectId)
-        .single();
-
-      if (error || !projectData) {
+      try {
+        const pRes = await fetch(`/api/projects?id=${projectId}`);
+        if (!pRes.ok) {
+          setLoading(false);
+          return;
+        }
+        const { project: projectData } = await pRes.json();
+        setProject(projectData);
+      } catch (err) {
+        console.error('Failed to fetch project:', err);
         setLoading(false);
         return;
       }
 
-      setProject(projectData);
-
       // Check if user already submitted
       if (userId) {
-        const { data: submission } = await supabase
-          .from('project_submissions')
-          .select('id')
-          .eq('user_id', userId)
-          .eq('project_id', projectId)
-          .single();
-
-        if (submission) {
-          setHasSubmitted(true);
+        try {
+          const subRes = await fetch(`/api/submissions?projectId=${projectId}&userOnly=true`);
+          if (subRes.ok) {
+            const { submission } = await subRes.json();
+            if (submission) {
+              setHasSubmitted(true);
+            }
+          }
+        } catch (err) {
+          console.error('Failed to fetch submission:', err);
         }
       }
 
@@ -120,20 +121,20 @@ export default function ProjectDetailPage() {
 
     setSubmitting(true);
     try {
-      const { error } = await supabase.from('project_submissions').insert({
-        user_id: userId,
-        project_id: projectId,
-        github_link: formData.githubLink || null,
-        drive_link: formData.driveLink || null,
-        status: 'pending',
+      const response = await fetch('/api/submissions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          projectId,
+          githubLink: formData.githubLink || null,
+          driveLink: formData.driveLink || null,
+        }),
       });
 
-      if (error) {
-        if (error.message.includes('duplicate')) {
-          showMsg('error', 'You have already submitted for this project');
-        } else {
-          showMsg('error', error.message);
-        }
+      const resData = await response.json();
+
+      if (!response.ok) {
+        showMsg('error', resData.error || 'Submission failed');
         return;
       }
 
@@ -141,8 +142,8 @@ export default function ProjectDetailPage() {
       setShowModal(false);
       setHasSubmitted(true);
       showMsg('success', 'Submission received! Awaiting admin review.');
-    } catch (err) {
-      showMsg('error', 'An error occurred. Please try again.');
+    } catch (err: any) {
+      showMsg('error', err.message || 'An error occurred. Please try again.');
     } finally {
       setSubmitting(false);
     }

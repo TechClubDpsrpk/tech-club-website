@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabaseClient';
+import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
 import { verifyAuth } from '@/lib/auth';
 import { canAssignQuests } from '@/lib/roles';
 
@@ -27,8 +27,8 @@ export async function POST(request: NextRequest) {
             }
 
             // Update submission
-            const { error: updateError } = await supabase
-                .from('project_submissions')
+            const { error: updateError } = await supabase!
+                .from('tc_sec_qsub_0d48')
                 .update({ status: 'approved', points_awarded: points })
                 .eq('id', submissionId);
 
@@ -37,8 +37,8 @@ export async function POST(request: NextRequest) {
             }
 
             // Update project activity
-            const { error: activityError } = await supabase
-                .from('project_activity')
+            const { error: activityError } = await supabase!
+                .from('tc_sec_xp_9f21')
                 .upsert({
                     user_id: userId,
                     project_id: projectId,
@@ -51,8 +51,8 @@ export async function POST(request: NextRequest) {
                 console.error('Failed to update project activity', activityError);
             }
         } else if (status === 'rejected') {
-            const { error } = await supabase
-                .from('project_submissions')
+            const { error } = await supabase!
+                .from('tc_sec_qsub_0d48')
                 .update({ status: 'rejected' })
                 .eq('id', submissionId);
 

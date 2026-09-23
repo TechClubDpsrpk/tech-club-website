@@ -1,7 +1,6 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabaseClient';
 import Loading from '@/app/loading';
 
 interface UserData {
@@ -51,19 +50,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
                 setIsAuthenticated(data.isAuthenticated);
                 setUser(data.user);
                 setIsApproved(data.user?.isApproved || false);
-
-                // Fetch email_verified from Supabase
-                if (data.isAuthenticated && data.user?.id) {
-                    const { data: userData } = await supabase
-                        .from('users')
-                        .select('email_verified')
-                        .eq('id', data.user.id)
-                        .single();
-
-                    setEmailVerified(userData?.email_verified || false);
-                } else {
-                    setEmailVerified(false);
-                }
+                setEmailVerified(data.user?.emailVerified || false);
             } else {
                 setIsAuthenticated(false);
                 setEmailVerified(false);

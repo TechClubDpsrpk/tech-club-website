@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 'use client';
 import { useRef } from 'react';
 import gsap from 'gsap';

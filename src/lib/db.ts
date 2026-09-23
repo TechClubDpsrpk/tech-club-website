@@ -1,12 +1,8 @@
-import { createClient } from '@supabase/supabase-js';
+import { supabaseAdmin as supabase } from './supabase-admin';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-// Import admin client to bypass RLS for token operations
-import { supabaseAdmin } from './supabase-admin';
+if (!supabase) {
+  console.warn('SUPABASE_SERVICE_ROLE_KEY missing in db.ts, fallback operations may fail with RLS');
+}
 
 interface CreateUserInput {
   email: string;
@@ -37,9 +33,16 @@ interface UpdateProfileInput {
   interestedNiches: string[];
 }
 
+function getDbClient() {
+  if (!supabase) {
+    throw new Error('Server misconfiguration: SUPABASE_SERVICE_ROLE_KEY or SUPABASE_SERVICE_KEY missing');
+  }
+  return supabase;
+}
+
 export async function findUserByEmail(email: string) {
-  const { data, error } = await supabase
-    .from('users')
+  const { data, error } = await getDbClient()
+    .from('tc_sec_u_9b42')
     .select('*')
     .eq('email', email.toLowerCase())
     .single();
@@ -69,8 +72,8 @@ export async function createUser(userData: CreateUserInput) {
   } = userData;
 
   const id = crypto.randomUUID();
-  const { data, error } = await supabase
-    .from('users')
+  const { data, error } = await getDbClient()
+    .from('tc_sec_u_9b42')
     .insert([
       {
         id,
@@ -103,8 +106,8 @@ export async function createUser(userData: CreateUserInput) {
 // ... (keeping other existing exports)
 
 export async function getUserById(id: string) {
-  const { data, error } = await supabase
-    .from('users')
+  const { data, error } = await getDbClient()
+    .from('tc_sec_u_9b42')
     .select('*')
     .eq('id', id)
     .single();
@@ -114,7 +117,7 @@ export async function getUserById(id: string) {
 }
 
 export async function deleteUserById(id: string) {
-  const { error } = await supabase.from('users').delete().eq('id', id);
+  const { error } = await getDbClient().from('tc_sec_u_9b42').delete().eq('id', id);
   if (error) throw error;
 }
 
@@ -130,8 +133,8 @@ export async function updateUserProfile(userId: string, data: UpdateProfileInput
     interestedNiches,
   } = data;
 
-  const { data: updatedUser, error } = await supabase
-    .from('users')
+  const { data: updatedUser, error } = await getDbClient()
+    .from('tc_sec_u_9b42')
     .update({
       name,
       phone_number: phoneNumber,
@@ -151,8 +154,8 @@ export async function updateUserProfile(userId: string, data: UpdateProfileInput
 }
 
 export async function updateUserPassword(userId: string, hashedPassword: string) {
-  const { error } = await supabase
-    .from('users')
+  const { error } = await getDbClient()
+    .from('tc_sec_u_9b42')
     .update({ password: hashedPassword })
     .eq('id', userId);
 
@@ -160,8 +163,8 @@ export async function updateUserPassword(userId: string, hashedPassword: string)
 }
 
 export async function updateUserAvatar(userId: string, avatarUrl: string) {
-  const { data, error } = await supabase
-    .from('users')
+  const { data, error } = await getDbClient()
+    .from('tc_sec_u_9b42')
     .update({ avatar_url: avatarUrl })
     .eq('id', userId)
     .select()
@@ -172,8 +175,8 @@ export async function updateUserAvatar(userId: string, avatarUrl: string) {
 }
 
 export async function updateUserNiches(userId: string, interestedNiches: string[]) {
-  const { data, error } = await supabase
-    .from('users')
+  const { data, error } = await getDbClient()
+    .from('tc_sec_u_9b42')
     .update({ interested_niches: interestedNiches })
     .eq('id', userId)
     .select()
@@ -184,8 +187,8 @@ export async function updateUserNiches(userId: string, interestedNiches: string[
 }
 
 export async function markEmailAsVerified(userId: string) {
-  const { error } = await supabase
-    .from('users')
+  const { error } = await getDbClient()
+    .from('tc_sec_u_9b42')
     .update({ email_verified: true })
     .eq('id', userId);
 
@@ -196,8 +199,8 @@ export async function createVerificationToken(userId: string): Promise<string> {
   const token = crypto.randomUUID();
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
-  const { error } = await supabase
-    .from('verification_tokens')
+  const { error } = await getDbClient()
+    .from('tc_sec_otp_6d19')
     .insert([{ token, user_id: userId, expires_at: expiresAt }]);
 
   if (error) throw error;
@@ -205,8 +208,8 @@ export async function createVerificationToken(userId: string): Promise<string> {
 }
 
 export async function verifyEmailToken(token: string): Promise<string | null> {
-  const { data, error } = await supabase
-    .from('verification_tokens')
+  const { data, error } = await getDbClient()
+    .from('tc_sec_otp_6d19')
     .select('user_id, expires_at')
     .eq('token', token)
     .single();
@@ -215,11 +218,11 @@ export async function verifyEmailToken(token: string): Promise<string | null> {
   if (!data) return null;
 
   if (new Date(data.expires_at) < new Date()) {
-    await supabase.from('verification_tokens').delete().eq('token', token);
+    await getDbClient().from('tc_sec_otp_6d19').delete().eq('token', token);
     return null;
   }
 
-  await supabase.from('verification_tokens').delete().eq('token', token);
+  await getDbClient().from('tc_sec_otp_6d19').delete().eq('token', token);
   return data.user_id;
 }
 
@@ -231,7 +234,7 @@ function formatOtpAsUuid(otp: string): string {
 }
 
 export async function createPasswordResetToken(userId: string): Promise<string> {
-  if (!supabaseAdmin) throw new Error('SUPABASE_SERVICE_ROLE_KEY missing');
+  const client = getDbClient();
 
   // Generate a 6-digit OTP
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -239,13 +242,13 @@ export async function createPasswordResetToken(userId: string): Promise<string> 
   const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString(); // 15 minutes expiry
 
   // First, delete any existing tokens for this user to prevent multiple valid OTPs
-  await supabaseAdmin
-    .from('verification_tokens')
+  await client
+    .from('tc_sec_otp_6d19')
     .delete()
     .eq('user_id', userId);
 
-  const { error } = await supabaseAdmin
-    .from('verification_tokens')
+  const { error } = await client
+    .from('tc_sec_otp_6d19')
     .insert([{ token: tokenUuid, user_id: userId, expires_at: expiresAt }]);
 
   if (error) throw error;
@@ -253,7 +256,7 @@ export async function createPasswordResetToken(userId: string): Promise<string> 
 }
 
 export async function verifyPasswordResetToken(userIdOrEmail: string, otp: string, isEmail = false): Promise<string | null> {
-  if (!supabaseAdmin) throw new Error('SUPABASE_SERVICE_ROLE_KEY missing');
+  const client = getDbClient();
 
   let userId = userIdOrEmail;
 
@@ -273,8 +276,8 @@ export async function verifyPasswordResetToken(userIdOrEmail: string, otp: strin
   const tokenUuid = formatOtpAsUuid(otp);
   console.log(`DEBUG: Generated UUID from OTP: ${tokenUuid}`);
 
-  const { data, error } = await supabaseAdmin
-    .from('verification_tokens')
+  const { data, error } = await client
+    .from('tc_sec_otp_6d19')
     .select('user_id, expires_at')
     .eq('token', tokenUuid)
     .eq('user_id', userId)
@@ -317,7 +320,7 @@ export async function verifyPasswordResetToken(userIdOrEmail: string, otp: strin
 
   if (expiresDate < now) {
     console.log(`DEBUG: Token expired.`);
-    await supabaseAdmin.from('verification_tokens').delete().eq('token', tokenUuid);
+    await client.from('tc_sec_otp_6d19').delete().eq('token', tokenUuid);
     return null;
   }
 

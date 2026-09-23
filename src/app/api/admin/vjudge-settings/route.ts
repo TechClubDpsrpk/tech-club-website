@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
         }
 
         const { data, error } = await supabaseAdmin
-            .from('vjudge_settings')
+            .from('tc_sec_vj_6a37')
             .select('*')
             .limit(1)
             .single();
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
 
         // Check if we already have a record
         const { data: existing } = await supabaseAdmin
-            .from('vjudge_settings')
+            .from('tc_sec_vj_6a37')
             .select('id')
             .limit(1)
             .single();
@@ -80,12 +80,12 @@ export async function POST(req: NextRequest) {
 
         if (existing) {
             result = await supabaseAdmin
-                .from('vjudge_settings')
+                .from('tc_sec_vj_6a37')
                 .update(updateData)
                 .eq('id', existing.id);
         } else {
             result = await supabaseAdmin
-                .from('vjudge_settings')
+                .from('tc_sec_vj_6a37')
                 .insert([updateData]);
         }
 
@@ -108,7 +108,7 @@ export async function DELETE(req: NextRequest) {
 
         // Delete all records from vjudge_settings
         const { error } = await supabaseAdmin
-            .from('vjudge_settings')
+            .from('tc_sec_vj_6a37')
             .delete()
             .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all rows
 

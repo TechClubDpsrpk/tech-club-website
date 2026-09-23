@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 
         // Get user details for emails
         const { data: user, error: fetchError } = await supabaseAdmin
-            .from('users')
+            .from('tc_sec_u_9b42')
             .select('*')
             .eq('id', userId)
             .single();
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
 
         // Update the user's approval status
         const { error } = await supabaseAdmin
-            .from('users')
+            .from('tc_sec_u_9b42')
             .update({
                 is_approved: true
             })

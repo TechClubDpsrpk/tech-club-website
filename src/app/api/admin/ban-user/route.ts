@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabaseClient';
+import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
 import { sendBanEmail } from '@/lib/email';
 import { verifyAuth } from '@/lib/auth';
 import { hasAccessToAdminPanel } from '@/lib/roles';
@@ -29,8 +29,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Get user data
-    const { data: userData, error: userError } = await supabase
-      .from('users')
+    const { data: userData, error: userError } = await supabase!
+      .from('tc_sec_u_9b42')
       .select('email, name')
       .eq('id', userId)
       .single();
@@ -40,8 +40,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Get ALL unique IPs from user's sessions
-    const { data: sessionData } = await supabase
-      .from('sessions')
+    const { data: sessionData } = await supabase!
+      .from('tc_sec_sess_8e17')
       .select('ip_address')
       .eq('user_id', userId);
 
@@ -57,8 +57,8 @@ export async function POST(request: NextRequest) {
       : null;
 
     // Ban user
-    const { error: banError } = await supabase
-      .from('users')
+    const { error: banError } = await supabase!
+      .from('tc_sec_u_9b42')
       .update({
         is_banned: true,
         ban_reason: reason,
@@ -87,8 +87,8 @@ export async function POST(request: NextRequest) {
         associated_user_id: userId,
       }));
 
-      const { error: ipBanError } = await supabase
-        .from('banned_ips')
+      const { error: ipBanError } = await supabase!
+        .from('tc_sec_blist_4a73')
         .insert(ipBanRecords);
 
       if (!ipBanError) {

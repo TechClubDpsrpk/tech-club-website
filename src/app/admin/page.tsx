@@ -14,7 +14,6 @@ import {
   Trophy,
   Crown,
 } from 'lucide-react';
-import { supabase } from '@/lib/supabaseClient';
 import AddAnnouncement from '@/components/admin/AddAnnouncement';
 import AddProject from '@/components/admin/AddProject';
 import VJudgeSettings from '@/components/admin/VJudgeSettings';
@@ -99,16 +98,17 @@ export default function AdminPage() {
         setIsAdmin(true);
         setCurrentUser({ ...data.user, roles: userRoles });
 
-        const { count: userCount } = await supabase
-          .from('users')
-          .select('*', { count: 'exact', head: true });
-        const { count: adminCount } = await supabase
-          .from('users')
-          .select('*', { count: 'exact', head: true })
-          .not('roles', 'is', null)
-          .not('roles', 'eq', '{}');
-
-        setMetrics({ totalUsers: userCount || 0, admins: adminCount || 0 });
+        const usersRes = await fetch('/api/admin/users');
+        if (usersRes.ok) {
+          const { users } = await usersRes.json();
+          const totalUsers = users ? users.length : 0;
+          const admins = users
+            ? users.filter(
+                (u: any) => u.roles && Array.isArray(u.roles) && u.roles.length > 0
+              ).length
+            : 0;
+          setMetrics({ totalUsers, admins });
+        }
 
         setLoading(false);
       } catch (e) {

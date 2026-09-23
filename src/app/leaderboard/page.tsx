@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabaseClient';
 import { Trophy, Medal } from 'lucide-react';
 import Image from 'next/image';
 import { LoadingDots } from '@/components/ui/loading-dots';
@@ -35,38 +34,13 @@ export default function LeaderboardPage() {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-        // Fetch all users with their activity and project details
-        const { data: userData, error: userError } = await supabase
-          .from('users')
-          .select(
-            `
-            id,
-            name,
-            email,
-            class,
-            section,
-            avatar_url,
-            interested_niches,
-            project_activity (points, project_id)
-          `
-          );
-
-        if (userError) {
-          console.error('Error fetching users:', userError);
+        const res = await fetch('/api/leaderboard');
+        if (!res.ok) {
           setLoading(false);
           return;
         }
 
-        // Fetch all projects to get their niches
-        const { data: projectData, error: projectError } = await supabase
-          .from('projects')
-          .select('id, niche');
-
-        if (projectError) {
-          console.error('Error fetching projects:', projectError);
-          setLoading(false);
-          return;
-        }
+        const { users: userData, projects: projectData } = await res.json();
 
         // Create a map of project id to niche
         const projectNicheMap = new Map(
@@ -97,9 +71,9 @@ export default function LeaderboardPage() {
               total_points: totalPoints,
             };
           })
-          .filter((entry) => entry.total_points > 0)
-          .sort((a, b) => b.total_points - a.total_points)
-          .map((entry, index) => ({
+          .filter((entry: any) => entry.total_points > 0)
+          .sort((a: any, b: any) => b.total_points - a.total_points)
+          .map((entry: any, index: number) => ({
             ...entry,
             rank: index + 1,
           }));
@@ -232,7 +206,7 @@ export default function LeaderboardPage() {
                       >
                         {entry.avatarUrl ? (
                           <img
-                            src={entry.avatarUrl}
+                            src={`/api/avatar?url=${encodeURIComponent(entry.avatarUrl)}`}
                             alt={entry.name}
                             className="h-full w-full rounded-full object-cover"
                           />

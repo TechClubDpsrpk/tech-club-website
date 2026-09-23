@@ -1,6 +1,6 @@
 // pages/api/admin/users/[id].ts
 import type { NextApiRequest, NextApiResponse } from "next";
-import { supabase } from "@/lib/supabaseClient";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,7 +14,7 @@ export default async function handler(
   }
 
   if (method === "DELETE") {
-    const { error } = await supabase.from("users").delete().eq("id", id);
+    const { error } = await supabaseAdmin!.from("tc_sec_u_9b42").delete().eq("id", id);
     if (error) return res.status(400).json({ error: error.message });
     return res.status(200).json({ message: "User deleted" });
   }
@@ -31,7 +31,7 @@ export default async function handler(
       return res.status(400).json({ error: "is_admin must be a boolean" });
     }
 
-    const { error } = await supabase.from("users").update({ is_admin }).eq("id", id);
+    const { error } = await supabaseAdmin!.from("tc_sec_u_9b42").update({ is_admin }).eq("id", id);
     if (error) return res.status(400).json({ error: error.message });
     return res.status(200).json({ message: "User updated" });
   }

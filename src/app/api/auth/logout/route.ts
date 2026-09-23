@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabaseClient';
+import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
 
 export async function POST(request: NextRequest) {
   try {
     const token = request.cookies.get('auth')?.value;
     
     // Delete session from database if token exists
-    if (token) {
+    if (token && supabase) {
       try {
         await supabase
-          .from('sessions')
+          .from('tc_sec_sess_8e17')
           .delete()
           .eq('session_token', token);
       } catch (dbError) {

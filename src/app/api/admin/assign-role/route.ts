@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
 
         // Update the user's roles
         const { error } = await supabaseAdmin
-            .from('users')
+            .from('tc_sec_u_9b42')
             .update({
                 roles: roles,
                 // Keep is_admin synced for backwards compatibility if needed, 

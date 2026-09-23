@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabaseClient';
 import { TracingBeam } from '@/components/ui/tracing-beam';
 import { twMerge } from 'tailwind-merge';
 import { Trash, Trash2 } from 'lucide-react';
@@ -52,18 +51,14 @@ export function Beam() {
 
       const data = await response.json();
 
-      if (!data?.user?.id) {
+      if (!data?.user) {
         setIsAdmin(false);
         return;
       }
 
-      const { data: userData } = await supabase
-        .from('users')
-        .select('is_admin')
-        .eq('id', data.user.id)
-        .single();
-
-      setIsAdmin(userData?.is_admin || false);
+      const userRoles = data.user.roles || [];
+      const isUserAdmin = data.user.is_admin || userRoles.length > 0;
+      setIsAdmin(isUserAdmin);
     } catch (error) {
       console.error('Error checking admin:', error);
       setIsAdmin(false);
@@ -71,16 +66,17 @@ export function Beam() {
   };
 
   const loadAnnouncements = async () => {
-    const { data, error } = await supabase
-      .from('announcements')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (!error && data) {
-      setAnnouncements(data);
+    try {
+      const res = await fetch('/api/announcements');
+      if (res.ok) {
+        const { announcements: data } = await res.json();
+        setAnnouncements(data || []);
+      }
+    } catch (e) {
+      console.error('Failed to load announcements:', e);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const handleDelete = async (id: string) => {
@@ -94,10 +90,11 @@ export function Beam() {
     }
 
     setDeletingId(id);
-    const { error } = await supabase.from('announcements').delete().eq('id', id);
+    const res = await fetch(`/api/announcements?id=${id}`, { method: 'DELETE' });
+    const data = await res.json().catch(() => ({}));
 
-    if (error) {
-      alert('Error deleting announcement: ' + error.message);
+    if (!res.ok) {
+      alert('Error deleting announcement: ' + (data.error || 'Failed to delete'));
     } else {
       setAnnouncements(announcements.filter((a) => a.id !== id));
     }

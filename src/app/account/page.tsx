@@ -15,7 +15,6 @@ import {
   Crown,
   X,
 } from 'lucide-react';
-import { supabase } from '@/lib/supabaseClient';
 import { useAuth } from '@/components/providers/auth-provider';
 import ActivitySection from '@/components/account/ActivitySection';
 import Loading from '@/app/loading';
@@ -196,17 +195,16 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
 
   const fetchUser = async () => {
     try {
-      const response = await fetch('/api/auth/check', { credentials: 'include' });
+      const response = await fetch('/api/auth/me', { credentials: 'include' });
       if (!response.ok) return router.push('/login');
       const data = await response.json();
       if (!data?.isAuthenticated || !data?.user) return router.push('/login');
-      const { data: userData, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', data.user.id)
-        .single();
-      if (error) console.error('Error fetching user data:', error);
-      const mergedUser = { ...data.user, ...userData, is_admin: userData?.is_admin || false, is_approved: userData?.is_approved || false };
+      
+      const mergedUser = {
+        ...data.user,
+        is_admin: data.user.is_admin || false,
+        is_approved: data.user.is_approved || false,
+      };
       setUser(mergedUser);
       setFormData({
         name: mergedUser.name || '',
@@ -543,7 +541,7 @@ function AccountPageContent({ showWelcome }: { showWelcome: boolean }) {
                   }
                 >
                   {user.avatarUrl ? (
-                    <img src={user.avatarUrl} alt="avatar" className="h-full w-full object-cover" />
+                    <img src={`/api/avatar?url=${encodeURIComponent(user.avatarUrl)}`} alt="avatar" className="h-full w-full object-cover" />
                   ) : (
                     <User className="h-8 w-8 text-zinc-500" />
                   )}

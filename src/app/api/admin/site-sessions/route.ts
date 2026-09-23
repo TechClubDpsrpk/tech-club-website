@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
 
     try {
         const { data, error } = await supabaseAdmin!
-            .from('site_access_sessions')
+            .from('tc_sec_gate_2f84')
             .select('*')
             .order('created_at', { ascending: false });
 
@@ -52,7 +52,7 @@ export async function DELETE(req: NextRequest) {
         }
 
         const { error } = await supabaseAdmin!
-            .from('site_access_sessions')
+            .from('tc_sec_gate_2f84')
             .delete()
             .eq('id', sessionId);
 

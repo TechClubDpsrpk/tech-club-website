@@ -18,7 +18,7 @@ export async function GET() {
         }
 
         const { data: settings, error: settingsError } = await supabaseAdmin
-            .from('vjudge_settings')
+            .from('tc_sec_vj_6a37')
             .select('*')
             .order('updated_at', { ascending: false })
             .limit(1)

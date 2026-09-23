@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabaseClient';
 import { BanUserModal } from '@/app/admin/BanUserModal';
 import { ROLES, Role } from '@/lib/roles';
 import Image from 'next/image';
@@ -70,12 +69,12 @@ export default function UsersTable() {
 
   const fetchUsers = async () => {
     try {
-      const { data, error: fetchError } = await supabase
-        .from('users')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (fetchError) throw fetchError;
+      const res = await fetch('/api/admin/users');
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to fetch users');
+      }
+      const { users: data } = await res.json();
       if (data) {
         const formattedData = data.map((u: any) => ({ ...u, roles: u.roles || [] }));
         setUsers(formattedData);

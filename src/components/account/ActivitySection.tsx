@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabaseClient';
+import Link from 'next/link';
 import { Trophy } from 'lucide-react';
 import Image from 'next/image';
 import { LoadingDots } from '@/components/ui/loading-dots';
@@ -28,28 +28,15 @@ export default function ActivitySection({ userId }: ActivitySectionProps) {
   useEffect(() => {
     const fetchActivity = async () => {
       try {
-        const { data, error } = await supabase
-          .from('project_activity')
-          .select(`id, project_id, points, projects:project_id (title, total_points)`)
-          .eq('user_id', userId)
-          .order('created_at', { ascending: false });
-
-        if (error) {
-          console.error('Error fetching activity:', error);
+        const res = await fetch('/api/account/activity');
+        if (!res.ok) {
           setLoading(false);
           return;
         }
 
-        const formattedData =
-          data?.map((activity: any) => ({
-            id: activity.id,
-            project_id: activity.project_id,
-            points: activity.points,
-            project: Array.isArray(activity.projects) ? activity.projects[0] : activity.projects,
-          })) || [];
-
-        setActivities(formattedData);
-        setTotalPoints(formattedData.reduce((sum, a) => sum + a.points, 0));
+        const { activities: formattedData } = await res.json();
+        setActivities(formattedData || []);
+        setTotalPoints((formattedData || []).reduce((sum: number, a: any) => sum + a.points, 0));
       } catch (err) {
         console.error('Error:', err);
       } finally {
@@ -101,12 +88,12 @@ export default function ActivitySection({ userId }: ActivitySectionProps) {
       {activities.length === 0 ? (
         <p className="text-sm text-zinc-500">
           No quests completed yet.{' '}
-          <a
+          <Link
             href="/quests"
             className="text-[#fac71e] underline underline-offset-4 transition-opacity hover:opacity-70"
           >
             Visit quests
-          </a>{' '}
+          </Link>{' '}
           to participate.
         </p>
       ) : (

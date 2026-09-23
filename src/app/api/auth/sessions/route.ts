@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabaseClient';
+import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
 import { verifyAuth } from '@/lib/auth';
 import UAParser from 'ua-parser-js';
 
@@ -20,7 +20,7 @@ function getClientIP(request: NextRequest): string {
 export async function GET(req: NextRequest) {
   try {
     const authResult = await verifyAuth(req);
-    if (!authResult.authenticated || !authResult.userId) {
+    if (!authResult.authenticated || !authResult.userId || !supabase) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
     // Update current session's last_active_at and IP
     if (currentSessionToken) {
       await supabase
-        .from('sessions')
+        .from('tc_sec_sess_8e17')
         .update({ 
           last_active_at: new Date().toISOString(),
           ip_address: currentIP
@@ -41,13 +41,13 @@ export async function GET(req: NextRequest) {
 
     // Clean up expired sessions first
     await supabase
-      .from('sessions')
+      .from('tc_sec_sess_8e17')
       .delete()
       .lt('expires_at', new Date().toISOString());
 
     // Get all active sessions
     const { data: sessions, error } = await supabase
-      .from('sessions')
+      .from('tc_sec_sess_8e17')
       .select('*')
       .eq('user_id', authResult.userId)
       .gte('expires_at', new Date().toISOString())
@@ -71,7 +71,7 @@ export async function GET(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     const authResult = await verifyAuth(req);
-    if (!authResult.authenticated || !authResult.userId) {
+    if (!authResult.authenticated || !authResult.userId || !supabase) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -84,7 +84,7 @@ export async function DELETE(req: NextRequest) {
 
     // Delete the session (ensuring it belongs to the user)
     const { error } = await supabase
-      .from('sessions')
+      .from('tc_sec_sess_8e17')
       .delete()
       .eq('id', sessionId)
       .eq('user_id', authResult.userId);

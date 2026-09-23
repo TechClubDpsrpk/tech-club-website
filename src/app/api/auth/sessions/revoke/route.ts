@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabaseClient';
+import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
 import { verifyAuth } from '@/lib/auth';
 
 export async function POST(req: NextRequest) {
   try {
     const authResult = await verifyAuth(req);
-    if (!authResult.authenticated || !authResult.userId) {
+    if (!authResult.authenticated || !authResult.userId || !supabase) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
       const currentSessionToken = req.cookies.get('auth')?.value;  // ✅ Changed to 'auth'
       
       const { error } = await supabase
-        .from('sessions')
+        .from('tc_sec_sess_8e17')
         .delete()
         .eq('user_id', authResult.userId)
         .neq('session_token', currentSessionToken);
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     } else if (sessionId) {
       // Revoke specific session
       const { error } = await supabase
-        .from('sessions')
+        .from('tc_sec_sess_8e17')
         .delete()
         .eq('id', sessionId)
         .eq('user_id', authResult.userId);

@@ -48,7 +48,7 @@ export async function POST(request: Request) {
 
         if (supabaseAdmin) {
             const { error } = await supabaseAdmin
-                .from('verification_tokens')
+                .from('tc_sec_otp_6d19')
                 .delete()
                 .eq('token', tokenUuid)
                 .eq('user_id', userId);

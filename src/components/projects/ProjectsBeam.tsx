@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabaseClient';
 import { TracingBeam } from '@/components/ui/tracing-beam';
 import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
@@ -62,18 +61,14 @@ export function ProjectsBeam() {
 
       const data = await response.json();
 
-      if (!data?.user?.id) {
+      if (!data?.user) {
         setIsAdmin(false);
         return;
       }
 
-      const { data: userData } = await supabase
-        .from("users")
-        .select("is_admin")
-        .eq("id", data.user.id)
-        .single();
-
-      setIsAdmin(userData?.is_admin || false);
+      const userRoles = data.user.roles || [];
+      const isUserAdmin = data.user.is_admin || userRoles.length > 0;
+      setIsAdmin(isUserAdmin);
     } catch (error) {
       console.error("Error checking admin:", error);
       setIsAdmin(false);
@@ -81,16 +76,17 @@ export function ProjectsBeam() {
   };
 
   const loadProjects = async () => {
-    const { data, error } = await supabase
-      .from('projects')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (!error && data) {
-      setProjects(data);
+    try {
+      const res = await fetch('/api/projects');
+      if (res.ok) {
+        const { projects: data } = await res.json();
+        setProjects(data || []);
+      }
+    } catch (e) {
+      console.error('Failed to load projects:', e);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const handleDelete = async (id: string) => {
@@ -104,17 +100,19 @@ export function ProjectsBeam() {
     }
 
     setDeletingId(id);
-    const { error } = await supabase
-      .from("projects")
-      .delete()
-      .eq("id", id);
-
-    if (error) {
-      alert("Error deleting quest: " + error.message);
-    } else {
-      setProjects(projects.filter((p) => p.id !== id));
+    try {
+      const res = await fetch(`/api/projects?id=${id}`, { method: 'DELETE' });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert("Error deleting quest: " + (data.error || "Failed to delete"));
+      } else {
+        setProjects((prev) => prev.filter((p) => p.id !== id));
+      }
+    } catch (err: any) {
+      alert("Error deleting quest: " + err.message);
+    } finally {
+      setDeletingId(null);
     }
-    setDeletingId(null);
   };
 
   if (loading) {

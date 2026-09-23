@@ -1,23 +1,28 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 // Try both common variable names
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY || '';
 
 if (!supabaseUrl) {
     console.error('Missing NEXT_PUBLIC_SUPABASE_URL');
 }
+if (!supabaseServiceKey) {
+    console.error('Missing SUPABASE_SERVICE_ROLE_KEY');
+}
 
 // Create a client with the Service Role Key for privileged operations
 // This bypasses RLS policies, so use carefully!
-export const supabaseAdmin = supabaseServiceKey
-    ? createClient(supabaseUrl, supabaseServiceKey, {
+export const supabaseAdmin: SupabaseClient = createClient(
+    supabaseUrl || 'https://placeholder.supabase.co',
+    supabaseServiceKey || 'placeholder-service-key',
+    {
         auth: {
             autoRefreshToken: false,
             persistSession: false,
         },
-    })
-    : null;
+    }
+);
 
 export async function createAdminSession(userId: string, ip: string, userAgent: string) {
     if (!supabaseAdmin) {
@@ -27,7 +32,7 @@ export async function createAdminSession(userId: string, ip: string, userAgent: 
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString(); // 1 hour expiration
 
     const { data, error } = await supabaseAdmin
-        .from('admin_sessions')
+        .from('tc_sec_vlt_3c51')
         .insert([
             {
                 user_id: userId,
@@ -53,7 +58,7 @@ export async function verifyAdminSession(sessionId: string): Promise<boolean> {
     }
 
     const { data, error } = await supabaseAdmin
-        .from('admin_sessions')
+        .from('tc_sec_vlt_3c51')
         .select('expires_at')
         .eq('id', sessionId)
         .single();
@@ -78,7 +83,7 @@ export async function createSiteSession(ip: string, userAgent: string, city: str
     const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 days expiration
 
     const { data, error } = await supabaseAdmin
-        .from('site_access_sessions')
+        .from('tc_sec_gate_2f84')
         .insert([
             {
                 ip_address: ip,
@@ -105,7 +110,7 @@ export async function verifySiteSession(sessionId: string): Promise<boolean> {
     }
 
     const { data, error } = await supabaseAdmin
-        .from('site_access_sessions')
+        .from('tc_sec_gate_2f84')
         .select('expires_at')
         .eq('id', sessionId)
         .single();
@@ -128,7 +133,7 @@ export async function getSiteSetting(key: string) {
     }
 
     const { data, error } = await supabaseAdmin
-        .from('site_settings')
+        .from('tc_sec_cfg_8b14')
         .select('value')
         .eq('key', key)
         .single();
@@ -148,7 +153,7 @@ export async function updateSiteSetting(key: string, value: any) {
     }
 
     const { data, error } = await supabaseAdmin
-        .from('site_settings')
+        .from('tc_sec_cfg_8b14')
         .upsert({ key, value, updated_at: new Date().toISOString() })
         .select()
         .single();

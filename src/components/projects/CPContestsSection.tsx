@@ -184,7 +184,7 @@ export default function CPContestsSection() {
                                                     <div className="flex items-center gap-3">
                                                         {entry.avatarUrl ? (
                                                             <img
-                                                                src={entry.avatarUrl}
+                                                                src={`/api/avatar?url=${encodeURIComponent(entry.avatarUrl)}`}
                                                                 alt={entry.username}
                                                                 className="w-8 h-8 rounded-full"
                                                             />

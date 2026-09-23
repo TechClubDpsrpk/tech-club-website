@@ -8,12 +8,12 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || 'your-secret-key'
 );
 
+import { supabaseAdmin } from './supabase-admin';
+
 // Create a reusable Supabase client getter
 function getSupabaseClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  if (!supabaseAdmin) throw new Error("Missing SUPABASE_SERVICE_ROLE_KEY");
+  return supabaseAdmin;
 }
 
 export async function createToken(user: any): Promise<string> {
@@ -73,7 +73,7 @@ export async function verifyAuth(req: NextRequest): Promise<{
     console.log('Checking session in DB for userId:', userId);
 
     const { data: sessions, error, count } = await supabase
-      .from('sessions')
+      .from('tc_sec_sess_8e17')
       .select('*', { count: 'exact' })
       .eq('session_token', token)
       .eq('user_id', userId);
@@ -139,7 +139,7 @@ export async function getCurrentUser() {
     // Check if session exists in database and is valid
     const supabase = getSupabaseClient();
     const { data: session } = await supabase
-      .from('sessions')
+      .from('tc_sec_sess_8e17')
       .select('expires_at')
       .eq('session_token', token) // The token itself is the session identifier in DB based on verifyAuth
       .eq('user_id', userId)
