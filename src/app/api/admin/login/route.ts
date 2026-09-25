@@ -52,7 +52,20 @@ export async function POST(req: NextRequest) {
     }
 
     const isDev = process.env.NODE_ENV === 'development';
-    const isValid = isDev || (ADMIN_PASSWORD_HASH ? await bcrypt.compare(password, ADMIN_PASSWORD_HASH) : false);
+
+    if (!ADMIN_PASSWORD_HASH && !isDev) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Server misconfiguration - hash not found'
+        },
+        { status: 500 }
+      );
+    }
+
+    const isValid = isDev
+      ? true
+      : (ADMIN_PASSWORD_HASH ? await bcrypt.compare(password, ADMIN_PASSWORD_HASH) : false);
 
     await logLoginAttempt(ip, 'admin', password, isValid, userAgent);
 

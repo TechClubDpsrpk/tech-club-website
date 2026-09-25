@@ -7,14 +7,9 @@ import { useAuth } from '@/components/providers/auth-provider';
 import Image from 'next/image';
 import { LoadingDots } from '@/components/ui/loading-dots';
 
-const NICHES = [
-  'Robotics',
-  'Development',
-  'Competitive Programming',
-  'AI',
-  'Videography',
-  'Graphics Designing',
-];
+import { DEFAULT_NICHES } from '@/lib/constants';
+
+const NICHES = DEFAULT_NICHES;
 
 const CLASSES = ['9', '10', '11', '12'];
 const SECTIONS = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i)); // A to Z

@@ -7,6 +7,8 @@ import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
 import { Trash, Trash2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 import { LoadingDots } from '@/components/ui/loading-dots';
 
 type Project = {
@@ -149,13 +151,18 @@ export function ProjectsBeam() {
 
             {/* Heading with points */}
             <div className="flex items-start justify-between mb-4">
-              <p
+              <div
                 className={twMerge(
-                  'font-[family-name:var(--font-space-mono)] text-xl flex-1'
+                  'font-[family-name:var(--font-space-mono)] text-xl flex-1 [&>p]:inline'
                 )}
               >
-                {project.title}
-              </p>
+                <ReactMarkdown
+                  remarkPlugins={[remarkMath]}
+                  rehypePlugins={[rehypeKatex]}
+                >
+                  {project.title}
+                </ReactMarkdown>
+              </div>
               <div className="ml-4 flex items-center gap-1 rounded-full bg-[#C9A227]/20 border border-[#C9A227]/50 px-3 py-1 flex-shrink-0">
                 <Image src="/tc-logo.svg" alt="Logo" width={16} height={16} />
                 <span className="text-sm font-semibold text-[#C9A227]">
@@ -174,7 +181,21 @@ export function ProjectsBeam() {
                 />
               )}
 
-              <ReactMarkdown>{getTruncatedText(project.description)}</ReactMarkdown>
+              <ReactMarkdown
+                remarkPlugins={[remarkMath]}
+                rehypePlugins={[rehypeKatex]}
+                components={{
+                  img: ({ node, ...props }) => (
+                    <img
+                      {...props}
+                      className="my-3 rounded-lg object-cover max-w-full h-auto shadow-md border border-zinc-800"
+                      alt={props.alt || 'Project media'}
+                    />
+                  ),
+                }}
+              >
+                {getTruncatedText(project.description)}
+              </ReactMarkdown>
             </div>
 
             {/* Buttons */}
