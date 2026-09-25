@@ -7,7 +7,7 @@ import { VJudgeBrowser } from '@/lib/vjudge-browser';
 
 const TABLE_NAME = 'tc_sec_cp_leaderboards';
 
-export const SQL_MIGRATION = `-- Run this in your Supabase SQL Editor to create the CP Leaderboards table:
+const SQL_MIGRATION = `-- Run this in your Supabase SQL Editor to create the CP Leaderboards table:
 CREATE TABLE IF NOT EXISTS tc_sec_cp_leaderboards (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     contest_id TEXT NOT NULL,

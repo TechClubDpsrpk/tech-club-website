@@ -760,6 +760,7 @@ export default function CPLeaderboardsManager() {
                 </div>
               </div>
             )}
+            </div>
           </div>
         </div>
 
