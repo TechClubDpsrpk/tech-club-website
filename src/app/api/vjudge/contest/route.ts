@@ -1,10 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { VJudgeClient } from '@/lib/vjudge';
 import { VJudgeBrowser } from '@/lib/vjudge-browser';
-// import { VJudgeClient } from '@/lib/vjudge';
 
 let contestCache: { data: any; timestamp: number } | null = null;
-const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+function generateFallbackProblems(count?: number, titlesString?: string) {
+    const total = count || 10;
+    const titles = titlesString ? titlesString.split(',').map((t: string) => t.trim()) : [];
+    const problems = [];
+    for (let i = 0; i < total; i++) {
+        const letter = String.fromCharCode(65 + i);
+        problems.push({ num: letter, title: titles[i] || letter, pid: i + 1 });
+    }
+    return problems;
+}
 
 export async function GET() {
     try {
@@ -28,18 +39,42 @@ export async function GET() {
             return NextResponse.json({ live: false });
         }
 
-        if (!settings.session_cookies) {
-            return NextResponse.json({ error: 'VJudge session cookies not provided' }, { status: 400 });
+        let contestData: any = null;
+        let pageTitle: string | null = null;
+
+        // Strategy 1: Direct fast HTTP request via VJudgeClient
+        try {
+            const client = new VJudgeClient(settings.session_cookies || '');
+            const directData = await client.getContestData(
+                settings.contest_id,
+                settings.contest_password,
+                settings.problem_count || 10,
+                settings.problem_titles
+            );
+            if (directData && (directData.title || directData.problems)) {
+                contestData = directData;
+            }
+        } catch (directErr: any) {
+            console.warn('Direct VJudge contest fetch failed, attempting browser runner:', directErr.message);
         }
 
-        const client = new VJudgeBrowser(settings.session_cookies);
-        const { contestData, pageTitle } = await client.getContestData(
-            settings.contest_id,
-            settings.contest_password
-        );
+        // Strategy 2: Browser runner fallback
+        if (!contestData) {
+            try {
+                const browserClient = new VJudgeBrowser(settings.session_cookies || '');
+                const browserResult = await browserClient.getContestData(
+                    settings.contest_id,
+                    settings.contest_password
+                );
+                contestData = browserResult.contestData;
+                pageTitle = browserResult.pageTitle;
+            } catch (browserErr: any) {
+                console.warn('Browser VJudge contest fetch failed:', browserErr.message);
+            }
+        }
 
-        // Extract contest name from page title: "[Name of Contest] - Virtual Judge"
-        let displayTitle = contestData.title;
+        // Determine title
+        let displayTitle = contestData?.title || `CP Contest #${settings.contest_id}`;
         if (pageTitle && pageTitle.includes(' - Virtual Judge')) {
             const matches = pageTitle.match(/\[(.*?)\]/);
             if (matches && matches[1]) {
@@ -49,17 +84,12 @@ export async function GET() {
             }
         }
 
-        // Reconstruct problems array if not present
+        // Determine problems
         let problems: any[] = [];
-        if (contestData.problems) {
+        if (contestData?.problems && Array.isArray(contestData.problems) && contestData.problems.length > 0) {
             problems = contestData.problems;
-        } else if (settings.problem_titles || settings.problem_count) {
-            const count = settings.problem_count || 10;
-            const titles = settings.problem_titles ? settings.problem_titles.split(',').map((t: string) => t.trim()) : [];
-            for (let i = 0; i < count; i++) {
-                const letter = String.fromCharCode(65 + i);
-                problems.push({ num: letter, title: titles[i] || letter });
-            }
+        } else {
+            problems = generateFallbackProblems(settings.problem_count, settings.problem_titles);
         }
 
         const result = {
@@ -71,10 +101,15 @@ export async function GET() {
         };
 
         contestCache = { data: result, timestamp: now };
-
         return NextResponse.json(result);
     } catch (error: any) {
         console.error('Contest API Error:', error);
+
+        if (contestCache) {
+            return NextResponse.json(contestCache.data);
+        }
+
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
+

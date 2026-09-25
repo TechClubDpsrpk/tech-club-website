@@ -9,12 +9,24 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    let normalizedUrl = url.trim();
+    if (normalizedUrl.startsWith('//')) {
+      normalizedUrl = 'https:' + normalizedUrl;
+    } else if (normalizedUrl.startsWith('/')) {
+      normalizedUrl = 'https://vjudge.net' + normalizedUrl;
+    }
+
     // Extract the path after /public/avatars/
     // Example: https://xxxx.supabase.co/storage/v1/object/public/avatars/user-id/avatar.png
-    const match = url.match(/\/public\/avatars\/(.+)$/);
+    const match = normalizedUrl.match(/\/public\/avatars\/(.+)$/);
     if (!match) {
-      // If it's not a supabase avatar url (e.g. Google/Github default avatar), just redirect to it
-      return NextResponse.redirect(url);
+      // If it's not a supabase avatar url (e.g. Google/Github/VJudge default avatar), redirect to it
+      try {
+        new URL(normalizedUrl);
+        return NextResponse.redirect(normalizedUrl);
+      } catch {
+        return new NextResponse('Invalid URL', { status: 400 });
+      }
     }
 
     const filePath = match[1];

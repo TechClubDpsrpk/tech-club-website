@@ -72,7 +72,6 @@ export async function POST(request: NextRequest) {
                 image_url,
                 total_points,
                 niche,
-                created_by: user.id,
                 created_at: new Date().toISOString(),
             })
             .select()

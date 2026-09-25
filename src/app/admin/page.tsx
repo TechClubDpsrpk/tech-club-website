@@ -13,10 +13,12 @@ import {
   Globe,
   Trophy,
   Crown,
+  Sliders,
 } from 'lucide-react';
 import AddAnnouncement from '@/components/admin/AddAnnouncement';
 import AddProject from '@/components/admin/AddProject';
 import VJudgeSettings from '@/components/admin/VJudgeSettings';
+import CPLeaderboardsManager from '@/components/admin/CPLeaderboardsManager';
 import ProjectSubmissions from '@/components/admin/ProjectSubmissions';
 import UsersTable from '@/app/admin/UsersTable';
 import Loading from '@/app/loading';
@@ -59,6 +61,7 @@ export default function AdminPage() {
   const [error, setError] = useState('');
   const [maintenanceMode, setMaintenanceMode] = useState<boolean>(true);
   const [updatingMode, setUpdatingMode] = useState(false);
+  const [cpSubTab, setCpSubTab] = useState<'leaderboards' | 'settings'>('leaderboards');
 
   // Tab availability handlers
   const canViewProjects = (roles: string[]) => hasAccessToAdminPanel(roles);
@@ -474,11 +477,45 @@ export default function AdminPage() {
 
             {/* VJudge / CP Contests */}
             {activeTab === 'vjudge' && (
-              <div className="border-t border-zinc-800 pt-8">
-                <p className="mb-8 font-[family-name:var(--font-space-mono)] text-xs tracking-[0.15em] text-zinc-400 uppercase">
-                  CP Contests
-                </p>
-                <VJudgeSettings />
+              <div className="border-t border-zinc-800 pt-8 space-y-8">
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-800/80 pb-5">
+                  <div>
+                    <p className="font-[family-name:var(--font-space-mono)] text-xs tracking-[0.15em] text-zinc-400 uppercase">
+                      CP Contests Hub
+                    </p>
+                    <p className="text-xs text-zinc-500 mt-1">
+                      Manage contest standings archives, award XP points to members, and configure VJudge settings.
+                    </p>
+                  </div>
+
+                  {/* Sub-tab navigation */}
+                  <div className="flex items-center gap-1.5 rounded-sm border border-zinc-800 bg-zinc-950 p-1">
+                    <button
+                      onClick={() => setCpSubTab('leaderboards')}
+                      className={`flex items-center gap-2 rounded-sm px-4 py-2 font-[family-name:var(--font-space-mono)] text-xs uppercase transition-all ${
+                        cpSubTab === 'leaderboards'
+                          ? 'bg-[#fac71e] font-bold text-black shadow-sm'
+                          : 'text-zinc-400 hover:text-white'
+                      }`}
+                    >
+                      <Trophy size={13} />
+                      Archived Standings & Awards
+                    </button>
+                    <button
+                      onClick={() => setCpSubTab('settings')}
+                      className={`flex items-center gap-2 rounded-sm px-4 py-2 font-[family-name:var(--font-space-mono)] text-xs uppercase transition-all ${
+                        cpSubTab === 'settings'
+                          ? 'bg-[#fac71e] font-bold text-black shadow-sm'
+                          : 'text-zinc-400 hover:text-white'
+                      }`}
+                    >
+                      <Sliders size={13} />
+                      Contest Settings
+                    </button>
+                  </div>
+                </div>
+
+                {cpSubTab === 'leaderboards' ? <CPLeaderboardsManager /> : <VJudgeSettings />}
               </div>
             )}
           </main>

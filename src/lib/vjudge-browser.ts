@@ -8,48 +8,65 @@ export class VJudgeBrowser {
         this.cookies = sessionCookies;
     }
 
+    private async getBrowserExecutable(): Promise<string> {
+        const fs = require('fs');
+
+        if (process.platform === 'win32') {
+            const localPaths = [
+                process.env.CHROME_PATH,
+                'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+                'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+                process.env.LOCALAPPDATA ? `${process.env.LOCALAPPDATA}\\Google\\Chrome\\Application\\chrome.exe` : undefined,
+                'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+                'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
+                process.env.LOCALAPPDATA ? `${process.env.LOCALAPPDATA}\\Microsoft\\Edge\\Application\\msedge.exe` : undefined,
+                'C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe',
+                process.env.LOCALAPPDATA ? `${process.env.LOCALAPPDATA}\\BraveSoftware\\Brave-Browser\\Application\\brave.exe` : undefined,
+            ];
+
+            for (const p of localPaths) {
+                if (p && fs.existsSync(p)) {
+                    return p;
+                }
+            }
+            throw new Error('No compatible Chrome/Edge browser found on Windows');
+        }
+
+        // Linux / macOS / Serverless
+        if (process.env.CHROME_PATH && fs.existsSync(process.env.CHROME_PATH)) {
+            return process.env.CHROME_PATH;
+        }
+
+        const linuxPaths = [
+            '/usr/bin/google-chrome',
+            '/usr/bin/chromium',
+            '/usr/bin/chromium-browser',
+        ];
+        for (const p of linuxPaths) {
+            if (fs.existsSync(p)) return p;
+        }
+
+        // Fallback to serverless chromium package on Linux
+        return await chromium.executablePath();
+    }
+
     async getContestData(contestId: string, contestPassword?: string) {
         let browser = null;
         try {
             console.log('Launching browser for VJudge...');
-
-            // Configure chromium for Vercel/Serverless
             chromium.setGraphicsMode = false;
 
-            const isLocal = process.env.NODE_ENV === 'development';
-            let executablePath: string | undefined;
-
-            if (isLocal) {
-                // Common local Chrome paths on Windows
-                const localPaths = [
-                    'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-                    'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
-                    process.env.CHROME_PATH // Optional env override
-                ];
-
-                for (const path of localPaths) {
-                    if (path && require('fs').existsSync(path)) {
-                        executablePath = path;
-                        break;
-                    }
-                }
-
-                if (!executablePath) {
-                    console.warn('Local Chrome not found! Falling back to chromium.executablePath()');
-                    executablePath = await chromium.executablePath();
-                }
-            } else {
-                executablePath = await chromium.executablePath();
-            }
+            const isLocal = process.env.NODE_ENV === 'development' || process.platform === 'win32';
+            const executablePath = await this.getBrowserExecutable();
 
             const args = isLocal
                 ? puppeteer.defaultArgs().concat([
                     '--ignore-certificate-errors',
                     '--no-sandbox',
                     '--disable-setuid-sandbox',
-                    '--disable-features=FirstPartySets', // Mitigate EBUSY/resource lock
+                    '--disable-features=FirstPartySets',
                     '--disable-dev-shm-usage',
-                    '--disable-blink-features=AutomationControlled', // Stealth
+                    '--disable-blink-features=AutomationControlled',
                 ])
                 : chromium.args.concat([
                     '--ignore-certificate-errors',
@@ -66,14 +83,13 @@ export class VJudgeBrowser {
                     hasTouch: false,
                     isLandscape: false,
                 },
-                executablePath: executablePath,
-                headless: isLocal ? false : true,
+                executablePath,
+                headless: true,
             });
 
             const page = await browser.newPage();
             await this.applyStealth(page);
 
-            // Set session cookies if provided
             if (this.cookies) {
                 const cookieList = this.cookies.split(';').map(c => {
                     const [name, value] = c.trim().split('=');
@@ -83,7 +99,7 @@ export class VJudgeBrowser {
                         domain: '.vjudge.net',
                         path: '/',
                         secure: true,
-                        httpOnly: false, // Usually true but we are setting manually
+                        httpOnly: false,
                     };
                 });
                 await page.setCookie(...cookieList);
@@ -92,26 +108,16 @@ export class VJudgeBrowser {
             console.log(`Navigating to contest ${contestId}...`);
             const targetUrl = `https://vjudge.net/contest/${contestId}`;
 
-            // Increase timeout and use 'load' to be less strict about background resources
             await page.goto(targetUrl, {
-                waitUntil: 'load',
-                timeout: 60000
+                waitUntil: 'domcontentloaded',
+                timeout: 25000
             });
 
-            // Wait for a realistic element to confirm we are past any initial loading/challenges
             try {
-                await page.waitForSelector('.contest-title', { timeout: 10000 });
+                await page.waitForSelector('.contest-title', { timeout: 8000 });
             } catch (e) {
-                console.warn('Wait for .contest-title timed out, checking Cloudflare status...');
+                console.warn('Wait for .contest-title timed out, checking page title...');
             }
-
-            // If there's a password, we might need to enter it?
-            // Usually if we have the cookie we are already logged in or authorized?
-            // If the user isn't logged in, we can't see private contests. 
-            // The provided cookies should handle authentication.
-
-            // Wait specifically for the contest title or some element that indicates success
-            // If Cloudflare is still there, we might need to wait more or check for challenge
 
             const title = await page.title();
             console.log('Page title:', title);
@@ -120,7 +126,6 @@ export class VJudgeBrowser {
                 throw new Error('Cloudflare challenge not solved');
             }
 
-            // Fetch data using the browser context (which has the valid Cloudflare cookies)
             const contestData = await page.evaluate(async (cId: string, cPwd?: string) => {
                 const params = new URLSearchParams();
                 params.append('id', cId);
@@ -155,9 +160,6 @@ export class VJudgeBrowser {
                 console.error('Browser fetch error:', contestData.error);
             }
 
-            // Fallback: if ajaxData fails, scrape the page directly
-            // ... (keep minimal fallback or rely on fetch)
-
             return {
                 contestData,
                 pageTitle: title
@@ -168,7 +170,7 @@ export class VJudgeBrowser {
             throw error;
         } finally {
             if (browser) {
-                await browser.close();
+                try { await browser.close(); } catch { }
             }
         }
     }
@@ -176,25 +178,9 @@ export class VJudgeBrowser {
     async getRankData(contestId: string, contestPassword?: string) {
         let browser = null;
         try {
-            const isLocal = process.env.NODE_ENV === 'development';
-            let executablePath: string | undefined;
-
-            if (isLocal) {
-                const localPaths = [
-                    'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-                    'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
-                    process.env.CHROME_PATH
-                ];
-                for (const path of localPaths) {
-                    if (path && require('fs').existsSync(path)) {
-                        executablePath = path;
-                        break;
-                    }
-                }
-                if (!executablePath) executablePath = await chromium.executablePath();
-            } else {
-                executablePath = await chromium.executablePath();
-            }
+            chromium.setGraphicsMode = false;
+            const isLocal = process.env.NODE_ENV === 'development' || process.platform === 'win32';
+            const executablePath = await this.getBrowserExecutable();
 
             const args = isLocal
                 ? puppeteer.defaultArgs().concat([
@@ -220,8 +206,8 @@ export class VJudgeBrowser {
                     hasTouch: false,
                     isLandscape: false,
                 },
-                executablePath: executablePath,
-                headless: isLocal ? false : true,
+                executablePath,
+                headless: true,
             });
 
             const page = await browser.newPage();
@@ -236,17 +222,17 @@ export class VJudgeBrowser {
 
             const targetUrl = `https://vjudge.net/contest/${contestId}`;
             await page.goto(targetUrl, {
-                waitUntil: 'load',
-                timeout: 60000
+                waitUntil: 'domcontentloaded',
+                timeout: 25000
             });
 
             try {
-                await page.waitForSelector('.contest-title', { timeout: 10000 });
+                await page.waitForSelector('.contest-title', { timeout: 8000 });
             } catch (e) { }
 
             // Fetch rank data
             const rankData = await page.evaluate(async (cId: string, cPwd?: string) => {
-                const url = `/contest/rank/single/${cId}${cPwd ? `?password=${cPwd}` : ''}`;
+                const url = `/contest/rank/single/${cId}${cPwd ? `?password=${encodeURIComponent(cPwd)}` : ''}`;
                 try {
                     const response = await fetch(url);
                     const text = await response.text();
@@ -271,7 +257,9 @@ export class VJudgeBrowser {
             console.error('VJudge Browser Rank Error:', error);
             throw error;
         } finally {
-            if (browser) await browser.close();
+            if (browser) {
+                try { await browser.close(); } catch { }
+            }
         }
     }
 
